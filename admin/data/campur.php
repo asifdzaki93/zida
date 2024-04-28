@@ -1,44 +1,4 @@
 <?php
-function fetchSalesData()
-{
-    require_once 'koneksi.php';
-    // Konfigurasi koneksi database
-    // SQL Query
-    $sql = "
-SELECT sd.*, c.name_customer, c.address, c.email, c.telephone
-FROM sales_data sd
-JOIN customer c ON sd.id_customer = c.id_customer
-ORDER BY sd.date DESC;";
-
-    // Eksekusi query
-    $result = $mysqli->query($sql);
-
-    // Array untuk menyimpan hasil
-    $salesData = [];
-
-    // Cek jika hasilnya ada
-    if ($result->num_rows > 0) {
-        // output data of each row
-        while ($row = $result->fetch_assoc()) {
-            $salesData[] = $row;
-        }
-    } else {
-        echo "0 results";
-    }
-
-    // Tutup koneksi
-    $mysqli->close();
-
-    return $salesData;
-}
-
-// Contoh pemanggilan fungsi
-$salesData = fetchSalesData();
-echo "
-<pre>" . print_r($salesData, true) . "</pre>";
-
-
-
 function fetchOrderDetails($noInvoice)
 {
     require_once 'koneksi.php'; // Menggunakan file koneksi yang sama
