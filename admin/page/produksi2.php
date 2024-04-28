@@ -6,7 +6,7 @@
                 <div class="col-md-6 order-2 order-md-1">
                     <div class="card-body">
                         <h4 class="card-title pb-xl-2">Selamat Pagi<strong> Admin !</strong>🎉</h4>
-                        <p class="mb-0">Kamu memiliki <span class="fw-semibold">68 Nota </span>😎 masuk hari ini.</p>
+                        <p class="mb-0">Kamu memiliki <span class="fw-semibold">68 Pesanan </span>😎 kirim hari ini.</p>
                         <p>Cek Selengkapnya, klik tombol dibawah ini.</p>
                         <a href="javascript:;" class="btn btn-primary">Selengkapnya</a>
                     </div>
@@ -69,23 +69,76 @@
 <div class="card">
     <div class="card-body">
         <div class="card-datatable table-responsive pt-0">
-            <table id="history" class="datatables-basic table dt-table dt-responsive display table-striped table-sm"
-                style="width:100%">
+            <form class="row">
+                <div class="col-md-6">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text">Tanggal</span>
+                        <input type="text" id=from-datepicker class="form-control" name="due_date" placeholder="Tanggal"
+                            value="<?php echo $_GET["due_date"]??Date("Y-m-d")?>" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text">Waktu</span>
+                        <select class="form-control" name="jenis_pengiriman">
+                            <option value="Pagi">Pagi</option>
+                            <option value="Sore" <?php echo $_GET["jenis_pengiriman"]=="Sore"?"selected=selected":""?>>
+                                Sore
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+<div class="card">
+    <div class="card-header text-center">
+        <h3>Orderan</h3>
+    </div>
+    <div class="card-body">
+        <div class="card-datatable table-responsive pt-0">
+            <table id="kirim_hari_ini"
+                class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
                 <thead>
                     <tr>
                         <th style="width:2%" class="sort-numeric">No</th>
-                        <th style="width:18%">No Transaksi</th>
+                        <th style="width:18%">ID Transaksi</th>
                         <th style="width:20%">Tanggal</th>
                         <th style="width:15%">Status</th>
                         <th style="width:20%">Total Order</th>
                         <th style="width:15%">Customer</th>
-                        <th style="width:10%">Image</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- List Data Menggunakan DataTable -->
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+<br>
+<div class="card">
+    <div class="card-header text-center">
+        <h3>Produk Diproses</h3>
+    </div>
+    <div class="card-body">
+        <div class="card-datatable table-responsive pt-0">
+            <table id="kirim_hari_ini_products"
+                class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+                <thead>
+                    <tr>
+                        <th style="width:18%">Nama</th>
+                        <th style="width:20%">Gambar</th>
+                        <th style="width:15%">Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- List Data Menggunakan DataTable -->
+                </tbody>
+            </table>
+
         </div>
     </div>
 </div>

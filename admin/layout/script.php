@@ -28,10 +28,16 @@
 <script src="<?php echo $base_url; ?>/admin/js/home.js"></script>
 <script src="<?php echo $base_url; ?>/admin/js/penagihan.js"></script>
 
+<?php
+    $kirim_hari_ini=$base_url."admin/data/kirim_hari_ini.php?due_date=";
+    $kirim_hari_ini.=$_GET["due_date"]??Date("Y-m-d");
+    $kirim_hari_ini.="&jenis_pengiriman=";
+    $kirim_hari_ini.=$_GET["jenis_pengiriman"]??"Pagi";
+?>
 
 <!-- Page Produksi daftar penjualan -->
 <script>
-    $(function() {
+    $(function () {
         $('#history').DataTable({
             "order": [
                 [0, 'desc']
@@ -107,6 +113,57 @@
             ],
             "buttons": ['pdf', 'excel']
         });
+        $('#kirim_hari_ini').DataTable({
+            "order": [
+                [0, 'asc']
+            ],
+            "ajax": {
+                "dataSrc": 'orderDetails',
+                "url": "<?php echo $kirim_hari_ini; ?>",
+                "dataType": "json",
+            },
+            "columns": [{
+                    "data": "no"
+                },
+                {
+                    "data": "no_invoice"
+                },
+                {
+                    "data": "due_date"
+                },
+                {
+                    "data": "status"
+                },
+                {
+                    "data": "totalorder"
+                },
+                {
+                    "data": "note"
+                },
+            ],
+            "buttons": ['pdf', 'excel']
+        });
+        $('#kirim_hari_ini_products').DataTable({
+            "order": [
+                [0, 'asc']
+            ],
+            "ajax": {
+                "dataSrc": 'products',
+                "url": "<?php echo $kirim_hari_ini; ?>",
+                "dataType": "json",
+            },
+            "columns": [{
+                    "data": "name_product"
+                },
+                {
+                    "data": "img"
+                },
+                {
+                    "data": "amount"
+                },
+            ],
+            "buttons": ['pdf', 'excel']
+        });
     });
 </script>
 
@@ -123,7 +180,7 @@
 <!-- Page Produksi pojok kanan atas -->
 <script>
     // Ensure that the document is fully loaded before initializing the chart
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const sessionsChartEl = document.querySelector('#sessions');
         if (sessionsChartEl) {
             const sessionsChartConfig = {
@@ -246,11 +303,9 @@
         }
     });
 </script>
-
-
 <!-- Page Produksi daftar penjualan -->
 <script>
-    $(function() {
+    $(function () {
         $('#packing').DataTable({
             "order": [
                 [0, 'desc']
@@ -298,7 +353,7 @@
                 }
             ],
             "ajax": {
-                "url": "http://localhost/zida/admin/data/masrizal.php?action=sales_data&user=082322345757",
+                "url": "<?php echo $base_url; ?>admin/data/masrizal.php?action=sales_data&user=082322345757",
                 "dataType": "json",
                 "type": "POST"
             },
