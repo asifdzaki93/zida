@@ -1,0 +1,83 @@
+/* Styles for DataTables */
+.table {
+    width: 100%;
+    color: #343a40; /* Darker text for better readability */
+}
+
+.table th,
+.table td {
+    padding: 0.5rem;
+    vertical-align: middle; /* Aligns content vertically center */
+    border-top: 1px solid #e9ecef; /* Lighter border color */
+    border-bottom: 1px solid #e9ecef; /* Adds bottom border for emphasis */
+}
+
+/* Enhancing the look of circular images in the table cells */
+.circular-image-s {
+    width: 40px; /* Slightly smaller for a more subtle look */
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Soft shadow for depth */
+}
+
+/* Customized badge styles for different statuses */
+.badge {
+    padding: 0.25em 0.6em; /* More compact padding */
+    font-size: 0.9rem; /* Slightly larger font for readability */
+    font-weight: 500; /* Normal font weight for a more modern look */
+    border-radius: 0.3rem; /* Slightly reduced border-radius */
+}
+
+.badge-warning {
+    color: #856404; /* Custom color for warning badges */
+    background-color: #fff3cd;
+}
+
+.badge-primary {
+    background-color: #0d6efd;
+}
+
+.badge-success {
+    background-color: #198754;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+}
+
+/* Styling for buttons to match the modern look */
+.btn-sm {
+    font-weight: 400; /* Normal font weight */
+    letter-spacing: 0.05em; /* Slight spacing for a refined look */
+    text-transform: uppercase; /* Uppercase text for buttons */
+    transition: all 0.2s; /* Smooth transition for hover effects */
+}
+
+.btn-warning {
+    background-color: #ffca2c;
+    border-color: #ffca2c;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 576px) {
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.8rem; /* Smaller font size for small devices */
+    }
+}
