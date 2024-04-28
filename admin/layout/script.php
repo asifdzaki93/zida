@@ -18,6 +18,7 @@
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/apex-charts/apexcharts.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/chartjs/chartjs.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/swiper/swiper.js"></script>
+<script src="<?php echo $base_url; ?>/assets/vendor/libs/flatpickr/flatpickr.js"></script>
 
 <!-- Main JS -->
 <script src="<?php echo $base_url; ?>/assets/js/main.js"></script>
@@ -29,15 +30,22 @@
 <script src="<?php echo $base_url; ?>/admin/js/penagihan.js"></script>
 
 <?php
-    $kirim_hari_ini=$base_url."admin/data/kirim_hari_ini.php?due_date=";
-    $kirim_hari_ini.=$_GET["due_date"]??Date("Y-m-d");
-    $kirim_hari_ini.="&jenis_pengiriman=";
-    $kirim_hari_ini.=$_GET["jenis_pengiriman"]??"Pagi";
+    $produksi_hari_ini = "due_date=";
+    $produksi_hari_ini.=$_GET["due_date"]??Date("Y-m-d");
+    $produksi_hari_ini.="&jenis_pengiriman=";
+    $produksi_hari_ini.=$_GET["jenis_pengiriman"]??"Pagi";
+    $kirim_hari_ini=$base_url."admin/data/kirim_hari_ini.php?".$produksi_hari_ini;
+    $rekap_produksi_hari_ini=$base_url."admin/rekap_produksi.php?".$produksi_hari_ini;
 ?>
 
 <!-- Page Produksi daftar penjualan -->
 <script>
+    var flatpickrDate = document.querySelector("#from-datepicker");
+    flatpickrDate.flatpickr({
+        monthSelectorType: "static"
+    });
     $(function () {
+
         $('#history').DataTable({
             "order": [
                 [0, 'desc']
@@ -129,7 +137,7 @@
                     "data": "no_invoice"
                 },
                 {
-                    "data": "due_date"
+                    "data": "costumer"
                 },
                 {
                     "data": "status"
@@ -138,10 +146,9 @@
                     "data": "totalorder"
                 },
                 {
-                    "data": "note"
+                    "data": "aksi"
                 },
             ],
-            "buttons": ['pdf', 'excel']
         });
         $('#kirim_hari_ini_products').DataTable({
             "order": [
@@ -156,13 +163,19 @@
                     "data": "name_product"
                 },
                 {
-                    "data": "img"
+                    "data": "img",
+                    "render": function (data) {
+                        return "<div class='avatar avatar-md me-2'><a href='$sumber'><img class='rounded-circle' src='" +
+                            data + "'/></a></div>";
+                    }
+                },
+                {
+                    "data": "invoices"
                 },
                 {
                     "data": "amount"
                 },
             ],
-            "buttons": ['pdf', 'excel']
         });
     });
 </script>
