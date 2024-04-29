@@ -30,21 +30,24 @@
 <script src="<?php echo $base_url; ?>/admin/js/penagihan.js"></script>
 
 <?php
-    $produksi_hari_ini = "due_date=";
-    $produksi_hari_ini.=$_GET["due_date"]??Date("Y-m-d");
-    $produksi_hari_ini.="&jenis_pengiriman=";
-    $produksi_hari_ini.=$_GET["jenis_pengiriman"]??"Pagi";
-    $kirim_hari_ini=$base_url."admin/data/kirim_hari_ini.php?".$produksi_hari_ini;
-    $rekap_produksi_hari_ini=$base_url."admin/rekap_produksi.php?".$produksi_hari_ini;
+$produksi_hari_ini = "due_date=";
+$produksi_hari_ini .= $_GET["due_date"] ?? Date("Y-m-d");
+$produksi_hari_ini .= "&jenis_pengiriman=";
+$produksi_hari_ini .= $_GET["jenis_pengiriman"] ?? "Pagi";
+$kirim_hari_ini = $base_url . "admin/data/kirim_hari_ini.php?" . $produksi_hari_ini;
+$rekap_produksi_hari_ini = $base_url . "admin/rekap_produksi.php?" . $produksi_hari_ini;
 ?>
 
-<!-- Page Produksi daftar penjualan -->
 <script>
     var flatpickrDate = document.querySelector("#from-datepicker");
     flatpickrDate.flatpickr({
         monthSelectorType: "static"
     });
-    $(function () {
+</script>
+
+<!-- Page Produksi daftar penjualan -->
+<script>
+    $(function() {
 
         $('#history').DataTable({
             "order": [
@@ -93,7 +96,7 @@
                 }
             ],
             "ajax": {
-                "url": "http://localhost/zida/admin/data/history.php?action=sales_data&user=082322345757",
+                "url": "<?php echo $base_url; ?>/admin/data/history.php?action=sales_data&user=082322345757",
                 "dataType": "json",
                 "type": "POST"
             },
@@ -164,7 +167,7 @@
                 },
                 {
                     "data": "img",
-                    "render": function (data) {
+                    "render": function(data) {
                         return "<div class='avatar avatar-md me-2'><a href='$sumber'><img class='rounded-circle' src='" +
                             data + "'/></a></div>";
                     }
@@ -193,7 +196,7 @@
 <!-- Page Produksi pojok kanan atas -->
 <script>
     // Ensure that the document is fully loaded before initializing the chart
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const sessionsChartEl = document.querySelector('#sessions');
         if (sessionsChartEl) {
             const sessionsChartConfig = {
@@ -318,7 +321,7 @@
 </script>
 <!-- Page Produksi daftar penjualan -->
 <script>
-    $(function () {
+    $(function() {
         $('#packing').DataTable({
             "order": [
                 [0, 'desc']
