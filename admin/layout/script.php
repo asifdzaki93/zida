@@ -149,6 +149,9 @@ $rekap_produksi_hari_ini = $base_url . "admin/rekap_produksi.php?" . $produksi_h
                     "data": "totalorder"
                 },
                 {
+                    "data": "alamat"
+                },
+                {
                     "data": "aksi"
                 },
             ],
@@ -168,7 +171,7 @@ $rekap_produksi_hari_ini = $base_url . "admin/rekap_produksi.php?" . $produksi_h
                 {
                     "data": "img",
                     "render": function(data) {
-                        return "<div class='avatar avatar-md me-2'><a href='$sumber'><img class='rounded-circle' src='" +
+                        return "<div class='avatar avatar-md me-2'><a href='" + data + "'><img class='rounded-circle' src='" +
                             data + "'/></a></div>";
                     }
                 },

@@ -47,7 +47,7 @@ class Pdf extends FPDF
         //Arial italic 9
         $this->SetFont('Arial', 'I', 9);
         //nomor halaman
-        // $this->Cell(0,20,'Halaman '.$this->PageNo().' dari {nb}',0,0,'C');
+        $this->Cell(0, 20, 'Halaman ' . $this->PageNo() . ' dari {nb}', 0, 0, 'C');
     }
     function garis()
     {

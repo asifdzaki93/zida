@@ -24,7 +24,7 @@ function getChildProducts($sessionId, $jml, $mysqli)
 
     // Output data of each row
     $all_amount = 0;
-    while ($product = $result->fetch_assoc()) {    
+    while ($product = $result->fetch_assoc()) {
         $childProducts[] = [
             'id_product' => $product['id_product'],
             'name_product' => $product['name_product'],
@@ -38,14 +38,16 @@ function getChildProducts($sessionId, $jml, $mysqli)
     return $childProducts;
 }
 
-function invoiceMaker($invoice,$amount,$raw=false){
-    if($raw){
-        return $invoice." (".$amount.")";
+function invoiceMaker($invoice, $amount, $raw = false)
+{
+    if ($raw) {
+        return $invoice . " (" . $amount . ")";
     }
-    return "<a href='order_detail.php?no_invoice=".$invoice."'>".$invoice." (".$amount.")"."</a>";
+    return "<a href='order_detail.php?no_invoice=" . $invoice . "'>" . $invoice . " (" . $amount . ")" . "</a>";
 }
 
-function getOrderData($mysqli,$raw=false){
+function getOrderData($mysqli, $raw = false)
+{
     $products = [];
     // SQL Query
     $sql = "
@@ -79,8 +81,8 @@ function getOrderData($mysqli,$raw=false){
 
     // Bind parameter no_invoice ke prepared statement
     $due_date = $_GET["due_date"];
-    $jenis_pengiriman = "%Jenis Pengiriman : ".$_GET["jenis_pengiriman"]."%";
-    $stmt->bind_param('ss', $due_date,$jenis_pengiriman); // 's' menunjukkan bahwa parameter adalah string
+    $jenis_pengiriman = "%Jenis Pengiriman : " . $_GET["jenis_pengiriman"] . "%";
+    $stmt->bind_param('ss', $due_date, $jenis_pengiriman); // 's' menunjukkan bahwa parameter adalah string
 
     // Menjalankan query
     $stmt->execute();
@@ -92,7 +94,7 @@ function getOrderData($mysqli,$raw=false){
     $orderDetails = [];
 
     $tombol = '<div class="d-flex align-items-center">
-    <a href="javascript:;" data-bs-toggle="tooltip" class="text-body print-record" data-bs-placement="top" title="Print Invoice">
+    <a href="https://pro.kasir.vip/pdf/invoice.php?no_invoice=[id]" data-bs-toggle="tooltip" class="text-body print-record" data-bs-placement="top" title="Print Invoice">
         <i class="fa fa-print"></i>
     </a>
     <a href="order_detail.php?no_invoice=[id]" class="text-body" data-bs-placement="top" title="Preview Invoice">
@@ -109,8 +111,9 @@ function getOrderData($mysqli,$raw=false){
         </div>
     </div>
     </div>';
-    function buatTombol($t,$invoice){
-        return str_replace("[id]",$invoice,$t);
+    function buatTombol($t, $invoice)
+    {
+        return str_replace("[id]", $invoice, $t);
     }
 
     // Cek jika hasilnya ada
@@ -120,16 +123,17 @@ function getOrderData($mysqli,$raw=false){
         // Output data of each row
         while ($row = $result->fetch_assoc()) {
             $orderDetail = [];
-            if($raw){
+            if ($raw) {
                 $orderDetail = $row;
-            }else{
+            } else {
                 $orderDetail = [
-                    'no'=>$no,
+                    'no' => $no,
                     'no_invoice' => $row['no_invoice'],
-                    'totalorder' => "Rp " . number_format($row["totalorder"],0,',','.'),
-                    'status' => $row['totalpay']>=$row['totalorder']?"Lunas":"Rp " . number_format($row['totalpay']-$row['totalorder'],0,',','.'),
-                    'costumer' => $row['name_customer']."<br>".$row['address']."<br>".$row['telephone'],
-                    'aksi' => buatTombol($tombol,$row['no_invoice'])
+                    'totalorder' => "Rp " . number_format($row["totalorder"], 0, ',', '.'),
+                    'status' => $row['totalpay'] >= $row['totalorder'] ? "Lunas" : "Rp " . number_format($row['totalpay'] - $row['totalorder'], 0, ',', '.'),
+                    'costumer' => $row['name_customer'] . "<br>" . $row['telephone'],
+                    'alamat' => $row['address'],
+                    'aksi' => buatTombol($tombol, $row['no_invoice'])
                 ];
             }
             $no++;
@@ -149,29 +153,29 @@ function getOrderData($mysqli,$raw=false){
             if ($row['packages'] === 'YES') {
                 $childProducts = getChildProducts($row['session'], $jml, $mysqli); // Fungsi untuk mengambil produk anak
                 $product['childproduct'] = $childProducts;
-                foreach($childProducts as $p){
-                    $id_product=$p["id_product"];
-                    if(!isset($products[$id_product])){
-                        $products[$id_product]=[
-                            "name_product"=>$p["name_product"],
-                            "id_product"=>$p["id_product"],
-                            "img"=>"https://zieda.id/pro/geten/images/no_image.jpg",
-                            "invoices"=>invoiceMaker($orderDetail["no_invoice"],$p["amount"],$raw),
-                            "packages"=>"YES"
+                foreach ($childProducts as $p) {
+                    $id_product = $p["id_product"];
+                    if (!isset($products[$id_product])) {
+                        $products[$id_product] = [
+                            "name_product" => $p["name_product"],
+                            "id_product" => $p["id_product"],
+                            "img" => "https://zieda.id/pro/geten/images/no_image.jpg",
+                            "invoices" => invoiceMaker($orderDetail["no_invoice"], $p["amount"], $raw),
+                            "packages" => "YES"
                         ];
-                    }else{
-                        $products[$id_product]["invoices"] = $products[$id_product]["invoices"].", ".invoiceMaker($orderDetail["no_invoice"],$p["amount"],$raw);
+                    } else {
+                        $products[$id_product]["invoices"] = $products[$id_product]["invoices"] . ", " . invoiceMaker($orderDetail["no_invoice"], $p["amount"], $raw);
                     }
-                    $products[$id_product]["amount"]=($products[$id_product]["amount"]??0)+$p["amount"];        
+                    $products[$id_product]["amount"] = ($products[$id_product]["amount"] ?? 0) + $p["amount"];
                 }
-            }else{
-                $id_product=$product["id_product"];
-                if(!isset($products[$id_product])){
-                    $products[$id_product]=[
-                        "name_product"=>$product["name_product"],
-                        "id_product"=>$product["id_product"],
-                        "invoices"=>invoiceMaker($orderDetail["no_invoice"],$product["amount"],$raw),
-                        "packages"=>$product["packages"]??"YES"
+            } else {
+                $id_product = $product["id_product"];
+                if (!isset($products[$id_product])) {
+                    $products[$id_product] = [
+                        "name_product" => $product["name_product"],
+                        "id_product" => $product["id_product"],
+                        "invoices" => invoiceMaker($orderDetail["no_invoice"], $product["amount"], $raw),
+                        "packages" => $product["packages"] ?? "YES"
                     ];
                     if ($product['img'] !== "") {
                         $sumber = "https://zieda.id/pro/geten/images/" . $product['img'];
@@ -179,13 +183,13 @@ function getOrderData($mysqli,$raw=false){
                         $sumber = "https://zieda.id/pro/geten/images/no_image.jpg";
                     }
                     $products[$id_product]['img'] = $sumber;
-                }else{
-                    $products[$id_product]["invoices"] = $products[$id_product]["invoices"].", ".invoiceMaker($orderDetail["no_invoice"],$product["amount"],$raw);
+                } else {
+                    $products[$id_product]["invoices"] = $products[$id_product]["invoices"] . ", " . invoiceMaker($orderDetail["no_invoice"], $product["amount"], $raw);
                 }
-                $products[$id_product]["amount"]=($products[$id_product]["amount"]??0)+$product["amount"];
+                $products[$id_product]["amount"] = ($products[$id_product]["amount"] ?? 0) + $product["amount"];
             }
-            $orderDetail["products"]=$product;
-            array_push($orderDetails,$orderDetail);
+            $orderDetail["products"] = $product;
+            array_push($orderDetails, $orderDetail);
         }
     } else {
         // echo "0 results";
@@ -202,4 +206,3 @@ function getOrderData($mysqli,$raw=false){
     // Mengembalikan JSON
     return $output;
 }
-?>
