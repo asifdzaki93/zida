@@ -96,52 +96,57 @@
     </div>
 </div>
 <br>
-<div class="card">
-    <div class="card-header text-center">
-        <h3>Orderan</h3>
-    </div>
-    <div class="card-body">
-        <div class="card-datatable table-responsive pt-0">
-            <table id="kirim_hari_ini" class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
-                <thead>
-                    <tr>
-                        <th style="width:2%" class="sort-numeric">No</th>
-                        <th style="width:18%">ID Transaksi</th>
-                        <th style="width:20%">Costumer</th>
-                        <th style="width:15%">Status</th>
-                        <th style="width:15%">Total Order</th>
-                        <th style="width:25%">Alamat</th>
-                        <th style="width:15%">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- List Data Menggunakan DataTable -->
-                </tbody>
-            </table>
+<div class="row mt-4">
+    <div class="col-lg-6 col-md-12">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Orderan</h3>
+            </div>
+            <div class="card-body">
+                <div class="card-datatable table-responsive pt-0">
+                    <table id="kirim_hari_ini" class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th style="width:2%" class="sort-numeric">No</th>
+                                <th style="width:18%">ID Transaksi</th>
+                                <th style="width:20%">Costumer</th>
+                                <th style="width:15%">Status</th>
+                                <th style="width:15%">Total Order</th>
+                                <th style="width:25%">Alamat</th>
+                                <th style="width:15%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- List Data Menggunakan DataTable -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-<br>
-<div class="card">
-    <div class="card-header text-center">
-        <h3>Produk Diproses</h3>
-    </div>
-    <div class="card-body">
-        <div class="card-datatable table-responsive pt-0">
-            <table id="kirim_hari_ini_products" class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
-                <thead>
-                    <tr>
-                        <th style="width:18%">Nama</th>
-                        <th style="width:10%">Img</th>
-                        <th style="width:20%">Invoices</th>
-                        <th style="width:15%">Jumlah</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- List Data Menggunakan DataTable -->
-                </tbody>
-            </table>
+    <div class="col-lg-6 col-md-12">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Produk Diproses</h3>
+            </div>
+            <div class="card-body">
+                <div class="card-datatable table-responsive pt-0">
+                    <table id="kirim_hari_ini_products" class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th style="width:18%">Nama</th>
+                                <th style="width:10%">Img</th>
+                                <th style="width:20%">Invoices</th>
+                                <th style="width:15%">Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- List Data Menggunakan DataTable -->
+                        </tbody>
+                    </table>
 
+                </div>
+            </div>
         </div>
     </div>
 </div>
