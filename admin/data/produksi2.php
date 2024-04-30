@@ -15,9 +15,10 @@ function getChildProducts($sessionId, $jml, $mysqli)
     return $childProducts;
 }
 
-function getOrderData($mysqli){
+function getOrderData($mysqli)
+{
 
-    $noInvoice=$_GET["no_invoice"];
+    $noInvoice = $_GET["no_invoice"];
     // SQL Query
     $sql = "
     SELECT 
@@ -92,17 +93,18 @@ function getOrderData($mysqli){
             s.totalprice,
             p.name_product, 
             p.packages,
+            p.folder,
             p.img,
             p.session
             FROM sales s 
             LEFT JOIN product p ON s.id_product = p.id_product 
-            WHERE no_invoice = '".$row["no_invoice"]."'");
+            WHERE no_invoice = '" . $row["no_invoice"] . "'");
             while ($r = $query->fetch_array()) {
                 $product = [
                     'id_product' => $r['id_product'],
                     'packages' => $r['packages'],
                     'session' => $r['session'],
-                    'img' => $r['img'],
+                    'img' => '/' . $r['folder'] . '/' . $r['img'],
                     'name_product' => $r['name_product'],
                     'amount' => $r['amount'],
                     'price' => $r['price'],
@@ -113,8 +115,8 @@ function getOrderData($mysqli){
                 if ($r['packages'] === 'YES') {
                     $childProducts = getChildProducts($r['session'], $jml, $mysqli); // Fungsi untuk mengambil produk anak
                     $product['childproduct'] = $childProducts;
-                }    
-                array_push($products,$product);
+                }
+                array_push($products, $product);
             }
         }
     } else {
@@ -131,4 +133,3 @@ function getOrderData($mysqli){
     ];
     return $output;
 }
-?>

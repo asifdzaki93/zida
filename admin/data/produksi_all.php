@@ -50,8 +50,8 @@ function getOrderData($mysqli, $raw = false)
     }
 
     // Bind parameter no_invoice ke prepared statement
-    $due_date = $_GET["due_date"]??Date("Y-m-d");
-    $jenis_pengiriman = "%Jenis Pengiriman : " . ($_GET["jenis_pengiriman"]??"Pagi") . "%";
+    $due_date = $_GET["due_date"] ?? Date("Y-m-d");
+    $jenis_pengiriman = "%Jenis Pengiriman : " . ($_GET["jenis_pengiriman"] ?? "Pagi") . "%";
     $stmt->bind_param('ss', $due_date, $jenis_pengiriman); // 's' menunjukkan bahwa parameter adalah string
 
     // Menjalankan query
@@ -116,17 +116,19 @@ function getOrderData($mysqli, $raw = false)
             s.totalprice,
             p.name_product, 
             p.packages,
+            p.folder,
             p.img,
             p.session
             FROM sales s 
             LEFT JOIN product p ON s.id_product = p.id_product 
-            WHERE no_invoice = '".$row["no_invoice"]."'");
-            $productsX=[];
+            WHERE no_invoice = '" . $row["no_invoice"] . "'");
+            $productsX = [];
             while ($r = $query->fetch_array()) {
                 $product = [
                     'id_product' => $r['id_product'],
                     'packages' => $r['packages'],
                     'session' => $r['session'],
+                    'folder' => $r['folder'],
                     'img' => $r['img'],
                     'name_product' => $r['name_product'],
                     'amount' => $r['amount'],
@@ -163,7 +165,7 @@ function getOrderData($mysqli, $raw = false)
                             "packages" => $product["packages"] ?? "YES"
                         ];
                         if ($product['img'] !== "") {
-                            $sumber = "https://zieda.id/pro/geten/images/" . $product['img'];
+                            $sumber = "https://zieda.id/pro/geten/images/" . $product['folder'] . '/'  . $product['img'];
                         } else {
                             $sumber = "https://zieda.id/pro/geten/images/no_image.jpg";
                         }
@@ -173,7 +175,7 @@ function getOrderData($mysqli, $raw = false)
                     }
                     $products[$id_product]["amount"] = ($products[$id_product]["amount"] ?? 0) + $product["amount"];
                 }
-                array_push($productsX,$product);
+                array_push($productsX, $product);
             }
             $orderDetail["products"] = $productsX;
             array_push($orderDetails, $orderDetail);
