@@ -1,16 +1,9 @@
-
-
 <?php
 include 'layout/header.php';
 ?>
 
-
-
-<?php
-include("data/function.php");
-include 'page/home.php';
-?>
-
+<section id="jquery_page">
+</section>
 
 <?php
 include 'layout/footer.php';

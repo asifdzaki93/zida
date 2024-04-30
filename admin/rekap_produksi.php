@@ -1,9 +1,10 @@
 <?php
 // memanggil library FPDF
 require('../fpdfnew/fpdf.php');
+require_once 'data/koneksi.php'; // Menggunakan file koneksi yang sama
+include "data/produksi_all.php";
+$output = getOrderData($mysqli, true);
 
-//buat koneksi ke database yang akan dimasukkan sebagai isi
-include 'data/koneksi.php';
 if (isset($_GET['tglkirim'])) {
     $tglkirim = $_GET['tglkirim'];
 }
@@ -64,19 +65,6 @@ class Pdf extends FPDF
 }
 
 
-
-
-// intance object dan memberikan pengaturan halaman PDF
-$pdf = new Pdf('P', 'mm', array(105, 297));
-$pdf->SetMargins(5, 5, 10);
-$pdf->SetAutoPageBreak(true, 10);
-$pdf->AliasNbPages();
-// membuat halaman baru
-$pdf->AddPage();
-
-$ini = date('y-m-d');
-
-
 // intance object dan memberikan pengaturan halaman PDF
 $pdf = new Pdf('P', 'mm', 'A4');
 $pdf->SetMargins(5, 20, 10);
@@ -87,10 +75,6 @@ $pdf->AddPage();
 
 $ini = date('y-m-d');
 // logic pagi
-
-require_once 'data/koneksi.php'; // Menggunakan file koneksi yang sama
-include "data/produksi_all.php";
-$output = getOrderData($mysqli, true);
 
 $orderData = $output["orderDetails"];
 $pdf->SetFont('Arial', 'B', 14);
@@ -105,21 +89,52 @@ $pdf->Cell(60, 5, 'Nama Kostumer ', 0, 0, 'C', true);
 $pdf->Cell(30, 5, 'Order', 0, 0, 'R', true);
 $pdf->Cell(30, 5, 'Dibayar', 0, 0, 'R', true);
 $pdf->Cell(40, 5, 'Sisa', 0, 0, 'R', true);
+$operator = [];
+$current_operator = "";
 foreach ($orderData as $rc) {
+    if($current_operator!=$rc["operator"]){
+        $operator[$rc["operator"]] = [
+            "totalorder"=>0,
+            "totalpay"=>0,
+        ];
+        $current_operator=$rc["operator"];
+    }
+    $operator[$rc["operator"]]["totalorder"]=$operator[$rc["operator"]]["totalorder"]+$rc['totalorder'];
+    $operator[$rc["operator"]]["totalpay"]=$operator[$rc["operator"]]["totalpay"]+$rc['totalpay'];
+}
+$current_operator = "";
+foreach ($orderData as $rc) {
+    //operator
+    if($current_operator!=$rc["operator"]){
+        $pdf->Cell(10, 5, '', 0, 1);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->SetTextColor(0, 0, 0);
+        $jm1 = number_format(floor($operator[$rc["operator"]]['totalorder']), 0, ',', '.');
+        $jm11 = number_format(floor($operator[$rc["operator"]]['totalpay']), 0, ',', '.');
+        $jm12 = number_format(floor($operator[$rc["operator"]]['totalorder'] - $operator[$rc["operator"]]['totalpay']), 0, ',', '.');
+        if ($operator[$rc["operator"]]['totalpay'] >= $operator[$rc["operator"]]['totalorder']) {
+            $jm12 = "Lunas";
+        }
+        $pdf->Cell(100, 5, "# ".$rc['operator_name'], 'B', 0, 'L');
+        $pdf->Cell(30, 5, $jm1, 'B', 0, 'R');
+        $pdf->Cell(30, 5, $jm11, 'B', 0, 'R');
+        $pdf->Cell(40, 5, $jm12, 'B', 0, 'R');    
+        $current_operator=$rc["operator"];
+    }
+
     //by invoice
     $pdf->Cell(10, 5, '', 0, 1);
     $pdf->SetFont('Arial', 'I', 12);
     $pdf->SetTextColor(0, 0, 0);
-    $kecil = strtolower($rc['no_invoice']);
-    $bskc = ucwords($kecil);
+    $pdf->Cell(5,5,'',0,0,'C');
     $jm1 = number_format(floor($rc['totalorder']), 0, ',', '.');
     $jm11 = number_format(floor($rc['totalpay']), 0, ',', '.');
     $jm12 = number_format(floor($rc['totalorder'] - $rc['totalpay']), 0, ',', '.');
     if ($rc['totalpay'] >= $rc['totalorder']) {
         $jm12 = "Lunas";
     }
-    $pdf->Cell(40, 5, $rc['no_invoice'], 'B', 0, 'R');
-    $pdf->Cell(60, 5, $rc['name_customer'], 'B', 0, 'L');
+    $pdf->Cell(40, 5, "* ".$rc['no_invoice'], 'B', 0, 'R');
+    $pdf->Cell(55, 5, $rc['name_customer'], 'B', 0, 'L');
     $pdf->Cell(30, 5, $jm1, 'B', 0, 'R');
     $pdf->Cell(30, 5, $jm11, 'B', 0, 'R');
     $pdf->Cell(40, 5, $jm12, 'B', 0, 'R');
@@ -134,15 +149,26 @@ $pdf->SetFillColor(235, 225, 225);
 $pdf->Cell(10, 5, '', 0, 1);
 $pdf->SetFillColor(235, 225, 225);
 $pdf->SetFont('Arial', 'B', 14);
-$pdf->Cell(140, 5, 'Nama Product ', 0, 0, 'C', true);
-$pdf->Cell(60, 5, 'Jumlah', 0, 0, 'R', true);
-foreach ($products as $rc) {
+$pdf->Cell(10, 5, '# ', 0, 0, 'R', true);
+$pdf->Cell(150, 5, 'Nama Product ', 0, 0, 'L', true);
+$pdf->Cell(20, 5, 'Jumlah', 0, 0, 'R', true);
+$pdf->Cell(20, 5, 'Check', 0, 0, 'R', true);
+
+function productsSort($a, $b) {
+    return ($a["amount"] > $b["amount"]) ? -1 : 1;
+}
+
+usort($products, "productsSort");
+  
+foreach ($products as $k=>$rc) {
     //by invoice
     $pdf->Cell(10, 5, '', 0, 1);
     $pdf->SetFont('Arial', 'I', 12);
     $pdf->SetTextColor(0, 0, 0);
-    $pdf->Cell(160, 5, strtoupper($rc['name_product']), 'B', 0, 'L');
-    $pdf->Cell(40, 5, $rc['amount'], 'B', 0, 'R');
+    $pdf->Cell(10, 5, $k+1, 'B', 0, 'R');
+    $pdf->Cell(150, 5, strtoupper($rc['name_product']), 'B', 0, 'L');
+    $pdf->Cell(20, 5, $rc['amount'], 'B', 0, 'R');
+    $pdf->Cell(20, 5, '', 'B', 0, 'R');
 }
 
 

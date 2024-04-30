@@ -1,4 +1,5 @@
     const colors = ['#6667AB', '#5CB85C']; // Example colors for the chart segments
+    function penagihan(){
     fetch(baseUrl + 'admin/data/home-chart.php')
     .then(response => response.json())
     .then(data => {
@@ -72,3 +73,5 @@
         }
     })
     .catch(error => console.error('Error loading the chart data:', error));
+    }
+    penagihan();

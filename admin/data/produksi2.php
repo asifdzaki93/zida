@@ -2,29 +2,9 @@
 function getChildProducts($sessionId, $jml, $mysqli)
 {
     // Query untuk mengambil produk anak dari paket
-    $sql = "SELECT * FROM packagesproduct WHERE sesi = ?";
-
-    // Mempersiapkan prepared statement
-    $stmt = $mysqli->prepare($sql);
-    if (!$stmt) {
-        die('Query preparation failed: ' . $mysqli->error);
-    }
-
-    // Bind parameter session ke prepared statement
-    $stmt->bind_param('s', $sessionId);
-
-    // Menjalankan query
-    $stmt->execute();
-
-    // Mendapatkan hasil
-    $result = $stmt->get_result();
-
-    // Array untuk menyimpan produk anak
-    $childProducts = [];
-
-    // Output data of each row
+    $query = $mysqli->query("SELECT * FROM packagesproduct WHERE sesi = '$sessionId'");
     $all_amount = 0;
-    while ($row = $result->fetch_assoc()) {
+    while ($row = $query->fetch_array()) {
         $childProducts[] = [
             'id_product' => $row['id_product'],
             'name_product' => $row['name_product'],
@@ -32,10 +12,6 @@ function getChildProducts($sessionId, $jml, $mysqli)
         ];
         $all_amount += $row['amount'] * $jml;
     }
-
-    // Menutup statement
-    $stmt->close();
-
     return $childProducts;
 }
 
@@ -49,18 +25,9 @@ function getOrderData($mysqli){
     c.name_customer, 
     c.telephone, 
     c.address, 
-    s.id_product, 
-    s.amount, 
-    s.price, 
-    s.totalprice,
-    p.name_product, 
-    p.packages,
-    o.full_name as operator_name,
-    p.session 
+    o.full_name as operator_name
     FROM sales_data sd 
-    LEFT JOIN sales s ON sd.no_invoice = s.no_invoice 
     LEFT JOIN customer c ON sd.id_customer = c.id_customer 
-    LEFT JOIN product p ON s.id_product = p.id_product 
     LEFT JOIN users o ON o.phone_number = sd.operator 
     WHERE
     sd.no_invoice = ?;"; // Gunakan placeholder untuk prepared statement
@@ -118,21 +85,36 @@ function getOrderData($mysqli){
                 $first = false; // Setelah menyimpan detail, tidak perlu menyimpan lagi
             }
             // Menyimpan produk yang dipesan
-            $products = [
-                'id_product' => $row['id_product'],
-                'packages' => $row['packages'],
-                'session' => $row['session'],
-                'img' => $row['img'],
-                'name_product' => $row['name_product'],
-                'amount' => $row['amount'],
-                'price' => $row['price'],
-                'totalprice' => $row['totalprice']
-            ];
-            $jml = $row['amount'];
-            // Jika produk adalah paket, ambil daftar produk anak
-            if ($row['packages'] === 'YES') {
-                $childProducts = getChildProducts($row['session'], $jml, $mysqli); // Fungsi untuk mengambil produk anak
-                $products['childproduct'] = $childProducts;
+            $query = $mysqli->query("SELECT
+            s.id_product, 
+            s.amount, 
+            s.price, 
+            s.totalprice,
+            p.name_product, 
+            p.packages,
+            p.img,
+            p.session
+            FROM sales s 
+            LEFT JOIN product p ON s.id_product = p.id_product 
+            WHERE no_invoice = '".$row["no_invoice"]."'");
+            while ($r = $query->fetch_array()) {
+                $product = [
+                    'id_product' => $r['id_product'],
+                    'packages' => $r['packages'],
+                    'session' => $r['session'],
+                    'img' => $r['img'],
+                    'name_product' => $r['name_product'],
+                    'amount' => $r['amount'],
+                    'price' => $r['price'],
+                    'totalprice' => $r['totalprice']
+                ];
+                $jml = $r['amount'];
+                // Jika produk adalah paket, ambil daftar produk anak
+                if ($r['packages'] === 'YES') {
+                    $childProducts = getChildProducts($r['session'], $jml, $mysqli); // Fungsi untuk mengambil produk anak
+                    $product['childproduct'] = $childProducts;
+                }    
+                array_push($products,$product);
             }
         }
     } else {

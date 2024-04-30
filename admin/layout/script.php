@@ -26,28 +26,55 @@
 <!-- Page JS -->
 <!-- <script src="<?php echo $base_url; ?>/assets/js/dashboards-crm.js"></script> -->
 
-<script src="<?php echo $base_url; ?>/admin/js/home.js"></script>
-<script src="<?php echo $base_url; ?>/admin/js/penagihan.js"></script>
-
-<?php
-$produksi_hari_ini = "due_date=";
-$produksi_hari_ini .= $_GET["due_date"] ?? Date("Y-m-d");
-$produksi_hari_ini .= "&jenis_pengiriman=";
-$produksi_hari_ini .= $_GET["jenis_pengiriman"] ?? "Pagi";
-$kirim_hari_ini = $base_url . "admin/data/kirim_hari_ini.php?" . $produksi_hari_ini;
-$rekap_produksi_hari_ini = $base_url . "admin/rekap_produksi.php?" . $produksi_hari_ini;
-?>
+<script src="<?php echo $base_url; ?>/admin/js/home.js?v=2"></script>
+<script src="<?php echo $base_url; ?>/admin/js/penagihan.js?v=2"></script>
 
 <script>
-    var flatpickrDate = document.querySelector("#from-datepicker");
-    flatpickrDate.flatpickr({
-        monthSelectorType: "static"
-    });
+    var base_url = "<?php echo $base_url;?>";
+    var try_routing_last = window.location.pathname + window.location.search;
+    var try_routing = false;
+    var tambah_history = "";
+    async function menambah_history() {
+        if ((window.location.pathname + window.location.search) != tambah_history) {
+            await window.history.pushState('page2', 'Title', tambah_history);
+        }
+    }
+    window.onpopstate = function (event) {
+        var pageURL = window.location.href;
+        var lastURLSegment = pageURL.substr(pageURL.lastIndexOf('/') + 1);
+        loadPage(lastURLSegment);
+    }
+    async function loadPage(page) {
+        await $.ajax({
+            url: "jquery_page.php?page=" + page.replace("?", "&"),
+            success: function (result) {
+                $("#jquery_page").html(result);
+            }
+        });
+        tambah_history = page;
+        menambah_history();
+        // Initialize chart with monthly data
+        updateChart('monthly');
+
+        // Call the function to update performance initially
+        updatePerformance('monthly');
+        penagihan();
+        loadPenjualan();
+        loadProduksi(base_url + "admin/data/kirim_hari_ini.php?" + page.split("?")[1]);
+        loadHome();
+        var flatpickrDate = document.querySelector("#from-datepicker");
+        flatpickrDate.flatpickr({
+            monthSelectorType: "static"
+        });
+    };
+    var pageURL = window.location.href;
+    var lastURLSegment = pageURL.substr(pageURL.lastIndexOf('/') + 1);
+    loadPage(lastURLSegment);
 </script>
 
 <!-- Page Produksi daftar penjualan -->
 <script>
-    $(function() {
+    function loadPenjualan() {
 
         $('#history').DataTable({
             "order": [
@@ -124,13 +151,16 @@ $rekap_produksi_hari_ini = $base_url . "admin/rekap_produksi.php?" . $produksi_h
             ],
             "buttons": ['pdf', 'excel']
         });
+    }
+
+    function loadProduksi(url) {
         $('#kirim_hari_ini').DataTable({
             "order": [
                 [0, 'asc']
             ],
             "ajax": {
                 "dataSrc": 'orderDetails',
-                "url": "<?php echo $kirim_hari_ini; ?>",
+                "url": url,
                 "dataType": "json",
             },
             "columns": [{
@@ -156,34 +186,59 @@ $rekap_produksi_hari_ini = $base_url . "admin/rekap_produksi.php?" . $produksi_h
                 },
             ],
         });
-        $('#kirim_hari_ini_products').DataTable({
+        var productsTable = $('#kirim_hari_ini_products').DataTable({
             "order": [
                 [0, 'asc']
             ],
             "ajax": {
                 "dataSrc": 'products',
-                "url": "<?php echo $kirim_hari_ini; ?>",
+                "url": url,
                 "dataType": "json",
             },
             "columns": [{
+                    className: 'dt-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                },
+                {
                     "data": "name_product"
                 },
                 {
                     "data": "img",
-                    "render": function(data) {
-                        return "<div class='avatar avatar-md me-2'><a href='" + data + "'><img class='rounded-circle' src='" +
+                    "render": function (data) {
+                        return "<div class='avatar avatar-md me-2'><a href='" + data +
+                            "'><img class='rounded-circle' src='" +
                             data + "'/></a></div>";
                     }
                 },
                 {
-                    "data": "invoices"
-                },
-                {
                     "data": "amount"
-                },
+                }
             ],
         });
-    });
+        productsTable.on('click', 'td.dt-control', function (e) {
+            let tr = e.target.closest('tr');
+            let row = productsTable.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+            } else {
+                // Open this row
+                row.child(row.data().invoices).show();
+            }
+        });
+    };
+
+    function produksiChange(e) {
+        e.preventDefault();
+        var form = $('#produksiFilter')[0];
+        var data = new FormData(form);
+        var u = new URLSearchParams(data).toString();
+        loadPage("produksi.php?" + u);
+        return false;
+    }
 </script>
 
 <script>
@@ -199,7 +254,7 @@ $rekap_produksi_hari_ini = $base_url . "admin/rekap_produksi.php?" . $produksi_h
 <!-- Page Produksi pojok kanan atas -->
 <script>
     // Ensure that the document is fully loaded before initializing the chart
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const sessionsChartEl = document.querySelector('#sessions');
         if (sessionsChartEl) {
             const sessionsChartConfig = {
@@ -324,7 +379,7 @@ $rekap_produksi_hari_ini = $base_url . "admin/rekap_produksi.php?" . $produksi_h
 </script>
 <!-- Page Produksi daftar penjualan -->
 <script>
-    $(function() {
+    $(function () {
         $('#packing').DataTable({
             "order": [
                 [0, 'desc']

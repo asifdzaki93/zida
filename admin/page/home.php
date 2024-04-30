@@ -1,3 +1,6 @@
+<?php
+include("data/function.php");
+?>
 <div class="row gy-4 mb-4">
     <!-- Sales Overview-->
     <div class="col-lg-6">
@@ -83,17 +86,21 @@
                     <div class="card-body">
                         <div class="card-info mb-3 py-2 mb-lg-1 mb-xl-3">
                             <h5 class="mb-3 mb-lg-2 mb-xl-3 text-nowrap">Pengiriman Hari Ini</h5>
-                            <div class="badge bg-label-primary rounded-pill lh-xs"><?= number_format($countPreOrderP, 0, ',', '.') ?> Pesanan</div>
+                            <div class="badge bg-label-primary rounded-pill lh-xs">
+                                <?= number_format($countPreOrderP, 0, ',', '.') ?> Pesanan</div>
                         </div>
                         <div class="d-flex align-items-end flex-wrap gap-1">
-                            <h6 class="mb-0 me-2 text-primary"><strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong></h6>
-                            <small class="">Diterima: <?= number_format($lunas2, 0, ',', '.'); ?>%</small><small class="text-success"><?= '(Rp.' . number_format($totalBayar, 0, ',', '.') . ')' ?></small>
+                            <h6 class="mb-0 me-2 text-primary">
+                                <strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong></h6>
+                            <small class="">Diterima: <?= number_format($lunas2, 0, ',', '.'); ?>%</small><small
+                                class="text-success"><?= '(Rp.' . number_format($totalBayar, 0, ',', '.') . ')' ?></small>
                         </div>
                     </div>
                 </div>
                 <div class="col-6 text-end d-flex align-items-end justify-content-center">
                     <div class="card-body pb-0 pt-3 position-absolute bottom-0">
-                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-ratings-illustration.png" alt="Ratings" width="95" />
+                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-ratings-illustration.png"
+                            alt="Ratings" width="95" />
                     </div>
                 </div>
             </div>
@@ -109,18 +116,22 @@
                     <div class="card-body">
                         <div class="card-info mb-3 py-2 mb-lg-1 mb-xl-3">
                             <h5 class="mb-3 mb-lg-2 mb-xl-3 text-nowrap">Penagihan Hari Ini</h5>
-                            <div class="badge bg-label-danger rounded-pill lh-xs"><?= number_format($countMinus, 0, ',', '.') ?> Nota Tempo</div>
+                            <div class="badge bg-label-danger rounded-pill lh-xs">
+                                <?= number_format($countMinus, 0, ',', '.') ?> Nota Tempo</div>
                         </div>
                         <div class="d-flex align-items-end flex-wrap gap-1">
-                            <h6 class="mb-0 me-2 text-primary"><strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong></h6>
+                            <h6 class="mb-0 me-2 text-primary">
+                                <strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong></h6>
                             <small class="">Piutang: <?= number_format($lunas1, 0, ',', '.'); ?>%</small>
-                            <small class="text-danger"><?= '(Rp.' . number_format($selisih, 0, ',', '.') . ')' ?></small>
+                            <small
+                                class="text-danger"><?= '(Rp.' . number_format($selisih, 0, ',', '.') . ')' ?></small>
                         </div>
                     </div>
                 </div>
                 <div class="col-6 text-end d-flex align-items-end justify-content-center">
                     <div class="card-body pb-0 pt-3 position-absolute bottom-0">
-                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-session-illustration.png" alt="Ratings" width="81" />
+                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-session-illustration.png"
+                            alt="Ratings" width="81" />
                     </div>
                 </div>
             </div>
@@ -137,7 +148,8 @@
                 <div class="d-flex justify-content-between">
                     <h5 class="mb-1">Grafik Transaksi</h5>
                     <div class="dropdown">
-                        <button class="btn p-0" type="button" id="weeklyOverviewDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button class="btn p-0" type="button" id="weeklyOverviewDropdown" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical mdi-24px"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="weeklyOverviewDropdown">
@@ -154,7 +166,8 @@
                     <div class="d-flex align-items-center gap-3">
                         <h3 id="percentage" class="mb-0"></h3>
 
-                        <p id="performance" class="mb-0 text-muted">Your sales performance is ... 😎 compared to the previous period</p>
+                        <p id="performance" class="mb-0 text-muted">Your sales performance is ... 😎 compared to the
+                            previous period</p>
                     </div>
 
                     <div class="d-grid mt-3">
@@ -176,12 +189,14 @@
                 <ul class="doughnut-legend d-flex justify-content-around ps-0 mb-2 pt-1">
                     <li class="ct-series-0 d-flex flex-column">
                         <h5 class="mb-0 fw-bold">Pemasukan</h5>
-                        <span id="incomeColor" class="badge badge-dot my-2 cursor-pointer rounded-pill" style="width: 35px; height: 6px"></span>
+                        <span id="incomeColor" class="badge badge-dot my-2 cursor-pointer rounded-pill"
+                            style="width: 35px; height: 6px"></span>
                         <div id="incomePercentage" class="text-muted">80 %</div>
                     </li>
                     <li class="ct-series-1 d-flex flex-column">
                         <h5 class="mb-0 fw-bold">Penagihan</h5>
-                        <span id="billingColor" class="badge badge-dot my-2 cursor-pointer rounded-pill" style="width: 35px; height: 6px"></span>
+                        <span id="billingColor" class="badge badge-dot my-2 cursor-pointer rounded-pill"
+                            style="width: 35px; height: 6px"></span>
                         <div id="billingPercentage" class="text-muted">10 %</div>
                     </li>
 

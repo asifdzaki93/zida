@@ -108,9 +108,6 @@ function updateChart(timeframe) {
         .catch(error => console.error('Error loading the chart data:', error));
 }
 
-// Initialize chart with monthly data
-updateChart('monthly');
-
 // Update the sales performance comparison
 function updatePerformance(timeframe) {
     fetch(baseUrl + 'admin/data/chart-data2.php?timeframe=' + timeframe)
@@ -159,10 +156,6 @@ function formatRupiah(angka) {
     return ribuan;
 }
 
-// Call the function to update performance initially
-updatePerformance('monthly');
-
-
   // Color Variables
   const purpleColor = '#836AF9',
     yellowColor = '#ffe800',
@@ -193,6 +186,7 @@ updatePerformance('monthly');
   // Doughnut Chart
   // --------------------------------------------------------------------
 
+  function loadHome(){
   const doughnutChart = document.getElementById('doughnutChart');
   if (doughnutChart) {
     const doughnutChartVar = new Chart(doughnutChart, {
@@ -239,6 +233,6 @@ updatePerformance('monthly');
       }
     });
   }
-
+  }
 
   
