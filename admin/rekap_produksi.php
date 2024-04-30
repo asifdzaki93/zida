@@ -34,7 +34,7 @@ class Pdf extends FPDF
         $this->Cell(10, 5, '', 0, 1);
         $this->SetFillColor(255, 198, 13);
         $this->SetFont('Arial', 'B', 20);
-        $this->Cell(190, 0, '-- Permintaan Produksi ' . $hrn . ' --', 0, 0, 'C');
+        $this->Cell(190, 0, '-- Tugas Produksi ' . $hrn . ' --', 0, 0, 'C');
         // Memberikan space kebawah agar tidak terlalu rapat
         $this->Cell(10, 5, '', 0, 1);
         $this->SetFont('Arial', 'B', 10);
