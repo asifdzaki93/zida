@@ -17,9 +17,10 @@ function getChildProducts($sessionId, $jml, $mysqli)
     return $childProducts;
 }
 
-function getOrderData($mysqli){
+function getOrderData($mysqli)
+{
 
-    $noInvoice=$_GET["no_invoice"];
+    $noInvoice = $_GET["no_invoice"];
     // SQL Query
     $sql = "
     SELECT 
@@ -113,8 +114,8 @@ function getOrderData($mysqli){
                 if ($product['packages'] === 'YES') {
                     $childProducts = getChildProducts($product['session'], $jml, $mysqli); // Fungsi untuk mengambil produk anak
                     $product['childproduct'] = $childProducts;
-                }    
-                array_push($products,$product);
+                }
+                array_push($products, $product);
             }
         }
     } else {
@@ -131,4 +132,3 @@ function getOrderData($mysqli){
     ];
     return $output;
 }
-?>

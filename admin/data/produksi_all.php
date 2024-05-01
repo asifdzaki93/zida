@@ -50,8 +50,8 @@ function getOrderData($mysqli, $raw = false)
     }
 
     // Bind parameter no_invoice ke prepared statement
-    $due_date = $_GET["due_date"]??Date("Y-m-d");
-    $jenis_pengiriman = "%Jenis Pengiriman : " . ($_GET["jenis_pengiriman"]??"Pagi") . "%";
+    $due_date = $_GET["due_date"] ?? Date("Y-m-d");
+    $jenis_pengiriman = "%Jenis Pengiriman : " . ($_GET["jenis_pengiriman"] ?? "Pagi") . "%";
     $stmt->bind_param('ss', $due_date, $jenis_pengiriman); // 's' menunjukkan bahwa parameter adalah string
 
     // Menjalankan query
@@ -153,8 +153,13 @@ function getOrderData($mysqli, $raw = false)
                             "invoices" => invoiceMaker($orderDetail["no_invoice"], $product["amount"], $raw),
                             "packages" => $product["packages"] ?? "YES"
                         ];
+<<<<<<< HEAD
                         if ($product['img'] !== "" && $product['folder'] !== "") {
                             $sumber = "https://zieda.id/pro/geten/images/" .$product['folder']."/". $product['img'];
+=======
+                        if ($product['img'] !== "") {
+                            $sumber = "https://zieda.id/pro/geten/images/" . $product['folder'] . '/'  . $product['img'];
+>>>>>>> c5b820631525639c225f63c7f48b98aa57aad1d3
                         } else {
                             $sumber = "https://zieda.id/pro/geten/images/no_image.jpg";
                         }
@@ -164,7 +169,7 @@ function getOrderData($mysqli, $raw = false)
                     }
                     $products[$id_product]["amount"] = ($products[$id_product]["amount"] ?? 0) + $product["amount"];
                 }
-                array_push($productsX,$product);
+                array_push($productsX, $product);
             }
             $orderDetail["products"] = $productsX;
             array_push($orderDetails, $orderDetail);
