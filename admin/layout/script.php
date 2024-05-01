@@ -26,7 +26,7 @@
 <!-- Page JS -->
 <!-- <script src="<?php echo $base_url; ?>/assets/js/dashboards-crm.js"></script> -->
 
-<script src="<?php echo $base_url; ?>/admin/js/home.js?v=2"></script>
+<script src="<?php echo $base_url; ?>/admin/js/home.js?v=5"></script>
 <script src="<?php echo $base_url; ?>/admin/js/penagihan.js?v=2"></script>
 
 <script>
@@ -34,9 +34,11 @@
     var try_routing_last = window.location.pathname + window.location.search;
     var try_routing = false;
     var tambah_history = "";
+    var tambah_history_index = 0;
     async function menambah_history() {
         if ((window.location.pathname + window.location.search) != tambah_history) {
-            await window.history.pushState('page2', 'Title', tambah_history);
+            await window.history.pushState('page' + tambah_history_index, 'Title', tambah_history);
+            tambah_history_index++;
         }
     }
     window.onpopstate = function (event) {
@@ -63,13 +65,19 @@
         loadProduksi(base_url + "admin/data/kirim_hari_ini.php?" + page.split("?")[1]);
         loadHome();
         var flatpickrDate = document.querySelector("#from-datepicker");
-        flatpickrDate.flatpickr({
-            monthSelectorType: "static"
-        });
+        if (flatpickrDate !== null) {
+            flatpickrDate.flatpickr({
+                monthSelectorType: "static"
+            });
+        }
     };
-    var pageURL = window.location.href;
-    var lastURLSegment = pageURL.substr(pageURL.lastIndexOf('/') + 1);
-    loadPage(lastURLSegment);
+
+    function refreshPage() {
+        var pageURL = window.location.href;
+        var lastURLSegment = pageURL.substr(pageURL.lastIndexOf('/') + 1);
+        loadPage(lastURLSegment);
+    }
+    refreshPage();
 </script>
 
 <!-- Page Produksi daftar penjualan -->
@@ -207,7 +215,7 @@
                 {
                     "data": "img",
                     "render": function (data) {
-                        return "<div class='avatar avatar-md me-2'><a href='" + data +
+                        return "<div class='avatar avatar-md me-2'><a target=_blank href='" + data +
                             "'><img class='rounded-circle' src='" +
                             data + "'/></a></div>";
                     }

@@ -153,9 +153,9 @@ include("data/function.php");
                             <i class="mdi mdi-dots-vertical mdi-24px"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="weeklyOverviewDropdown">
-                            <a class="dropdown-item" href="#" onclick="updateChart('weekly');">Minggu Ini</a>
-                            <a class="dropdown-item" href="#" onclick="updateChart('monthly');">Bulan Ini</a>
-                            <a class="dropdown-item" href="#" onclick="updateChart('yearly');">Tahun Ini</a>
+                            <a class="dropdown-item" href="javascript:;" onclick="updateChart('weekly');">Minggu Ini</a>
+                            <a class="dropdown-item" href="javascript:;" onclick="updateChart('monthly');">Bulan Ini</a>
+                            <a class="dropdown-item" href="javascript:;" onclick="updateChart('yearly');">Tahun Ini</a>
                         </div>
                     </div>
                 </div>

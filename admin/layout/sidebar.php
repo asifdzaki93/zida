@@ -37,7 +37,7 @@
         </li>
         <!-- HISTORY -->
         <li class="menu-item">
-            <a href="#" class="menu-link menu-toggle">
+            <a href="javascript:;" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons mdi mdi-book-open-page-variant"></i>
                 <div>Data</div>
             </a>

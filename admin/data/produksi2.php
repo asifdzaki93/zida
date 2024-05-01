@@ -4,10 +4,12 @@ function getChildProducts($sessionId, $jml, $mysqli)
     // Query untuk mengambil produk anak dari paket
     $query = $mysqli->query("SELECT * FROM packagesproduct WHERE sesi = '$sessionId'");
     $all_amount = 0;
-    while ($row = $query->fetch_array()) {
+    while ($row = $query->fetch_assoc()) {
         $childProducts[] = [
+            'id_packagesproduct' => $row['id_packagesproduct'],
             'id_product' => $row['id_product'],
             'name_product' => $row['name_product'],
+            'perpaket' => $row['amount'],
             'amount' => $row['amount'] * $jml,
         ];
         $all_amount += $row['amount'] * $jml;
@@ -29,7 +31,7 @@ function getOrderData($mysqli){
     FROM sales_data sd 
     LEFT JOIN customer c ON sd.id_customer = c.id_customer 
     LEFT JOIN users o ON o.phone_number = sd.operator 
-    WHERE
+    WHERE sd.$mysqli->user_master_query AND
     sd.no_invoice = ?;"; // Gunakan placeholder untuk prepared statement
 
     // Mempersiapkan prepared statement
@@ -86,32 +88,30 @@ function getOrderData($mysqli){
             }
             // Menyimpan produk yang dipesan
             $query = $mysqli->query("SELECT
+            s.id_sales,
             s.id_product, 
             s.amount, 
             s.price, 
             s.totalprice,
             p.name_product, 
             p.packages,
+            p.folder,
             p.img,
             p.session
             FROM sales s 
             LEFT JOIN product p ON s.id_product = p.id_product 
             WHERE no_invoice = '".$row["no_invoice"]."'");
-            while ($r = $query->fetch_array()) {
-                $product = [
-                    'id_product' => $r['id_product'],
-                    'packages' => $r['packages'],
-                    'session' => $r['session'],
-                    'img' => $r['img'],
-                    'name_product' => $r['name_product'],
-                    'amount' => $r['amount'],
-                    'price' => $r['price'],
-                    'totalprice' => $r['totalprice']
-                ];
-                $jml = $r['amount'];
+            while ($product = $query->fetch_assoc()) {
+                if ($product['img'] !== "" && $product['folder'] !== "") {
+                    $sumber = "https://zieda.id/pro/geten/images/" .$product['folder']."/". $product['img'];
+                } else {
+                    $sumber = "https://zieda.id/pro/geten/images/no_image.jpg";
+                }
+                $product['img']=$sumber;
+                $jml = $product['amount'];
                 // Jika produk adalah paket, ambil daftar produk anak
-                if ($r['packages'] === 'YES') {
-                    $childProducts = getChildProducts($r['session'], $jml, $mysqli); // Fungsi untuk mengambil produk anak
+                if ($product['packages'] === 'YES') {
+                    $childProducts = getChildProducts($product['session'], $jml, $mysqli); // Fungsi untuk mengambil produk anak
                     $product['childproduct'] = $childProducts;
                 }    
                 array_push($products,$product);

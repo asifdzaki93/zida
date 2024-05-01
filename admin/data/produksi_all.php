@@ -3,7 +3,7 @@ function getChildProducts($sessionId, $jml, $mysqli)
 {
     $query = $mysqli->query("SELECT * FROM packagesproduct WHERE sesi = '$sessionId'");
     $all_amount = 0;
-    while ($row = $query->fetch_array()) {
+    while ($row = $query->fetch_assoc()) {
         $childProducts[] = [
             'id_product' => $row['id_product'],
             'name_product' => $row['name_product'],
@@ -40,7 +40,7 @@ function getOrderData($mysqli, $raw = false)
     FROM sales_data sd 
     LEFT JOIN customer c ON sd.id_customer = c.id_customer 
     LEFT JOIN users o ON o.phone_number = sd.operator 
-    WHERE
+    WHERE sd.$mysqli->user_master_query AND
     sd.due_date = ? AND sd.note LIKE ? order by operator_name asc"; // Gunakan placeholder untuk prepared statement
 
     // Mempersiapkan prepared statement
@@ -116,27 +116,18 @@ function getOrderData($mysqli, $raw = false)
             s.totalprice,
             p.name_product, 
             p.packages,
+            p.folder,
             p.img,
             p.session
             FROM sales s 
             LEFT JOIN product p ON s.id_product = p.id_product 
             WHERE no_invoice = '".$row["no_invoice"]."'");
             $productsX=[];
-            while ($r = $query->fetch_array()) {
-                $product = [
-                    'id_product' => $r['id_product'],
-                    'packages' => $r['packages'],
-                    'session' => $r['session'],
-                    'img' => $r['img'],
-                    'name_product' => $r['name_product'],
-                    'amount' => $r['amount'],
-                    'price' => $r['price'],
-                    'totalprice' => $r['totalprice']
-                ];
-                $jml = $r['amount'];
+            while ($product = $query->fetch_assoc()) {
+                $jml = $product['amount'];
                 // Jika produk adalah paket, ambil daftar produk anak
-                if ($r['packages'] === 'YES') {
-                    $childProducts = getChildProducts($r['session'], $jml, $mysqli); // Fungsi untuk mengambil produk anak
+                if ($product['packages'] === 'YES') {
+                    $childProducts = getChildProducts($product['session'], $jml, $mysqli); // Fungsi untuk mengambil produk anak
                     $product['childproduct'] = $childProducts;
                     foreach ($childProducts as $p) {
                         $id_product = $p["id_product"];
@@ -162,8 +153,8 @@ function getOrderData($mysqli, $raw = false)
                             "invoices" => invoiceMaker($orderDetail["no_invoice"], $product["amount"], $raw),
                             "packages" => $product["packages"] ?? "YES"
                         ];
-                        if ($product['img'] !== "") {
-                            $sumber = "https://zieda.id/pro/geten/images/" . $product['img'];
+                        if ($product['img'] !== "" && $product['folder'] !== "") {
+                            $sumber = "https://zieda.id/pro/geten/images/" .$product['folder']."/". $product['img'];
                         } else {
                             $sumber = "https://zieda.id/pro/geten/images/no_image.jpg";
                         }
