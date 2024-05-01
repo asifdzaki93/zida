@@ -22,7 +22,7 @@ function proses($mysqli){
         return;
     }
     $totalpay=$sales_data["totalpay"]-$sales["totalprice"];
-    $updateSQL = "UPDATE `sales_data` SET `totalpay`='$totalpay' where `id_customer` = '".$sales["no_invoice"]."'";
+    $updateSQL = "UPDATE `sales_data` SET `totalpay`='$totalpay' where `no_invoice` = '".$sales["no_invoice"]."'";
     $deleteSQL = "DELETE from `sales` WHERE id_sales = '".$mysqli->real_escape_string($id_sales)."'";
     if ($mysqli->query($updateSQL) === TRUE && $mysqli->query($deleteSQL) === TRUE ) {
         echo "success";

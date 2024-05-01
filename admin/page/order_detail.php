@@ -1,12 +1,23 @@
 <?php
 require_once 'data/koneksi.php'; // Menggunakan file koneksi yang sama
 include "data/produksi2.php";
+$editing = ($_GET["editing"]??"")=="true";
+$sift = [];
+if($editing){
+    $siftX = $mysqli->query("select * from sift order by name_sift asc");
+    while ($row = $siftX->fetch_assoc()) {
+        array_push($sift,$row["name_sift"]);
+    }
+}
+
 $data = getOrderData($mysqli);
 $order = $data["orderDetails"];
 $products = $data["products"];
 $note = explode(", ", $order["note"]);
+$jenis_pengiriman = str_replace("Jenis Pengiriman : ","",$note[1]??"");
+$jam_acara = str_replace("Jam Acara : ","",$note[0]??"");
+$catatan = str_replace("Catatan : ", "", $note[2]??"");
 $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum Lunas";
-$editing = ($_GET["editing"]??"")=="true";
 ?>
 
 <div class="row invoice-preview">
@@ -33,13 +44,56 @@ $editing = ($_GET["editing"]??"")=="true";
                         </div>
                         <div>
                             <span>Pengiriman:</span>
+                            <?php
+                            if($editing){
+                            ?>
+                            <input class="form-control" type="text" id=from-datepicker
+                                value="<?php echo $order["due_date"]; ?>">
+                            <?php
+                            }else{
+                            ?>
                             <span><?php echo $order["due_date"]; ?></span>
+                            <?php
+                            }
+                            ?>
                         </div>
                         <div>
-                            <?php echo $note[1] ?? ""; ?>
+                            <span>Jenis Pengiriman:</span>
+                            <?php
+                            if($editing){
+                            ?>
+                            <select id="jenis_pengiriman" class="form-control">
+                                <?php
+                                foreach($sift as $s){
+                                    if($s==$jenis_pengiriman){
+                                        echo "<option selected=selected value='".$s."'>".$s."</option>";
+                                    }else{
+                                        echo "<option value='".$s."'>".$s."</option>";
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <?php
+                            }else{
+                            ?>
+                            <span><?php echo $jenis_pengiriman; ?></span>
+                            <?php
+                            }
+                            ?>
                         </div>
                         <div>
-                            <?php echo $note[0] ?? ""; ?>
+                            <span>Jam Acara:</span>
+                            <?php
+                            if($editing){
+                            ?>
+                            <input class="form-control" id=jam_acara type="time" value="<?php echo $jam_acara; ?>">
+                            <?php
+                            }else{
+                            ?>
+                            <span><?php echo $jam_acara; ?></span>
+                            <?php
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -125,7 +179,8 @@ $editing = ($_GET["editing"]??"")=="true";
                                 <input type=hidden id="product_<?php echo $product["id_sales"];?>_price"
                                     value="<?php echo $product["price"];?>">
                                 <input type=number onchange="hitungHarga('<?php echo $product["id_sales"];?>')"
-                                    class="form-control" name="product_<?php echo $product["id_sales"];?>_amount"
+                                    class="form-control product_amount"
+                                    name="product_<?php echo $product["id_sales"];?>_amount"
                                     id="product_<?php echo $product["id_sales"];?>_amount"
                                     value="<?php echo $product["amount"]; ?>">
                                 <?php
@@ -213,9 +268,23 @@ $editing = ($_GET["editing"]??"")=="true";
                 <div class="row">
                     <div class="col-12">
                         <span class="fw-bold">Catatan :</span>
-                        <span><?php echo str_replace("Catatan : ", "", $note[2]) ?? ""; ?></span>
+                        <?php
+                        if($editing){
+                        ?>
+                        <textarea id="catatan" class="form-control"><?php echo $catatan;?></textarea>
+                        <?php
+                        }else{
+                        ?>
+                        <span><?php echo $catatan; ?></span>
+                        <?php
+                        }
+                        ?>
                     </div>
                 </div>
+                <br>
+                <button onclick="selesaiEdit()" type="button" class="btn btn-primary waves-effect waves-light">
+                    <i class="fa fa-check"></i> Simpan
+                </button>
             </div>
         </div>
     </div>
@@ -235,9 +304,23 @@ $editing = ($_GET["editing"]??"")=="true";
                     href="cetak_invoice.php?no_invoice=<?php echo $_GET["no_invoice"]??''?>">
                     Cetak
                 </a>
-                <a href="./app-invoice-edit.html" class="btn btn-outline-secondary d-grid w-100 mb-3 waves-effect">
+                <?php
+                if($editing){
+                ?>
+                <a href="javascript:;" onclick="selesaiEdit()"
+                    class="btn btn-outline-secondary d-grid w-100 mb-3 waves-effect">
+                    Preview Invoice
+                </a>
+                <?php
+                }else{
+                ?>
+                <a href="javascript:;" onclick="mulaiEdit()"
+                    class="btn btn-outline-secondary d-grid w-100 mb-3 waves-effect">
                     Edit Invoice
                 </a>
+                <?php
+                }
+                ?>
                 <button class="btn btn-success d-grid w-100 waves-effect waves-light" data-bs-toggle="offcanvas"
                     data-bs-target="#addPaymentOffcanvas">
                     <span class="d-flex align-items-center justify-content-center text-nowrap"><i
@@ -331,27 +414,37 @@ $editing = ($_GET["editing"]??"")=="true";
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="selesai_edit" tabindex="-1" aria-labelledby="selesai_edit_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="selesai_edit_label">Konfirmasi Editan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                Apakah kamu yakin untuk menyimpan data?
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="selesaiEditKonfirmasi()" class="btn btn-primary"
+                    data-bs-dismiss="modal">Konfirmasi</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Edit Ulang</button>
+                <button type="button" onclick="selesaiEditBatal()" class="btn btn-danger"
+                    data-bs-dismiss="modal">Kembali Ke Preview</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    function formatRupiah(angka) {
-        var tag = "Rp ";
-        if (angka < 0) {
-            angka *= -1;
-            tag = "Rp -";
-        }
-        var number_string = angka.toString(),
-            split = number_string.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-        // tambahkan titik jika yang di input sudah menjadi angka ribuan
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return tag + rupiah;
+    function formatRupiah(angkaX) {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+            currency: "IDR"
+        }).format(angkaX);
     }
 
     function hitungHarga(id) {
@@ -369,10 +462,10 @@ $editing = ($_GET["editing"]??"")=="true";
     function hitungHargaAll() {
         var totalorder = 0;
         $(".product_totalprice").each(function (index) {
-            totalorder += $(this).val();
+            totalorder += parseInt($(this).val());
         })
         $("#totalorder").val(totalorder);
-        $("#totalorder").html(formatRupiah(totalorder));
+        $("#totalorder_formated").html(formatRupiah(totalorder));
         $("#totalsubtract").html(formatRupiah($("#totalpay").val() - totalorder));
     }
 
@@ -451,5 +544,46 @@ $editing = ($_GET["editing"]??"")=="true";
                 }
             }
         });
+    }
+
+    function selesaiEdit() {
+        $("#selesai_edit").modal("show");
+    }
+    async function selesaiEditKonfirmasi() {
+        $("#selesai_edit").modal("hide");
+        var no_invoice = $("#no_invoice").val();
+        var data = {
+            "catatan": $("#catatan").val(),
+            "due_date": $("#from-datepicker").val(),
+            "jenis_pengiriman": $("#jenis_pengiriman").val(),
+            "jam_acara": $("#jam_acara").val(),
+            "no_invoice": no_invoice
+        };
+        $(".product_amount").each(function (index) {
+            data[$(this).attr("id")] = $(this).val();
+        })
+        await $.ajax({
+            url: "<?php echo $base_url;?>/admin/data/update_order.php",
+            data: data,
+            method: "post",
+            success: function (resultX) {
+                if (resultX == "success") {
+                    loadPage("order_detail.php?no_invoice=" + no_invoice);
+                } else {
+                    alert(resultX);
+                }
+            }
+        });
+    }
+
+    function selesaiEditBatal() {
+        $("#selesai_edit").modal("hide");
+        var no_invoice = $("#no_invoice").val();
+        loadPage("order_detail.php?no_invoice=" + no_invoice);
+    }
+
+    function mulaiEdit() {
+        var no_invoice = $("#no_invoice").val();
+        loadPage("order_detail.php?no_invoice=" + no_invoice + "&editing=true");
     }
 </script>
