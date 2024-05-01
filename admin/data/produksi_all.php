@@ -153,13 +153,8 @@ function getOrderData($mysqli, $raw = false)
                             "invoices" => invoiceMaker($orderDetail["no_invoice"], $product["amount"], $raw),
                             "packages" => $product["packages"] ?? "YES"
                         ];
-<<<<<<< HEAD
                         if ($product['img'] !== "" && $product['folder'] !== "") {
                             $sumber = "https://zieda.id/pro/geten/images/" .$product['folder']."/". $product['img'];
-=======
-                        if ($product['img'] !== "") {
-                            $sumber = "https://zieda.id/pro/geten/images/" . $product['folder'] . '/'  . $product['img'];
->>>>>>> c5b820631525639c225f63c7f48b98aa57aad1d3
                         } else {
                             $sumber = "https://zieda.id/pro/geten/images/no_image.jpg";
                         }
