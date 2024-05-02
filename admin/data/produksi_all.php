@@ -64,7 +64,7 @@ function getOrderData($mysqli, $raw = false)
     $orderDetails = [];
 
     $tombol = '<div class="d-flex align-items-center">
-    <a href="https://pro.kasir.vip/pdf/invoice.php?no_invoice=[id]" data-bs-toggle="tooltip" class="text-body print-record" data-bs-placement="top" title="Print Invoice">
+    <a target=_blank href="cetak_invoice.php?no_invoice=[id]" data-bs-toggle="tooltip" class="text-body print-record" data-bs-placement="top" title="Print Invoice">
         <i class="fa fa-print"></i>
     </a>
     <a href="javascript:;" onclick=\'loadPage("order_detail.php?no_invoice=[id]")\' class="text-body" data-bs-placement="top" title="Preview Invoice">

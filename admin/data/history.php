@@ -23,7 +23,7 @@ function gantiformat($nomorhp)
 }
 
 if ($_GET['action'] == "sales_data") {
-    $usernya = $_GET['user'];
+    $usernya = $mysqli->user_master;
     $columns = array(
         0 => 'id_sales_data',
         1 => 'img',
@@ -33,146 +33,90 @@ if ($_GET['action'] == "sales_data") {
         5 => 'aksi',
     );
 
-    $querycount = $mysqli->query("SELECT count(id_sales_data) as jumlah FROM sales_data WHERE user='$usernya'");
-    $datacount = $querycount->fetch_array();
-
-    $totalData = $datacount['jumlah'];
-    $totalFiltered = $totalData;
-
     $limit = $_POST['length'] ?? 10;
     $start = $_POST['start'] ?? 0;
     $orderIndex = $_POST['order']['0']['column'] ?? 0;
     $dir = $_POST['order']['0']['dir'] ?? 'desc';
-    $columns = ['id_sales_data', 'img', 'operator', 'totalorder', 'note', 'aksi'];
+    $columns = [
+        'sd.id_sales_data',
+        'sd.id_sales_data', 
+        'sd.no_invoice', 
+        'sd.due_date',
+        'c.name_customer', 
+        'sd.totalorder', 
+        'sd.date', 
+        'sd.totalpay', 
+        'sd.id_sales_data'
+    ];
     $order = $columns[$orderIndex];
-
-    if (empty($_POST['search']['value'])) {
-        $query = $mysqli->query("SELECT * FROM sales_data WHERE user='$usernya' order by $order $dir LIMIT $limit OFFSET $start");
-    } else {
-        $search = $_POST['search']['value'];
-        $query = $mysqli->query("SELECT * FROM sales_data WHERE user = '$usernya' AND no_invoice LIKE '%$search%' or due_date LIKE '%$search%' order by $order $dir LIMIT $limit OFFSET $start");
-
-        $querycount = $mysqli->query("SELECT count(id_sales_data) as jumlah FROM sales_data WHERE user = '$usernya' AND due_date LIKE '%$search%' or no_invoice LIKE '%$search%'");
-        $datacount = $querycount->fetch_array();
-        $totalFiltered = $datacount['jumlah'];
+    if($order=="aksi"){
+        $order="id_sales_data";
     }
+
+    $sqlBase = "SELECT c.name_customer, c.telephone, sd.img, sd.no_invoice, sd.totalpay, sd.totalorder, sd.due_date, sd.date ";
+    $sqlCount = "SELECT count(id_sales_data) as jumlah ";
+    $sqlMid = "FROM sales_data sd LEFT JOIN customer c ON sd.id_customer = c.id_customer WHERE sd.user='$usernya' ";
+    $sqlSearch = "";
+    $sqlEnd = "order by $order $dir LIMIT $limit OFFSET $start";
+    if (!empty($_POST['search']['value'])) {
+        $search = $_POST['search']['value'];
+        $sqlSearch = "AND sd.no_invoice LIKE '%$search%' or sd.due_date LIKE '%$search%' or c.name_customer LIKE '%$search%' or c.telephone LIKE '%$search%' ";
+    }
+    $query = $mysqli->query($sqlBase.$sqlMid.$sqlSearch.$sqlEnd);
+    $querycount = $mysqli->query($sqlCount.$sqlMid.$sqlSearch.$sqlEnd);
+    $datacount = $querycount->fetch_assoc();
+    $totalData = $datacount['jumlah'];
+    $querycountFiltered = $mysqli->query($sqlCount.$sqlMid.$sqlSearch.$sqlEnd);
+    $datacountFiltered = $querycountFiltered->fetch_assoc();
+    $totalFiltered = $datacountFiltered['jumlah'];
 
     $data = array();
     if (!empty($query)) {
         $no = $start + 1;
-        while ($r = $query->fetch_array()) {
-            $catatannya = $r['note'];
-
-            $patterns = [
-                'Event hours:', 'Jam acara : ', 'Jam Acara : ', 'Waktu Pengiriman : ', 'Jenis Pengiriman : ',
-                ' | ', 'Catatan : ', 'nn', 'nInput', 'nAdm', 'ninput', 'nadm'
+        while ($r = $query->fetch_assoc()) {
+            $nestedData=[
+                "date"=>$r["date"]
             ];
-            $replacements = array_fill(0, count($patterns), '#');
-            $hasil = str_replace($patterns, $replacements, $catatannya);
+            $nestedData['checkbox']='<input type="checkbox" class="dt-checkboxes form-check-input">';
+            $nestedData['total']="Rp " . number_format($r["totalorder"], 0, ',', '.');
+            $nestedData['tagihan']='';
+            $tagihan="Rp " . number_format($r["totalorder"]-$r["totalpay"], 0, ',', '.');
+            if($r["totalorder"]>$r["totalpay"]){
+                $nestedData['tagihan']=$tagihan;
+            }else{
+                $nestedData['tagihan']='<span class="badge rounded-pill bg-label-success" text-capitalized=""> Lunas </span>';
+            }
 
-            $hasil = preg_replace('/\s*#\s*/', '#', $hasil);
+            $nestedData['no_invoice']="<a href='javascript:;' onclick=\"loadPage('order_detail.php?no_invoice=" . $r['no_invoice'] . "')\"><small>" . $r['no_invoice'] . "</small></a> ";
 
-            $result_array = explode('#', $hasil);
+            $nestedData['trend']='<div class="d-inline-flex" data-bs-toggle="tooltip" data-bs-html="true" aria-label="<span>Downloaded<br> <strong>Balance:</strong> '.$tagihan.'<br> <strong>
+        Due Date:</strong> '.($r['due_date']??"-").'</span>" data-bs-original-title="<span>Downloaded<br> <strong>Balance:</strong> '.$tagihan.'<br> 
+    <strong>Due Date:</strong> '.($r['due_date']??"-").'</span>">
+    <span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-info"><i
+                class="mdi mdi-arrow-down"></i></span></span></div>';
 
-            $jamkr = $result_array[1] ?? '';
-            $wktkr = $result_array[2] ?? '';
-            $destinasi = $result_array[3] ?? '';
-            $cttn = $result_array[4] ?? '';
-
-            $nestedData['no'] = $no;
+            $sumber="";
             if ($r['img'] !== "") {
                 $sumber = "https://zieda.id/pro/geten/images/order/" . $r['img'];
             } else {
                 $sumber = "https://zieda.id/pro/geten/images/no_image.jpg";
             }
-            $nestedData['image'] =
-                "<div class='avatar avatar-md me-2'>
-                    <a href='$sumber'><img class='rounded-circle' src='$sumber'/></a>
+            $nestedData['customer']='<div class="d-flex justify-content-start align-items-center">
+                <div class="avatar-wrapper">
+                    <div class="avatar avatar-sm me-2"><img src="'.$sumber.'" alt="'.($r['name_customer']??"-").'"
+                            class="rounded-circle"></div>
                 </div>
-                ";
-            $cabang = mysqli_query($connect, "SELECT * FROM users WHERE phone_number='$r[operator]'");
-            $cb = mysqli_fetch_array($cabang);
-            $nestedData['no_invoice'] = "
-                <div>
-                <strong class='text-primary'>$r[no_invoice]</strong><br>
-                <small>by </smal>" . ucwords($cb['full_name']) . "<br>" . $r['date'] . "
-                </div>
-                ";
+                <div class="d-flex flex-column gap-1"><a href="pages-profile-user.html" class="text-truncate">
+                        <h6 class="mb-0">'.($r['name_customer']??"-").'</h6>
+                    </a><small class="text-truncate text-muted">'.($r['telephone']??"-").'</small></div>
+            </div>';
 
-            if ($r['totalpay'] < $r['totalorder']) {
-                $ord =
-                    "<div><small>(" .
-                    number_format($r['totalorder'], 0, ',', '.') . " - " .
-                    number_format($r['totalpay'], 0, ',', '.') . ")</small><br><b class='text-danger'><i> - Rp. " .
-                    number_format(($r['totalorder'] - $r['totalpay']), 0, ',', '.') .
-                    "<i></b></div>
-                    ";
-            } else {
-                $ord = "<b class='text-success'>LUNAS</b><br> Rp. " . number_format($r['totalorder'], 0, ',', '.');
-            }
-            $nestedData['totalorder'] = $ord;
-
-            $cus = mysqli_query($connect, "SELECT * FROM customer WHERE id_customer='$r[id_customer]'");
-            $cu = mysqli_fetch_array($cus);
-
-            if ($r['id_customer'] == "0") {
-                $catatan =
-                    "<div><i class='fas fa-user-circle'></i> 
-                    Retail Customer <br><i class='fas fa-phone-square'></i> -
-                </div>";
-            } else {
-                $catatan =
-                    "
-                <div><i class='fas fa-user-circle'></i> 
-                    " . ucwords($cu['name_customer']) . " <br><i class='fas fa-phone-square'></i> <a href='https://api.whatsapp.com/send?phone=" . gantiformat($cu['telephone']) . "&text=Assalamualaikum%20_*" . ucwords($cu['name_customer']) . "*_..%0AKami%20dari%20*" . ucwords($cb['full_name']) . "*%2C%20%20%0A....%0A%0A' target='_blank'>" . ucwords($cu['telephone']) . "</a>
-                </div>";
-            }
-            $nestedData['note'] = $catatan;
-
-            if ($r['due_date'] !== "0000-00-00") {
-                $isitgl =
-                    "<div><i class='fas fa-arrow-alt-circle-down'></i> " .
-                    tgl_indo($r['date']) . " <br><i class='fas fa-arrow-alt-circle-up'></i> " .
-                    tgl_indo($r['due_date']) . "<br><i class='fas fa-clock'></i>&nbsp" . "Jam Acara: " . $jamkr . "<br><i class='fas fa-shipping-fast'></i>&nbsp" . $wktkr . " | " . $destinasi . "
-                        </div>";
-                $cattn = "<i class='fas fa-clipboard-check'></i>&nbsp Catatan: " . $cttn;
-            } else {
-                $isitgl =
-                    "<div><i class='fas fa-check-circle'></i> " .
-                    tgl_indo($r['date']) . "
-                        </div>";
-                $cattn = "";
-            }
-
-            $nestedData['due_date'] =
-                "$isitgl" . "$cattn";
-
-            if ($r['status'] == 'pre order') {
-                $statusnya = '<span class="badge bg-label-warning">Belum Diproduksi
-                    </span>';
-            } elseif ($r['status'] == 'finish') {
-                $statusnya = '<span class="badge bg-label-primary">Sudah Diproduksi
-                    </span>';
-            } elseif ($r['status'] == 'paid off') {
-                $statusnya = '<span class="badge bg-label-success">Pesanan Selesai
-                    </span>';
-            } elseif ($r['status'] == 'cancel') {
-                $statusnya = '<span class="badge bg-label-danger">Pesanan Batal
-                    </span>';
-            }
-            $nestedData['status'] = $statusnya . "<br><small>by " . ucwords($cb['full_name']) . "</smal><br>";
-
-            $nestedData['aksi'] = "
-                <div class='mt-1 mb-1'>
-                    <a href='https://pro.kasir.vip/app/code-" . $r['no_invoice'] . "'<small>" . $r['no_invoice'] . "</small></a> 
-                </div>
-                "
-                .
+            $nestedData['aksi'] = 
                 '<div class="d-flex align-items-center">
                     <a href="javascript:;" data-bs-toggle="tooltip" class="text-body delete-record" data-bs-placement="top" title="Delete Invoice">
                         <i class="mdi mdi-delete-outline mdi-20px mx-1"></i>
                     </a>
-                    <a href="https://pro.kasir.vip/pdf/material.php?no_invoice=' . $r['no_invoice'] . '" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Preview Invoice">
+                    <a href="javascript:;" onclick=\'loadPage("order_detail.php?no_invoice=' . $r['no_invoice'] . '")\' data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Preview Invoice">
                         <i class="mdi mdi-eye-outline mdi-20px mx-1"></i>
                     </a>
                     <div class="dropdown">
@@ -180,8 +124,8 @@ if ($_GET['action'] == "sales_data") {
                             <i class="mdi mdi-dots-vertical mdi-20px"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a href="https://pro.kasir.vip/pdf/invoice.php?no_invoice=' . $r['no_invoice'] . '" class="dropdown-item">Download</a>
-                            <a href="app-invoice-edit.html" class="dropdown-item">Edit</a>
+                            <a target=_blank href="cetak_invoice.php?no_invoice=' . $r['no_invoice'] . '" class="dropdown-item">Download</a>
+                            <a href="javascript:;" onclick=\'loadPage("order_detail.php?no_invoice=' . $r['no_invoice'] . '&editing=true")\' class="dropdown-item">Edit</a>
                             <a href="javascript:;" class="dropdown-item">Duplicate</a>
                         </div>
                     </div>
