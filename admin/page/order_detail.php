@@ -332,8 +332,8 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
                 ?>
                 <button class="btn btn-success d-grid w-100 waves-effect waves-light" data-bs-toggle="offcanvas"
                     data-bs-target="#addPaymentOffcanvas">
-                    <span class="d-flex align-items-center justify-content-center text-nowrap"><i
-                            class="mdi mdi-currency-usd me-1"></i>Add Payment</span>
+                    <span class="d-flex align-items-center justify-content-center text-nowrap">
+                        Tambah Pembayaran</span>
                 </button>
             </div>
         </div>
@@ -446,7 +446,61 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
     </div>
 </div>
 
+<!-- Payment -->
+<div class="offcanvas offcanvas-end" id="addPaymentOffcanvas" aria-hidden="true">
+    <div class="offcanvas-header mb-3">
+        <h5 class="offcanvas-title">Tambah Pembayaran</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body flex-grow-1">
+        <div class="d-flex justify-content-between bg-lighter p-2 mb-3">
+            <p class="mb-0">Total Pembayaran Invoice:</p>
+            <p class="fw-bold mb-0"><?php echo "Rp " . number_format($order["totalorder"], 0, ',', '.'); ?></p>
+        </div>
+        <div>
+            <div class="input-group input-group-merge mb-4">
+                <span class="input-group-text">Rp</span>
+                <div class="form-floating form-floating-outline">
+                    <input type="text" id="invoiceAmount" name="invoiceAmount" class="form-control" placeholder="100">
+                    <label for="invoiceAmount">Jumlah Dibayar</label>
+                </div>
+            </div>
+            <div class="form-floating form-floating-outline mb-4">
+                <textarea class="form-control" id="payment-note" style="height: 62px"></textarea>
+                <label for="payment-note">Catatan</label>
+            </div>
+            <div class="mb-3 d-flex flex-wrap">
+                <button type="button" class="btn btn-primary me-3 waves-effect waves-light" data-bs-dismiss="offcanvas"
+                    onclick="tambahPembayaran()">Tambah Pembayaran</button>
+                <button type="button" class="btn btn-label-secondary waves-effect"
+                    data-bs-dismiss="offcanvas">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    async function tambahPembayaran() {
+        var no_invoice = $("#no_invoice").val();
+        var data = {
+            "catatan": $("#payment-note").val(),
+            "nominal": $("#invoiceAmount").val(),
+            "no_invoice": no_invoice
+        };
+        await $.ajax({
+            url: "<?php echo $base_url;?>/admin/data/add_payment.php",
+            data: data,
+            method: "post",
+            success: function (resultX) {
+                if (resultX == "success") {
+                    loadPage("order_detail.php?no_invoice=" + no_invoice);
+                } else {
+                    alert(resultX);
+                }
+            }
+        });
+    }
+
     function formatRupiah(angkaX) {
         return new Intl.NumberFormat("id-ID", {
             style: "currency",
