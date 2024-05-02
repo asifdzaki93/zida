@@ -14,7 +14,7 @@ function proses($mysqli){
     if($catatanX!=""){
         $catatan=$mysqli->real_escape_string($catatanX);
     }
-    $sales_dataX = $mysqli->query("select totalorder,totalpay,id_customer,no_invoice from sales_data where $mysqli->user_master_query and no_invoice = '".$mysqli->real_escape_string($no_invoice)."'");
+    $sales_dataX = $mysqli->query("select date,totalorder,totalpay,id_customer,no_invoice from sales_data where $mysqli->user_master_query and no_invoice = '".$mysqli->real_escape_string($no_invoice)."'");
     $sales_data = null;
     while ($row = $sales_dataX->fetch_assoc()) {
         $sales_data = $row;
@@ -29,10 +29,33 @@ function proses($mysqli){
 
     //CEK STATUS
     if($sales_data["totalorder"]>$totalpay){
-        $status="dp";
-        $customerdebthistoryX = $mysqli->query("select no_invoice from sales_data where $mysqli->user_master_query and no_invoice = '".$mysqli->real_escape_string($no_invoice)."'");
+        $status="debt";
+        $ada = false;
+        $customerdebthistoryX = $mysqli->query("select no_invoice from customerdebthistory where $mysqli->user_master_query and no_invoice = '".$mysqli->real_escape_string($no_invoice)."'");
         while ($row = $customerdebthistoryX->fetch_assoc()) {
-            $status="debt";
+            $ada=true;
+        }
+        if($ada==false){
+            $sqlDP="INSERT INTO `customerdebthistory`(
+                `id_customer`, 
+                `status`, 
+                `user`, 
+                `no_invoice`, 
+                `nominal`, 
+                `date`,
+                `metode_pembayaran`,
+                `catatan`
+                ) VALUES (
+                    '".$sales_data["id_customer"]."',
+                    'dp',
+                    '".$mysqli->user_master."',
+                    '".$sales_data["no_invoice"]."',
+                    '".$sales_data["totalpay"]."',
+                    '".$sales_data["date"]."',
+                    'internal',
+                    'Diinput oleh sistem'
+                    )";
+            $mysqli->query($sqlDP);
         }
     }else{
         $status="paid off";
@@ -51,8 +74,8 @@ function proses($mysqli){
             '".$sales_data["id_customer"]."',
             '$status',
             '".$mysqli->user_master."',
-            '".$sales_data["id_customer"]."',
-            '".$mysqli->real_escape_string($no_invoice)."',
+            '".$sales_data["no_invoice"]."',
+            '".$mysqli->real_escape_string($nominal)."',
             '".date("Y-m-d")."',
             'internal',
             '".$catatan."'

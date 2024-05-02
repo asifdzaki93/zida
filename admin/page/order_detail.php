@@ -3,10 +3,16 @@ require_once 'data/koneksi.php'; // Menggunakan file koneksi yang sama
 include "data/produksi2.php";
 $editing = ($_GET["editing"]??"")=="true";
 $sift = [];
+$customerdebthistory = [];
 if($editing){
     $siftX = $mysqli->query("select * from sift order by name_sift asc");
     while ($row = $siftX->fetch_assoc()) {
         array_push($sift,$row["name_sift"]);
+    }
+}else{
+    $customerdebthistoryX = $mysqli->query("select * from customerdebthistory where $mysqli->user_master_query and no_invoice = '".$mysqli->real_escape_string($_GET["no_invoice"]??"")."' order by id_customerdebthistory desc");
+    while ($row = $customerdebthistoryX->fetch_assoc()) {
+        array_push($customerdebthistory,$row);
     }
 }
 
@@ -337,6 +343,26 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
                 </button>
             </div>
         </div>
+        <br>
+        <div class="card">
+            <div class="card-header">
+                Riwayat Pembayaran
+            </div>
+            <hr class="p-0">
+            <ul class="list-group list-group-flush">
+                <?php
+                foreach($customerdebthistory as $cdh){
+                ?>
+                <li class="list-group-item">
+                    <b><?php echo $cdh["status"];?> : <?php echo $cdh["date"];?></b><br>
+                    <span><?php echo "Rp " . number_format($cdh["nominal"], 0, ',', '.'); ?></span><br>
+                    <small><?php echo $cdh["catatan"];?></small>
+                </li>
+                <?php
+                }
+                ?>
+            </ul>
+        </div>
     </div>
     <!-- /Invoice Actions -->
 </div>
@@ -455,7 +481,8 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
     <div class="offcanvas-body flex-grow-1">
         <div class="d-flex justify-content-between bg-lighter p-2 mb-3">
             <p class="mb-0">Total Pembayaran Invoice:</p>
-            <p class="fw-bold mb-0"><?php echo "Rp " . number_format($order["totalorder"], 0, ',', '.'); ?></p>
+            <p class="fw-bold mb-0">
+                <?php echo "Rp " . number_format($order["totalorder"]-$order["totalpay"], 0, ',', '.'); ?></p>
         </div>
         <div>
             <div class="input-group input-group-merge mb-4">
