@@ -26,8 +26,8 @@
 <!-- Page JS -->
 <!-- <script src="<?php echo $base_url; ?>/assets/js/dashboards-crm.js"></script> -->
 
-<script src="<?php echo $base_url; ?>/admin/js/home.js?v=5"></script>
-<script src="<?php echo $base_url; ?>/admin/js/penagihan.js?v=2"></script>
+<script src="<?php echo $base_url; ?>/admin/js/home.js?v=6"></script>
+<script src="<?php echo $base_url; ?>/admin/js/penagihan.js?v=7"></script>
 
 <script>
     var base_url = "<?php echo $base_url;?>";
@@ -55,15 +55,6 @@
         });
         tambah_history = page;
         menambah_history();
-        // Initialize chart with monthly data
-        updateChart('monthly');
-
-        // Call the function to update performance initially
-        updatePerformance('monthly');
-        penagihan();
-        loadPenjualan();
-        loadProduksi(base_url + "admin/data/kirim_hari_ini.php?" + page.split("?")[1]);
-        loadHome();
         var flatpickrDate = document.querySelector("#from-datepicker");
         if (flatpickrDate !== null) {
             flatpickrDate.flatpickr({

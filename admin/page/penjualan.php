@@ -89,3 +89,6 @@
         </div>
     </div>
 </div>
+<script>
+    loadPenjualan();
+</script>

@@ -164,3 +164,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    var base_url = "<?php echo $base_url;?>";
+    var pageURL = window.location.href;
+    var page = pageURL.substr(pageURL.lastIndexOf('/') + 1);
+    loadProduksi(base_url + "admin/data/kirim_hari_ini.php?" + page.split("?")[1]);
+</script>

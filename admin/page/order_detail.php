@@ -157,7 +157,7 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
                                 <?php
                                 }
                                 ?>
-                                <div class='avatar avatar-md' style="display:inline-grid">
+                                <div class='avatar avatar-md' style="display:inline-block">
                                     <a href="<?php echo $product["img"]; ?>" target=_blank>
                                         <img class='rounded-circle' src="<?php echo $product["img"]; ?>" />
                                     </a>
@@ -281,10 +281,19 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
                         ?>
                     </div>
                 </div>
+                <?php
+                if($editing){
+                ?>
                 <br>
                 <button onclick="selesaiEdit()" type="button" class="btn btn-primary waves-effect waves-light">
-                    <i class="fa fa-check"></i> Simpan
+                    <i class="fa fa-check mx-2"></i>Simpan
                 </button>
+                <button onclick="selesaiEditBatal()" type="button" class="btn btn-danger waves-effect waves-light">
+                    <i class="fa fa-trash mx-2"></i>Batal
+                </button>
+                <?php
+                }
+                ?>
             </div>
         </div>
     </div>
