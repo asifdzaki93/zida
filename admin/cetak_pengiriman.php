@@ -4,7 +4,10 @@ require('../fpdfnew/fpdf.php');
 require_once 'data/koneksi.php'; // Menggunakan file koneksi yang sama
 include "data/produksi_all.php";
 $output = getOrderData($mysqli, true);
+$ini = date('y-m-d');
+// logic pagi
 
+$orderData = $output["orderDetails"];
 if (isset($_GET['tglkirim'])) {
     $tglkirim = $_GET['tglkirim'];
 }
@@ -18,7 +21,7 @@ class Pdf extends FPDF
     {
         $due_date = $_GET["due_date"] ?? date("Y-m-d");
         // Insert a picture in the top-left corner at 300 dpi
-        $this->Image('../img/pdf.png', 0, 0, 210, 297);
+        $this->Image('../img/kurir.png', 0, 0, 210, 297);
         // setting jenis font yang akan digunakan
         $this->SetFont('Arial', 'B', 10);
         // Memberikan space kebawah agar tidak terlalu rapat
@@ -35,7 +38,7 @@ class Pdf extends FPDF
         $this->Cell(10, 5, '', 0, 1);
         $this->SetFillColor(255, 198, 13);
         $this->SetFont('Arial', 'B', 20);
-        $this->Cell(190, 0, '-- Tugas Produksi ' . $hrn . ' --', 0, 0, 'C');
+        $this->Cell(190, 0, '-- Tugas Pengiriman ' . $hrn . ' --', 0, 0, 'C');
         // Memberikan space kebawah agar tidak terlalu rapat
         $this->Cell(10, 5, '', 0, 1);
         $this->SetFont('Arial', 'B', 10);
@@ -73,12 +76,9 @@ $pdf->AliasNbPages();
 // membuat halaman baru
 $pdf->AddPage();
 
-$ini = date('y-m-d');
-// logic pagi
 
-$orderData = $output["orderDetails"];
 $pdf->SetFont('Arial', 'B', 14);
-$pdf->Cell(190, 5, 'Rekap Shift ' . $jenis_pengiriman, 0, 0, 'C');
+$pdf->Cell(190, 5, 'Shift Sopir :  ' . $jenis_pengiriman, 0, 0, 'C');
 $pdf->Cell(10, 5, '', 0, 1);
 $pdf->SetFillColor(235, 225, 225);
 $pdf->Cell(10, 5, '', 0, 1);
@@ -89,6 +89,7 @@ $pdf->Cell(60, 5, 'Nama Kostumer ', 0, 0, 'C', true);
 $pdf->Cell(30, 5, 'Order', 0, 0, 'R', true);
 $pdf->Cell(30, 5, 'Dibayar', 0, 0, 'R', true);
 $pdf->Cell(40, 5, 'Sisa', 0, 0, 'R', true);
+
 $operator = [];
 $current_operator = "";
 foreach ($orderData as $rc) {
@@ -104,8 +105,24 @@ foreach ($orderData as $rc) {
 }
 $current_operator = "";
 foreach ($orderData as $rc) {
-    //operator
+    // Cek apakah operator berubah
     if ($current_operator != $rc["operator"]) {
+        if (!empty($current_operator)) {
+            // Tambahkan halaman baru untuk operator baru
+            $pdf->AddPage();
+            $pdf->SetFont('Arial', 'B', 14);
+            $pdf->Cell(190, 5, 'Shift Sopir :  ' . $jenis_pengiriman, 0, 0, 'C');
+            $pdf->Cell(10, 5, '', 0, 1);
+            $pdf->SetFillColor(235, 225, 225);
+            $pdf->Cell(10, 5, '', 0, 1);
+            $pdf->SetFillColor(235, 225, 225);
+            $pdf->SetFont('Arial', 'B', 14);
+            $pdf->Cell(40, 5, 'No Invoice ', 0, 0, 'C', true);
+            $pdf->Cell(60, 5, 'Nama Kostumer ', 0, 0, 'C', true);
+            $pdf->Cell(30, 5, 'Order', 0, 0, 'R', true);
+            $pdf->Cell(30, 5, 'Dibayar', 0, 0, 'R', true);
+            $pdf->Cell(40, 5, 'Sisa', 0, 0, 'R', true);
+        }
         $pdf->Cell(10, 5, '', 0, 1);
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->SetTextColor(0, 0, 0);
@@ -122,7 +139,7 @@ foreach ($orderData as $rc) {
         $current_operator = $rc["operator"];
     }
 
-    //by invoice
+    // By invoice
     $pdf->Cell(10, 5, '', 0, 1);
     $pdf->SetFont('Arial', 'I', 12);
     $pdf->SetTextColor(0, 0, 0);
@@ -133,23 +150,22 @@ foreach ($orderData as $rc) {
     if ($rc['totalpay'] >= $rc['totalorder']) {
         $jm12 = "Lunas";
     }
-    $pdf->Cell(40, 5, "* " . $rc['no_invoice'], 'B', 0, 'R');
-    // Misalkan Anda ingin mengganti titik dengan titik spasi dan juga mengganti tanda koma dengan koma spasi
-    $search = array('.', ',', '/');
-    $replace = array('. ', ', ', ' / ');
-    $subject = $rc['name_customer'] ?? "";
+    $pdf->Cell(40, 5, "* " . $rc['no_invoice'], 0, 0, 'R');
+    $pdf->Cell(55, 5, $rc['name_customer'], 0, 0, 'L');
+    $pdf->Cell(30, 5, $jm1, 0, 0, 'R');
+    $pdf->Cell(30, 5, $jm11, 0, 0, 'R');
+    $pdf->Cell(40, 5, $jm12, 0, 0, 'R');
+    // By invoice
+    $pdf->Cell(10, 5, '', 0, 1);
+    $pdf->SetFont('Arial', 'I', 10);
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->Cell(5, 5, '', 0, 0, 'C');
+    $pdf->MultiCell(40, 5, $rc['name_customer'] . " -tlp. " . $rc['telephone'], '', 0, 'R');
+    //$pdf->Cell(55, 5, $rc['name_customer'], '', 0, 'L');
 
-    // Melakukan penggantian
-    $result = str_replace($search, $replace, $subject);
-
-    // Menggunakan ucwords dan strtolower kemudian memasukkannya ke dalam sel PDF
-    $pdf->Cell(55, 5, ucwords(strtolower($result)), 'B', 0, 'L');
-
-    //$pdf->Cell(55, 5, ucwords(strtolower(str_replace(".", ". ", $rc['name_customer'] ?? ""))), 'B', 0, 'L');
-    $pdf->Cell(30, 5, $jm1, 'B', 0, 'R');
-    $pdf->Cell(30, 5, $jm11, 'B', 0, 'R');
-    $pdf->Cell(40, 5, $jm12, 'B', 0, 'R');
+    $pdf->MultiCell(155, 5, ucwords($rc['address']) .  ucwords(str_replace("Catatan : ", "", $catatan[2] ?? "")), '', 'J', false);
 }
+
 
 $pdf->AddPage();
 $products = $output["products"];
@@ -178,7 +194,7 @@ foreach ($products as $k => $rc) {
     $pdf->SetFont('Arial', 'I', 12);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->Cell(10, 5, $k + 1, 'B', 0, 'R');
-    $pdf->Cell(150, 5, ucwords(strtolower($rc['name_product'])), 'B', 0, 'L');
+    $pdf->Cell(150, 5, strtoupper($rc['name_product']), 'B', 0, 'L');
     $pdf->Cell(20, 5, $rc['amount'], 'B', 0, 'R');
     $pdf->Cell(20, 5, '', 'B', 0, 'R');
 }
