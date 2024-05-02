@@ -30,6 +30,7 @@
 <script src="<?php echo $base_url; ?>/admin/js/penagihan.js?v=7"></script>
 
 <script>
+    const colors = ['#6667AB', '#5CB85C']; // Example colors for the chart segments
     var base_url = "<?php echo $base_url;?>";
     var try_routing_last = window.location.pathname + window.location.search;
     var try_routing = false;

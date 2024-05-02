@@ -217,8 +217,6 @@ include("data/function.php");
     updatePerformance('monthly');
     loadHome();
 
-    const colors = ['#6667AB', '#5CB85C']; // Example colors for the chart segments
-
     var doughnutChartVar = null;
 
     fetch(baseUrl + 'admin/data/home-chart.php')
