@@ -1,5 +1,33 @@
 <?php
+include "data/koneksi.php";
 include("data/function.php");
+$totalBayar     = getTotalBayar($mysqli, $bulan1, $bulan2);
+$totalPreOrderP = getTotalPreOrderPengiriman($mysqli, $bulan1, $bulan2);
+$totalPreOrderM = getTotalPreOrderMasuk($mysqli, $bulan1, $bulan2);
+$totalTransP    = getTotalTransPengiriman($mysqli, $bulan1, $bulan2);
+$totalTransM    = getTotalTransMasuk($mysqli, $bulan1, $bulan2);
+$totalTransMin  = getTotalTransMinus($mysqli, $bulan1, $bulan2);
+$countTransP    = getCountTransPengiriman($mysqli, $bulan1, $bulan2);
+$countPreOrderP = getCountPrePengiriman($mysqli, $bulan1, $bulan2);
+$countTransM    = getCountTransMasuk($mysqli, $bulan1, $bulan2);
+$countPreOrderM = getCountPreMasuk($mysqli, $bulan1, $bulan2);
+$countAllM      = getCountAllMasuk($mysqli, $bulan1, $bulan2);
+$countMinus     = getCountMinus($mysqli, $bulan1, $bulan2);
+
+$selisih = $totalPreOrderP - $totalBayar;
+
+// Cek apakah $totalPreOrderP tidak nol sebelum melakukan pembagian
+if ($totalPreOrderP != 0) {
+    $lunas1 = ($selisih / $totalPreOrderP) * 100;
+    $lunas2 = ($totalBayar / $totalPreOrderP) * 100;
+} else {
+    // Menetapkan nilai default atau menangani kasus pembagi nol
+    $lunas1 = 0;  // Bisa juga diset ke nilai lain yang masuk akal dalam konteks aplikasi Anda
+    $lunas2 = 0;  // Bisa juga diset ke nilai lain yang masuk akal dalam konteks aplikasi Anda
+}
+
+$percentageChange=getPercentageChange($mysqli);
+$icon = getPercentageChangeIcon($percentageChange);
 ?>
 <div class="row gy-4 mb-4">
     <!-- Sales Overview-->
@@ -20,10 +48,10 @@ include("data/function.php");
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <small class="me-2"><?= getTotalSalesDay($connect); ?> Transaksi Hari Ini</small>
-                    <div class="d-flex align-items-center text-<?= $color; ?>">
-                        <p class="mb-0"><?= getPercentageChange($connect); ?>%</p>
-                        <?= '<i class="' . $arrowIcon . '"></i>'; ?>
+                    <small class="me-2"><?= getTotalSalesDay($mysqli); ?> Transaksi Hari Ini</small>
+                    <div class="d-flex align-items-center text-<?= $icon['color']; ?>">
+                        <p class="mb-0"><?= $percentageChange ?>%</p>
+                        <?= '<i class="' . $icon['arrowIcon'] . '"></i>'; ?>
                     </div>
                 </div>
             </div>
@@ -35,7 +63,7 @@ include("data/function.php");
                         </div>
                     </div>
                     <div class="card-info">
-                        <h5 class="mb-0"><?= getCurrentCustomers($connect); ?></h5>
+                        <h5 class="mb-0"><?= getCurrentCustomers($mysqli); ?></h5>
                         <small class="text-muted">Pelangan</small>
                     </div>
                 </div>
@@ -46,7 +74,7 @@ include("data/function.php");
                         </div>
                     </div>
                     <div class="card-info">
-                        <h5 class="mb-0"><?= getCurrentStaff($connect); ?></h5>
+                        <h5 class="mb-0"><?= getCurrentStaff($mysqli); ?></h5>
                         <small class="text-muted">Petugas</small>
                     </div>
                 </div>
@@ -58,7 +86,7 @@ include("data/function.php");
                         </div>
                     </div>
                     <div class="card-info">
-                        <h5 class="mb-0"><?= getCurrentPackages($connect); ?></h5>
+                        <h5 class="mb-0"><?= getCurrentPackages($mysqli); ?></h5>
                         <small class="text-muted">Paket</small>
                     </div>
                 </div>
@@ -69,7 +97,7 @@ include("data/function.php");
                         </div>
                     </div>
                     <div class="card-info">
-                        <h5 class="mb-0"><?= getCurrentProducts($connect); ?></h5>
+                        <h5 class="mb-0"><?= getCurrentProducts($mysqli); ?></h5>
                         <small class="text-muted">Produk</small>
                     </div>
                 </div>
