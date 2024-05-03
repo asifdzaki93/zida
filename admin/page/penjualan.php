@@ -198,7 +198,7 @@
                 },
                 // Buttons with Dropdown
                 buttons: [{
-                    text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-md-inline-block d-none">Tambah Invoice</span>',
+                    text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-md-inline-block d-none"> Transaksi</span>',
                     className: 'btn btn-primary',
                     action: function(e, dt, button, config) {
                         alert("Belum ada fitur menambahkan invoice")
