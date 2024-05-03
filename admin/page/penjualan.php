@@ -243,46 +243,52 @@
                     }
                 },
                 initComplete: function () {
-                    // Adding role filter once table initialized
-                    this.api()
-                        .columns(8)
-                        .every(function () {
-                            var column = this;
-                            var select = $(
-                                    '<select id="status_invoice" class="form-select"><option value=""> Cari Status </option></select>'
-                                )
-                                .appendTo('.invoice_status').on('change', function () {
-                                    dt_invoice.ajax.reload();
-                                });
-                            var option = [{
-                                    "label": "Semua Data",
-                                    "value": ""
-                                },
-                                {
-                                    "label": "Paid Off",
-                                    "value": "paid off"
-                                },
-                                {
-                                    "label": "Pre Order",
-                                    "value": "pre order"
-                                },
-                                {
-                                    "label": "finish",
-                                    "value": "finish"
-                                },
-                                {
-                                    "label": "Cancel",
-                                    "value": "cancel"
-                                }
-                            ];
-                            for (var i = 0; i < option.length; i++) {
-                                select.append('<option value="' + option[i].value +
-                                    '" class="text-capitalize">' + option[i].label +
-                                    '</option>');
-                            }
+                    var column = this;
+                    var select = $(
+                            '<select id="status_invoice" class="form-select"><option value=""> Cari Status </option></select>'
+                        )
+                        .appendTo('.invoice_status').on('change', function () {
+                            dt_invoice.ajax.reload();
                         });
+                    var option = [{
+                            "label": "Semua Data",
+                            "value": ""
+                        },
+                        {
+                            "label": "Paid Off",
+                            "value": "paid off"
+                        },
+                        {
+                            "label": "Pre Order",
+                            "value": "pre order"
+                        },
+                        {
+                            "label": "finish",
+                            "value": "finish"
+                        },
+                        {
+                            "label": "Cancel",
+                            "value": "cancel"
+                        }
+                    ];
+                    for (var i = 0; i < option.length; i++) {
+                        select.append('<option value="' + option[i].value +
+                            '" class="text-capitalize">' + option[i].label +
+                            '</option>');
+                    }
                 }
             });
         }
+        // On each datatable draw, initialize tooltip
+        dt_invoice_table.on('draw.dt', function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll(
+                '[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    boundary: document.body
+                });
+            });
+        });
+
     });
 </script>

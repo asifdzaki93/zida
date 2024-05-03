@@ -14,7 +14,7 @@ function proses($mysqli){
     if($catatanX!=""){
         $catatan=$mysqli->real_escape_string($catatanX);
     }
-    $sales_dataX = $mysqli->query("select date,totalorder,totalpay,id_customer,no_invoice from sales_data where $mysqli->user_master_query and no_invoice = '".$mysqli->real_escape_string($no_invoice)."'");
+    $sales_dataX = $mysqli->query("select status,date,totalorder,totalpay,id_customer,no_invoice from sales_data where $mysqli->user_master_query and no_invoice = '".$mysqli->real_escape_string($no_invoice)."'");
     $sales_data = null;
     while ($row = $sales_dataX->fetch_assoc()) {
         $sales_data = $row;
@@ -28,6 +28,7 @@ function proses($mysqli){
     $totalpay = $sales_data["totalpay"]+$nominal;
 
     //CEK STATUS
+    $statusSD=$sales_data["status"];
     if($sales_data["totalorder"]>$totalpay){
         $status="debt";
         $ada = false;
@@ -59,6 +60,7 @@ function proses($mysqli){
         }
     }else{
         $status="paid off";
+        $statusSD=$status;
     }
 
     $sql="INSERT INTO `customerdebthistory`(
@@ -80,7 +82,7 @@ function proses($mysqli){
             'internal',
             '".$catatan."'
             )";
-    $sql2 = "UPDATE `sales_data` SET `totalpay`='$totalpay' where `no_invoice` = '".$sales_data["no_invoice"]."'";
+    $sql2 = "UPDATE `sales_data` SET `status`='$statusSD',`totalpay`='$totalpay' where `no_invoice` = '".$sales_data["no_invoice"]."'";
     if ($mysqli->query($sql) === TRUE && $mysqli->query($sql2) === TRUE) {
         echo "success";
         return;

@@ -69,12 +69,12 @@ if ($_POST['action'] == "sales_data") {
     }
 
     $query = $mysqli->query($sqlBase.$sqlMid.$sqlSearch.$sqlEnd);
-    $querycount = $mysqli->query($sqlCount.$sqlMid.$sqlSearch.$sqlEnd);
+    $querycount = $mysqli->query($sqlCount.$sqlMid);
     $datacount = $querycount->fetch_assoc();
-    $totalData = $datacount['jumlah'];
-    $querycountFiltered = $mysqli->query($sqlCount.$sqlMid.$sqlSearch.$sqlEnd);
+    $totalData = $datacount['jumlah']??0;
+    $querycountFiltered = $mysqli->query($sqlCount.$sqlMid.$sqlSearch);
     $datacountFiltered = $querycountFiltered->fetch_assoc();
-    $totalFiltered = $datacountFiltered['jumlah'];
+    $totalFiltered = $datacountFiltered['jumlah']??0;
 
     $data = array();
     if (!empty($query)) {
@@ -95,14 +95,27 @@ if ($_POST['action'] == "sales_data") {
 
             $nestedData['no_invoice']="<a href='javascript:;' onclick=\"loadPage('order_detail.php?no_invoice=" . $r['no_invoice'] . "')\"><small>" . $r['no_invoice'] . "</small></a> ";
 
-            //HAPUS NANTI
-            $nestedData['trend']='<div class="d-inline-flex" data-bs-toggle="tooltip" data-bs-html="true" aria-label="<span>Downloaded<br> <strong>Balance:</strong> '.$tagihan.'<br> <strong>
-        Due Date:</strong> '.($r['due_date']??"-").'</span>" data-bs-original-title="<span>Downloaded<br> <strong>Balance:</strong> '.$tagihan.'<br> 
-    <strong>Due Date:</strong> '.($r['due_date']??"-").'</span>">
-    <span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-info"><i
-                class="mdi mdi-arrow-down"></i></span></span></div>';
+            $status = $r["status"]??'-';
+            $trendTitle = '<span>'.($r["status"]??'-').'<br> <strong>Balance:</strong> '.$tagihan.'<br> <strong>
+            Due Date:</strong> '.($r['due_date']??"-").'</span>';
+            $trendIcon = "mdi mdi-cash-clock";
+            $trendColor = "warning";
+            switch($status){
+                case "paid off":
+                    $trendIcon = "mdi mdi-check-decagram";
+                    $trendColor = "success";
+                    break;
+                case "cancel":
+                    $trendIcon = "mdi mdi-close-octagon-outline";
+                    $trendColor = "danger";
+                    break;
+                case "finish":
+                    $trendIcon = "mdi mdi-cookie-cog";
+                    $trendColor = "info";
+                    break;
+            }
 
-            $nestedData['trend']=$r["status"];
+            $nestedData['trend']='<div class="d-inline-flex" data-bs-toggle="tooltip" data-bs-html="true" aria-label="'.$trendTitle.'" data-bs-original-title="'.$trendTitle.'"><span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-'.$trendColor.'"><i class="'.$trendIcon.'"></i></span></span></div>';
 
             $sumber="";
             if ($r['img'] !== "") {
