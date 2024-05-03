@@ -22,7 +22,7 @@ function gantiformat($nomorhp)
     return $nomorhp;
 }
 
-if ($_GET['action'] == "sales_data") {
+if ($_POST['action'] == "sales_data") {
     $usernya = $mysqli->user_master;
     $columns = array(
         0 => 'id_sales_data',
@@ -53,15 +53,21 @@ if ($_GET['action'] == "sales_data") {
         $order="id_sales_data";
     }
 
-    $sqlBase = "SELECT c.name_customer, c.telephone, sd.img, sd.no_invoice, sd.totalpay, sd.totalorder, sd.due_date, sd.date ";
+    $sqlBase = "SELECT c.name_customer, c.telephone, sd.status,sd.img, sd.no_invoice, sd.totalpay, sd.totalorder, sd.due_date, sd.date ";
     $sqlCount = "SELECT count(id_sales_data) as jumlah ";
     $sqlMid = "FROM sales_data sd LEFT JOIN customer c ON sd.id_customer = c.id_customer WHERE sd.user='$usernya' ";
     $sqlSearch = "";
     $sqlEnd = "order by $order $dir LIMIT $limit OFFSET $start";
+
     if (!empty($_POST['search']['value'])) {
-        $search = $_POST['search']['value'];
+        $search = $mysqli->real_escape_string($_POST['search']['value']??"");
         $sqlSearch = "AND sd.no_invoice LIKE '%$search%' or sd.due_date LIKE '%$search%' or c.name_customer LIKE '%$search%' or c.telephone LIKE '%$search%' ";
     }
+    if (!empty($_POST['status'])) {
+        $status = $mysqli->real_escape_string($_POST['status']??"");
+        $sqlSearch .= "AND sd.status ='$status' ";
+    }
+
     $query = $mysqli->query($sqlBase.$sqlMid.$sqlSearch.$sqlEnd);
     $querycount = $mysqli->query($sqlCount.$sqlMid.$sqlSearch.$sqlEnd);
     $datacount = $querycount->fetch_assoc();
@@ -89,11 +95,14 @@ if ($_GET['action'] == "sales_data") {
 
             $nestedData['no_invoice']="<a href='javascript:;' onclick=\"loadPage('order_detail.php?no_invoice=" . $r['no_invoice'] . "')\"><small>" . $r['no_invoice'] . "</small></a> ";
 
+            //HAPUS NANTI
             $nestedData['trend']='<div class="d-inline-flex" data-bs-toggle="tooltip" data-bs-html="true" aria-label="<span>Downloaded<br> <strong>Balance:</strong> '.$tagihan.'<br> <strong>
         Due Date:</strong> '.($r['due_date']??"-").'</span>" data-bs-original-title="<span>Downloaded<br> <strong>Balance:</strong> '.$tagihan.'<br> 
     <strong>Due Date:</strong> '.($r['due_date']??"-").'</span>">
     <span class="avatar avatar-sm"> <span class="avatar-initial rounded-circle bg-label-info"><i
                 class="mdi mdi-arrow-down"></i></span></span></div>';
+
+            $nestedData['trend']=$r["status"];
 
             $sumber="";
             if ($r['img'] !== "") {

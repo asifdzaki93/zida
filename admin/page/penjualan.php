@@ -90,6 +90,9 @@
     </div>
 </div>
 <script>
+    function get_status_invoice() {
+        return $("#status_invoice").val();
+    }
     $(function () {
         // Variable declaration for table
         var dt_invoice_table = $('.invoice-list-table');
@@ -151,8 +154,11 @@
                     },
                 ],
                 ajax: {
-                    "url": "<?php echo $base_url; ?>/admin/data/history.php?action=sales_data&user=082322345757",
-                    "dataType": "json",
+                    "url": "<?php echo $base_url; ?>/admin/data/history.php",
+                    "data": function (d) {
+                        d.action = "sales_data";
+                        d.status = get_status_invoice();
+                    },
                     "type": "POST"
                 },
                 columns: [{
@@ -243,24 +249,37 @@
                         .every(function () {
                             var column = this;
                             var select = $(
-                                    '<select id="UserRole" class="form-select"><option value=""> Cari Status </option></select>'
+                                    '<select id="status_invoice" class="form-select"><option value=""> Cari Status </option></select>'
                                 )
-                                .appendTo('.invoice_status')
-                                .on('change', function () {
-                                    var val = $.fn.dataTable.util.escapeRegex($(this)
-                                        .val());
-                                    column.search(val ? '^' + val + '$' : '', true, false)
-                                        .draw();
+                                .appendTo('.invoice_status').on('change', function () {
+                                    dt_invoice.ajax.reload();
                                 });
-
-                            column
-                                .data()
-                                .unique()
-                                .sort()
-                                .each(function (d, j) {
-                                    select.append('<option value="' + d +
-                                        '" class="text-capitalize">' + d + '</option>');
-                                });
+                            var option = [{
+                                    "label": "Semua Data",
+                                    "value": ""
+                                },
+                                {
+                                    "label": "Paid Off",
+                                    "value": "paid off"
+                                },
+                                {
+                                    "label": "Pre Order",
+                                    "value": "pre order"
+                                },
+                                {
+                                    "label": "finish",
+                                    "value": "finish"
+                                },
+                                {
+                                    "label": "Cancel",
+                                    "value": "cancel"
+                                }
+                            ];
+                            for (var i = 0; i < option.length; i++) {
+                                select.append('<option value="' + option[i].value +
+                                    '" class="text-capitalize">' + option[i].label +
+                                    '</option>');
+                            }
                         });
                 }
             });
