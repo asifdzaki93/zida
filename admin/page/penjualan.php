@@ -13,9 +13,7 @@
                 </div>
                 <div class="col-md-6 text-center text-md-end order-1 order-md-2">
                     <div class="card-body pb-0 px-0 px-md-4 ps-0">
-                        <img src="../../assets/img/illustrations/illustration-john-light.png" height="180"
-                            alt="View Profile" data-app-light-img="illustrations/illustration-john-light.png"
-                            data-app-dark-img="illustrations/illustration-john-dark.png" />
+                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/illustration-john-light.png" height="180" alt="View Profile" data-app-light-img="illustrations/illustration-john-light.png" data-app-dark-img="illustrations/illustration-john-dark.png" />
                     </div>
                 </div>
             </div>
@@ -68,8 +66,7 @@
 
 <div class="card">
     <div class="card-datatable table-responsive pt-0">
-        <table class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm"
-            style="width:100%">
+        <table class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
             <thead>
                 <tr>
                     <th></th>
@@ -93,7 +90,7 @@
     function get_status_invoice() {
         return $("#status_invoice").val();
     }
-    $(function () {
+    $(function() {
         // Variable declaration for table
         var dt_invoice_table = $('.invoice-list-table');
 
@@ -155,7 +152,7 @@
                 ],
                 ajax: {
                     "url": "<?php echo $base_url; ?>/admin/data/history.php",
-                    "data": function (d) {
+                    "data": function(d) {
                         d.action = "sales_data";
                         d.status = get_status_invoice();
                     },
@@ -203,7 +200,7 @@
                 buttons: [{
                     text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-md-inline-block d-none">Tambah Invoice</span>',
                     className: 'btn btn-primary',
-                    action: function (e, dt, button, config) {
+                    action: function(e, dt, button, config) {
                         alert("Belum ada fitur menambahkan invoice")
                     }
                 }],
@@ -211,14 +208,14 @@
                 responsive: {
                     details: {
                         display: $.fn.dataTable.Responsive.display.modal({
-                            header: function (row) {
+                            header: function(row) {
                                 var data = row.data();
                                 return 'Details of ' + data['full_name'];
                             }
                         }),
                         type: 'column',
-                        renderer: function (api, rowIdx, columns) {
-                            var data = $.map(columns, function (col, i) {
+                        renderer: function(api, rowIdx, columns) {
+                            var data = $.map(columns, function(col, i) {
                                 return col.title !==
                                     '' // ? Do not show row in modal popup if title is blank (for check box)
                                     ?
@@ -242,12 +239,12 @@
                         }
                     }
                 },
-                initComplete: function () {
+                initComplete: function() {
                     var column = this;
                     var select = $(
                             '<select id="status_invoice" class="form-select"><option value=""> Cari Status </option></select>'
                         )
-                        .appendTo('.invoice_status').on('change', function () {
+                        .appendTo('.invoice_status').on('change', function() {
                             dt_invoice.ajax.reload();
                         });
                     var option = [{
@@ -280,10 +277,10 @@
             });
         }
         // On each datatable draw, initialize tooltip
-        dt_invoice_table.on('draw.dt', function () {
+        dt_invoice_table.on('draw.dt', function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll(
                 '[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl, {
                     boundary: document.body
                 });

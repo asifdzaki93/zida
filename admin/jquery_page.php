@@ -11,11 +11,10 @@ $id_kasirvip = '082322345757';
 $_SESSION['namauser'] = '082322345757';
 $user = $_SESSION['namauser'];
 
-$url = $_GET["page"]??"home.php";
+$url = $_GET["page"] ?? "home.php";
 
-$allowed=["home.php","penjualan.php","produksi.php","order_detail.php"];
+$allowed = ["home.php", "penjualan.php", "produksi.php", "order_detail.php", "wasetting.php"];
 
-$page = explode("?",$url)[0];
-if(!in_array($page,$allowed))$page="home.php";
-include "page/".$page;
-?>
+$page = explode("?", $url)[0];
+if (!in_array($page, $allowed)) $page = "home.php";
+include "page/" . $page;

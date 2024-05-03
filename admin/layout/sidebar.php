@@ -52,10 +52,18 @@
             </ul>
         </li>
         <!-- BERANDA -->
-        <li class="menu-item" id="menu-beranda">
-            <a href="https://app.wathapp.cloud/" class="menu-link">
+        <!-- <li class="menu-item" id="menu-beranda">
+            <a href="https://web.watchapp.my.id/" class="menu-link">
                 <i class="menu-icon tf-icons mdi mdi-whatsapp"></i>
                 <div>WA Gateway</div>
+            </a> -->
+        </li>
+        <!-- BERANDA -->
+
+        <li class="menu-item" id="menu-beranda">
+            <a href="javascript:;" onclick='loadPage("wasetting.php")' class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-whatsapp"></i>
+                <div>WA Setting</div>
             </a>
         </li>
     </ul>
