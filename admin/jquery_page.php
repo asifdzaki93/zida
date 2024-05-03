@@ -13,7 +13,7 @@ $user = $_SESSION['namauser'];
 
 $url = $_GET["page"] ?? "home.php";
 
-$allowed = ["home.php", "penjualan.php", "produksi.php", "order_detail.php", "wasetting.php"];
+$allowed = ["home.php", "penjualan.php", "produksi.php", "order_detail.php", "wasetting.php", "master_data.php"];
 
 $page = explode("?", $url)[0];
 if (!in_array($page, $allowed)) $page = "home.php";
