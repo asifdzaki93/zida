@@ -1,91 +1,85 @@
-<div class="row gy-4 mb-4">
-    <!-- Gamification Card -->
-    <div class="col-md-12 col-lg-8">
-        <div class="card">
-            <div class="d-flex align-items-end row">
-                <div class="col-md-6 order-2 order-md-1">
-                    <div class="card-body">
-                        <h4 class="card-title pb-xl-2">Selamat Pagi<strong> Admin !</strong>🎉</h4>
-                        <p class="mb-0">Kamu memiliki <span class="fw-semibold">68 Nota </span>😎 masuk hari ini.</p>
-                        <p>Cek Selengkapnya, klik tombol dibawah ini.</p>
-                        <a href="javascript:;" class="btn btn-primary">Selengkapnya</a>
-                    </div>
-                </div>
-                <div class="col-md-6 text-center text-md-end order-1 order-md-2">
-                    <div class="card-body pb-0 px-0 px-md-4 ps-0">
-                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/illustration-john-light.png" height="180" alt="View Profile" data-app-light-img="illustrations/illustration-john-light.png" data-app-dark-img="illustrations/illustration-john-dark.png" />
-                    </div>
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="nav-align-top">
+                    <ul class="nav nav-tabs nav-fill" role="tablist">
+                        <li class="nav-item">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-home" aria-controls="navs-justified-home" aria-selected="true">
+                                <i class="tf-icons mdi mdi-baguette me-1"></i></i> Produk
+                                <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-label-danger ms-1">3</span>
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-profile" aria-controls="navs-justified-profile" aria-selected="false">
+                                <i class="tf-icons mdi mdi-package-variant-closed-check me-1"></i> Paket
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-justified-messages" aria-controls="navs-justified-messages" aria-selected="false">
+                                <i class="tf-icons mdi mdi-account-outline me-1"></i> Pelanggan
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </div>
-    <!--/ Gamification Card -->
-
-    <!-- Statistics Total Order -->
-    <div class="col-lg-2 col-sm-6">
-        <div class="card h-100">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                    <div class="avatar">
-                        <div class="avatar-initial bg-label-primary rounded">
-                            <i class="mdi mdi-cart-plus mdi-24px"></i>
+                <div class="tab-content p-0">
+                    <div class="table-responsive pt-0 tab-pane fade show active" id="navs-justified-home" role="tabpanel">
+                        <div class="card-datatable table-responsive pt-0">
+                            <table class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>#Invoice</th>
+                                        <th><i class="mdi mdi-trending-up"></i></th>
+                                        <th>Kostumer</th>
+                                        <th>Total</th>
+                                        <th class="text-truncate">Dibuat</th>
+                                        <th>Tagihan</th>
+                                        <th class="cell-fit">Aksi</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- List Data Menggunakan DataTable -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="d-flex align-items-center">
-                        <p class="mb-0 text-success me-1">+22%</p>
-                        <i class="mdi mdi-chevron-up text-success"></i>
+
+                    <div class="tab-pane fade" id="navs-justified-profile" role="tabpanel">
+                        <p>
+                            Donut dragée jelly pie halvah. Danish gingerbread bonbon cookie wafer candy oat cake ice
+                            cream. Gummies halvah tootsie roll muffin biscuit icing dessert gingerbread. Pastry ice
+                            cream cheesecake fruitcake.
+                        </p>
+                        <p class="mb-0">
+                            Jelly-o jelly beans icing pastry cake cake lemon drops. Muffin muffin pie tiramisu halvah
+                            cotton candy liquorice caramels.
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="navs-justified-messages" role="tabpanel">
+                        <p>
+                            Oat cake chupa chups dragée donut toffee. Sweet cotton candy jelly beans macaroon gummies
+                            cupcake gummi bears cake chocolate.
+                        </p>
+                        <p class="mb-0">
+                            Cake chocolate bar cotton candy apple pie tootsie roll ice cream apple pie brownie cake.
+                            Sweet roll icing sesame snaps caramels danish toffee. Brownie biscuit dessert dessert.
+                            Pudding jelly jelly-o tart brownie jelly.
+                        </p>
                     </div>
                 </div>
-                <div class="card-info mt-4 pt-1 mt-lg-1 mt-xl-4">
-                    <h5 class="mb-2">155k</h5>
-                    <p class="text-muted mb-lg-2 mb-xl-3">Total Orders</p>
-                    <div class="badge bg-label-secondary rounded-pill">Last 4 Month</div>
-                </div>
             </div>
         </div>
     </div>
-    <!--/ Statistics Total Order -->
-
-    <!-- Sessions line chart -->
-    <div class="col-lg-2 col-sm-6">
-        <div class="card h-100">
-            <div class="card-header pb-0">
-                <div class="d-flex align-items-end mb-1 flex-wrap gap-2">
-                    <h4 class="mb-0 me-2">$38.5k</h4>
-                    <p class="mb-0 text-success">+62%</p>
-                </div>
-                <span class="d-block mb-2 text-muted">Sessions</span>
-            </div>
-            <div class="card-body">
-                <div id="sessions"></div>
-            </div>
-        </div>
-    </div>
-    <!--/ Sessions line chart -->
 </div>
+<!-- Tabs -->
 
-<div class="card">
-    <div class="card-datatable table-responsive pt-0">
-        <table class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>#Invoice</th>
-                    <th><i class="mdi mdi-trending-up"></i></th>
-                    <th>Kostumer</th>
-                    <th>Total</th>
-                    <th class="text-truncate">Dibuat</th>
-                    <th>Tagihan</th>
-                    <th class="cell-fit">Aksi</th>
 
-                </tr>
-            </thead>
-            <tbody>
-                <!-- List Data Menggunakan DataTable -->
-            </tbody>
-        </table>
-    </div>
-</div>
+
+
 <script>
     function get_status_invoice() {
         return $("#status_invoice").val();
