@@ -34,7 +34,7 @@
         <li class="menu-item">
             <a href="javascript:;" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons mdi mdi-book-open-page-variant"></i>
-                <div>Data</div>
+                <div>Laporan</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
@@ -51,6 +51,12 @@
                 </li>
             </ul>
         </li>
+        <li class="menu-item" id="menu-beranda">
+            <a href="javascript:;" onclick='loadPage("master_data.php")' class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-badge-account-horizontal"></i>
+                <div>Master Data</div>
+            </a>
+        </li>
         <!-- BERANDA -->
         <!-- <li class="menu-item" id="menu-beranda">
             <a href="https://web.watchapp.my.id/" class="menu-link">
@@ -66,5 +72,7 @@
                 <div>WA Setting</div>
             </a>
         </li>
+
+
     </ul>
 </aside>
