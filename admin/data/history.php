@@ -83,7 +83,11 @@ if ($_POST['action'] == "sales_data") {
             $nestedData=[
                 "date"=>$r["date"]
             ];
-            $nestedData['checkbox']='<input type="checkbox" class="dt-checkboxes form-check-input">';
+            $checkbox='<input type="checkbox" onchange=\'select_invoice("'.$r["no_invoice"].'")\' value="'.$r["no_invoice"].'" class="dt-checkboxes checkbox_invoice form-check-input">';
+            $checkbox.='<input type="hidden" id="customer_'.$r["no_invoice"].'" value="'.($r['name_customer']??"-").'">';
+            $checkbox.='<input type="hidden" id="tagihan_'.$r["no_invoice"].'" value="'.($r["totalorder"]-$r["totalpay"]).'">';
+            $checkbox.='<input type="hidden" id="totalorder_'.$r["no_invoice"].'" value="'.$r["totalorder"].'">';
+            $nestedData['checkbox'] = $checkbox;
             $nestedData['total']="Rp " . number_format($r["totalorder"], 0, ',', '.');
             $nestedData['tagihan']='';
             $tagihan="Rp " . number_format($r["totalorder"]-$r["totalpay"], 0, ',', '.');

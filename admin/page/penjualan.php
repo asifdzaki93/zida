@@ -27,7 +27,237 @@ nota_admin_render($mysqli,$base_url);
         </table>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal_cetak_resi" tabindex="-1" aria-labelledby="modal_cetak_resi_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_cetak_resi_label">Konfirmasi Mencetak Resi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                Apakah kamu yakin untuk mencetak <b id="modal_cetak_resi_no_invoice"></b>?
+            </div>
+            <div class="modal-footer">
+                <a target=_blank id="modal_cetak_resi_resi" onclick="$('#modal_cetak_resi').modal('hide')"
+                    class="btn btn-primary">Cetak Resi</a>
+                <a target=_blank id="modal_cetak_resi_invoice" onclick="$('#modal_cetak_resi').modal('hide')"
+                    class="btn btn-primary">Cetak Invoice</a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_selesai_produksi" tabindex="-1" aria-labelledby="modal_selesai_produksi_label"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_selesai_produksi_label">Konfirmasi Mencetak Resi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                Apakah anda suddah mengkonfirmasi bahwa produk <b id="modal_selesai_produksi_no_invoice"></b> sudah
+                selesai di produksi?
+            </div>
+            <div class="modal-footer">
+                <button target=_blank onclick="selesaiProduksiKonfirmasi()" class="btn btn-primary">
+                    Ok
+                </button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_pelunasan" tabindex="-1" aria-labelledby="modal_pelunasan_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_pelunasan_label">Konfirmasi Pelunasan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                apakah anda sudah menerima dan menghitung ulang pembayaran piutang tersebut?
+                silahkan masukkan nominal uang masuk !
+            </div>
+            <div class="table-responsive">
+                <table class="table table-stripped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>NO Invoice</th>
+                            <th>Customer</th>
+                            <th>Total Order</th>
+                            <th>Nominal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal_pelunasan_list">
+                        <tr>
+                            <th><i class="fa fa-spinner"></i></th>
+                            <th>NO Invoice</th>
+                            <th>Customer</th>
+                            <th>Total Order</th>
+                            <th>Nominal</th>
+                        </tr>
+                        <tr>
+                            <th><i class="fa fa-check"></i></th>
+                            <th>NO Invoice</th>
+                            <th>Customer</th>
+                            <th>Total Order</th>
+                            <th>Nominal</th>
+                        </tr>
+                        <tr>
+                            <th><i class="fa fa-cancel"></i></th>
+                            <th>NO Invoice</th>
+                            <th>Customer</th>
+                            <th>Total Order</th>
+                            <th>Nominal</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button target=_blank onclick="pelunasanKonfirmasi()" class="btn btn-primary">
+                    Ok
+                </button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    var dt_invoice = null;
+    var selected_invoice = {};
+
+    function select_invoice(no_invoice) {
+        if (selected_invoice.hasOwnProperty(no_invoice)) {
+            delete selected_invoice[no_invoice];
+        } else {
+            selected_invoice[no_invoice] = {
+                "no_invoice": no_invoice,
+                "customer": $("#customer_" + no_invoice).val(),
+                "totalorder": $("#totalorder_" + no_invoice).val(),
+                "tagihan": $("#tagihan_" + no_invoice).val()
+            }
+        }
+        var selected_invoice_count = Object.keys(selected_invoice).length;
+        if (selected_invoice_count == 0) {
+            $("#selected_invoice_count").html("");
+        } else {
+            $("#selected_invoice_count").html("(" + selected_invoice_count + ")");
+        }
+    }
+
+    var pelunasan_object = {};
+
+    function pelunasan() {
+        $("#modal_pelunasan_list").html("");
+        pelunasan_object = selected_invoice;
+        pelunasan_list = Object.values(pelunasan_object);
+        for (var i = 0; i < pelunasan_list.length; i++) {
+            $("#modal_pelunasan_list").append(
+                $("<tr></tr>").attr("id", "pelunasan_list_" + pelunasan_list[i].no_invoice).append(
+                    $("<td></td>").attr("id", "pelunasan_list_" + pelunasan_list[i].no_invoice + "_status"),
+                    $("<td></td>").html(pelunasan_list[i].no_invoice),
+                    $("<td></td>").html(pelunasan_list[i].customer),
+                    $("<td></td>").html(pelunasan_list[i].totalorder),
+                    $("<td></td>").attr("id", "pelunasan_list_" + pelunasan_list[i].no_invoice + "_form").html(
+                        $("<input>").attr("class", "form-control").attr("type", "number")
+                        .attr("id", "pelunasan_list_" + pelunasan_list[i].no_invoice + "_tagihan")
+                        .attr("value", "0")
+                    ),
+                )
+            );
+        }
+        $("#modal_pelunasan").modal("show");
+    }
+
+    async function pelunasanKonfirmasi() {
+        pelunasan_list = Object.values(pelunasan_object);
+        for (var i = 0; i < pelunasan_list.length; i++) {
+            await prosesPelunasan(pelunasan_list[i].no_invoice);
+        }
+        dt_invoice.ajax.reload();
+        if (Object.values(pelunasan_object).length == 0) {
+            $("#modal_pelunasan").modal("hide");
+        }
+    }
+    async function prosesPelunasan(no_invoice) {
+        if (!pelunasan_object.hasOwnProperty(no_invoice)) {
+            $('#pelunasan_list_' + no_invoice).remove();
+            return;
+        }
+        var nominal = $("#pelunasan_list_" + no_invoice + "_tagihan").val();
+        if (nominal != pelunasan_object[no_invoice].tagihan) {
+            $('#pelunasan_list_' + no_invoice + "_status")
+                .html('<td><i class="fa fa-cancel"></i></th>');
+            alert("Nominal " + no_invoice + " tidak sesuai dengan sisa tagihan");
+            return;
+        }
+        var data = {
+            "catatan": "",
+            "nominal": nominal,
+            "no_invoice": no_invoice
+        };
+        await $.ajax({
+            url: "<?php echo $base_url;?>/admin/data/add_payment.php",
+            data: data,
+            method: "post",
+            success: function (resultX) {
+                if (resultX == "success") {
+                    $('#pelunasan_list_' + no_invoice).remove();
+                    delete pelunasan_object[no_invoice];
+                } else {
+                    $('#pelunasan_list_' + no_invoice + "_status")
+                        .html('<td><i class="fa fa-cancel"></i></th>');
+                    alert(resultX);
+                }
+            }
+        });
+    }
+
+
+    function cetakResi() {
+        $("#modal_cetak_resi_no_invoice").html(Object.keys(selected_invoice).join(", "))
+        $("#modal_cetak_resi_resi").attr("href", "<?php echo $base_url?>admin/cetak_resi.php?no_invoice=" +
+            Object.keys(selected_invoice).join(","))
+        $("#modal_cetak_resi_invoice").attr("href", "<?php echo $base_url?>admin/cetak_invoice.php?no_invoice=" +
+            Object.keys(selected_invoice).join(","))
+        $("#modal_cetak_resi").modal("show");
+    }
+
+    function selesaiProduksi() {
+        $("#modal_selesai_produksi").modal("show");
+        $("#modal_selesai_produksi_no_invoice").html(Object.keys(selected_invoice).join(", "));
+    }
+
+    async function selesaiProduksiKonfirmasi() {
+        $("#modal_selesai_produksi").modal("hide");
+        var no_invoice = Object.keys(selected_invoice).join(",");
+        var data = {
+            "no_invoice": no_invoice
+        };
+        await $.ajax({
+            url: "<?php echo $base_url;?>/admin/data/selesai_produksi.php",
+            data: data,
+            method: "post",
+            success: function (resultX) {
+                if (resultX == "success") {
+                    dt_invoice.ajax.reload();
+                } else {
+                    alert(resultX);
+                }
+            }
+        });
+    }
+
     function get_status_invoice() {
         return $("#status_invoice").val();
     }
@@ -37,7 +267,7 @@ nota_admin_render($mysqli,$base_url);
 
         // Invoice datatable
         if (dt_invoice_table.length) {
-            var dt_invoice = dt_invoice_table.DataTable({
+            dt_invoice = dt_invoice_table.DataTable({
                 order: [
                     [0, 'desc']
                 ],
@@ -125,7 +355,7 @@ nota_admin_render($mysqli,$base_url);
                     }
                 ],
                 dom: '<"row ms-2 me-3"' +
-                    '<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-3"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
+                    '<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-3"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B><"invoice_aksi">>' +
                     '<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-3"f<"invoice_status mb-3 mb-md-0">>' +
                     '>t' +
                     '<"row mx-2"' +
@@ -214,11 +444,21 @@ nota_admin_render($mysqli,$base_url);
                             '" class="text-capitalize">' + option[i].label +
                             '</option>');
                     }
+                    $('<div></div>').attr('class', "dropdown").html(
+                        '<button type="button" class="btn btn-primary dropdown-toggle hide-arrow" data-bs-toggle="dropdown">' +
+                        '<i class="mdi mdi-dots-vertical"></i> Aksi<b class="ms-1" id=selected_invoice_count></b>' +
+                        '</button>' +
+                        '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">' +
+                        '<a class="dropdown-item" href="javascript:;" onclick="cetakResi()">Cetak Resi</a>' +
+                        '<a class="dropdown-item" href="javascript:;" onclick="pelunasan()">Pelunasan</a>' +
+                        '<a class="dropdown-item" href="javascript:;" onclick="selesaiProduksi()">Selesai Produksi</a>' +
+                        '</div>').appendTo('.invoice_aksi');
                 }
             });
         }
         // On each datatable draw, initialize tooltip
         dt_invoice_table.on('draw.dt', function () {
+
             var tooltipTriggerList = [].slice.call(document.querySelectorAll(
                 '[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -226,6 +466,13 @@ nota_admin_render($mysqli,$base_url);
                     boundary: document.body
                 });
             });
+            $(".checkbox_invoice").each(function (index) {
+                var no_invoice = $(this).val();
+                if (selected_invoice.hasOwnProperty(no_invoice)) {
+                    $(this).prop('checked', true);
+                }
+            })
+
         });
 
     });

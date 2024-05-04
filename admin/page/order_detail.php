@@ -16,7 +16,11 @@ if($editing){
     }
 }
 
-$data = getOrderData($mysqli);
+$data = getOrderData($mysqli,$_GET["no_invoice"]??"");
+if($data["success"]!=true){
+    echo "404 Data tidak ditemukan";
+    return;
+}
 $order = $data["orderDetails"];
 $products = $data["products"];
 $note = explode(", ", $order["note"]);

@@ -17,10 +17,9 @@ function getChildProducts($sessionId, $jml, $mysqli)
     return $childProducts;
 }
 
-function getOrderData($mysqli)
+function getOrderData($mysqli,$noInvoice)
 {
 
-    $noInvoice = $_GET["no_invoice"];
     // SQL Query
     $sql = "
     SELECT 
@@ -54,12 +53,13 @@ function getOrderData($mysqli)
     $orderDetails = [];
     $products = [];
 
+    $success=false;
     // Cek jika hasilnya ada
     if ($result->num_rows > 0) {
-        $first = true;
+        $success = true;
         // Output data of each row
         while ($row = $result->fetch_assoc()) {
-            if ($first) {
+            if ($success) {
                 // Menyimpan detail pemesanan
                 $orderDetails = [
                     'no_invoice' => $row['no_invoice'],
@@ -121,13 +121,10 @@ function getOrderData($mysqli)
     } else {
     }
 
-    // Menutup statement dan koneksi
-    $stmt->close();
-    $mysqli->close();
-
     // Membuat array untuk JSON output
     $output = [
         'orderDetails' => $orderDetails,
+        'success' => $success,
         'products' => $products
     ];
     return $output;
