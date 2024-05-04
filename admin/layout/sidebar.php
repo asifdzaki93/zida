@@ -34,7 +34,7 @@
         <li class="menu-item">
             <a href="javascript:;" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons mdi mdi-book-open-page-variant"></i>
-                <div>Data</div>
+                <div>Laporan</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">

@@ -1,9 +1,9 @@
-<div class="row">
+<div class="row h-auto">
     <div class="col mt-4 col-md-12 col-lg-6">
         <div class="card">
             <form action="save_settings.php" method="post">
                 <div class="card-body">
-                    <h5 class="card-title">Pengaturan Endpoint dan API Key</h5>
+                    <h5 class="card-title">Pengaturan Gateway</h5>
                     <div class="form-group">
                         <label for="endpoint">Endpoint:</label>
                         <input type="text" class="form-control" id="endpoint" name="endpoint" placeholder="Masukkan Endpoint" required>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="form-group">
                         <label for="message">Isi Pesan:</label>
-                        <textarea class="form-control" id="message" name="message" placeholder="Masukkan isi pesan" required></textarea>
+                        <textarea class="form-control" rows="1" id="message" name="message" placeholder="Masukkan isi pesan" required></textarea>
                     </div>
                 </div>
                 <div class="card-footer">

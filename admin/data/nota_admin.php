@@ -9,7 +9,7 @@ function nota_admin_render($mysqli, $base_url)
 if ($time >= 15 && $time < 19) {
         $selamat = "Sore";
     } else
-if ($time >= 19) {
+if ($time >= 19 && $time < 04) {
         $selamat = "Malam";
     }
     include("data/function.php");

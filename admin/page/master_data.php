@@ -1,4 +1,4 @@
-<div class="nav-align-top mb-4">
+<div class="nav-align-top mb-4 h-100">
     <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
         <li class="nav-item">
             <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home" aria-selected="true">
@@ -19,16 +19,14 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade show active" id="navs-pills-justified-home" role="tabpanel">
-            <table class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+            <table class="produk-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th>#Invoice</th>
-                        <th><i class="mdi mdi-trending-up"></i></th>
-                        <th>Kostumer</th>
-                        <th>Total</th>
-                        <th class="text-truncate">Dibuat</th>
-                        <th>Tagihan</th>
+                        <th>#</th>
+                        <th>Kategori</th>
+                        <th>Nama Produk</th>
+                        <th>Harga</th>
+                        <th>Stock</th>
                         <th class="cell-fit">Aksi</th>
 
                     </tr>
@@ -39,26 +37,41 @@
             </table>
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-profile" role="tabpanel">
-            <p>
-                Donut dragée jelly pie halvah. Danish gingerbread bonbon cookie wafer candy oat cake ice
-                cream. Gummies halvah tootsie roll muffin biscuit icing dessert gingerbread. Pastry ice cream
-                cheesecake fruitcake.
-            </p>
-            <p class="mb-0">
-                Jelly-o jelly beans icing pastry cake cake lemon drops. Muffin muffin pie tiramisu halvah
-                cotton candy liquorice caramels.
-            </p>
+            <table class="paket-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Kategori</th>
+                        <th>Nama Produk</th>
+                        <th>Harga</th>
+                        <th>Stock</th>
+                        <th class="cell-fit">Aksi</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- List Data Menggunakan DataTable -->
+                </tbody>
+            </table>
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-messages" role="tabpanel">
-            <p>
-                Oat cake chupa chups dragée donut toffee. Sweet cotton candy jelly beans macaroon gummies
-                cupcake gummi bears cake chocolate.
-            </p>
-            <p class="mb-0">
-                Cake chocolate bar cotton candy apple pie tootsie roll ice cream apple pie brownie cake. Sweet
-                roll icing sesame snaps caramels danish toffee. Brownie biscuit dessert dessert. Pudding jelly
-                jelly-o tart brownie jelly.
-            </p>
+            <div class="">
+                <table class="pelanggan-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Pelanggan</th>
+                            <th>Telepon</th>
+                            <th>Email</th>
+                            <th>Alamat</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data Pelanggan akan dimasukkan oleh DataTable -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -72,11 +85,11 @@
     function get_status_invoice() {
         return $("#status_invoice").val();
     }
-    $(function() {
-        // Variable declaration for table
-        var dt_invoice_table = $('.invoice-list-table');
 
-        // Invoice datatable
+    $(function() {
+        var dt_invoice_table = $('.produk-list-table');
+
+        // DataTable untuk menampilkan daftar produk
         if (dt_invoice_table.length) {
             var dt_invoice = dt_invoice_table.DataTable({
                 order: [
@@ -87,187 +100,135 @@
                 serverSide: true,
                 ordering: true,
                 stateSave: true,
-                columnDefs: [{
-                        "className": "dt-left",
-                        "targets": 4
-                    },
-                    {
-                        "className": "dt-left",
-                        "targets": 3
-                    },
-                    {
-                        "className": "dt-center",
-                        "targets": 6
-                    },
-                    {
-                        "responsivePriority": 1,
-                        targets: 0
-                    },
-                    {
-                        "responsivePriority": 2,
-                        targets: 1
-                    },
-                    {
-                        "responsivePriority": 3,
-                        targets: 2
-                    },
-                    {
-                        "responsivePriority": 14,
-                        targets: 3
-                    },
-                    {
-                        "responsivePriority": 5,
-                        targets: 4
-                    },
-                    {
-                        "responsivePriority": 6,
-                        targets: 5
-                    },
-                    {
-                        "className": "text-nowrap",
-                        "targets": 4
-                    },
-                    {
-                        "className": "text-nowrap",
-                        "targets": 6
-                    },
-                ],
                 ajax: {
-                    "url": "<?php echo $base_url; ?>/admin/data/history.php",
+                    "url": "<?php echo $base_url; ?>/admin/data/produk_list.php",
                     "data": function(d) {
-                        d.action = "sales_data";
+                        d.action = "produk_data";
                         d.status = get_status_invoice();
                     },
                     "type": "POST"
                 },
                 columns: [{
-                        "data": "checkbox"
+                        "data": "id_product"
                     },
                     {
-                        "data": "no_invoice"
+                        "data": "id_category"
                     },
                     {
-                        "data": "trend"
+                        "data": "name_product"
                     },
                     {
-                        "data": "customer"
+                        "data": "selling_price"
                     },
                     {
-                        "data": "total"
-                    },
-                    {
-                        "data": "date"
-                    },
-                    {
-                        "data": "tagihan"
+                        "data": "stock"
                     },
                     {
                         "data": "aksi"
                     }
                 ],
-                dom: '<"row ms-2 me-3"' +
-                    '<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-3"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
-                    '<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-3"f<"invoice_status mb-3 mb-md-0">>' +
-                    '>t' +
-                    '<"row mx-2"' +
-                    '<"col-sm-12 col-md-6"i>' +
-                    '<"col-sm-12 col-md-6"p>' +
-                    '>',
-                language: {
-                    sLengthMenu: 'Show _MENU_',
-                    search: '',
-                    searchPlaceholder: 'Cari Invoice'
-                },
-                // Buttons with Dropdown
-                buttons: [{
-                    text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-md-inline-block d-none"> Transaksi</span>',
-                    className: 'btn btn-primary',
-                    action: function(e, dt, button, config) {
-                        alert("Belum ada fitur menambahkan invoice")
-                    }
-                }],
-                // For responsive popup
-                responsive: {
-                    details: {
-                        display: $.fn.dataTable.Responsive.display.modal({
-                            header: function(row) {
-                                var data = row.data();
-                                return 'Details of ' + data['full_name'];
-                            }
-                        }),
-                        type: 'column',
-                        renderer: function(api, rowIdx, columns) {
-                            var data = $.map(columns, function(col, i) {
-                                return col.title !==
-                                    '' // ? Do not show row in modal popup if title is blank (for check box)
-                                    ?
-                                    '<tr data-dt-row="' +
-                                    col.rowIndex +
-                                    '" data-dt-column="' +
-                                    col.columnIndex +
-                                    '">' +
-                                    '<td>' +
-                                    col.title +
-                                    ':' +
-                                    '</td> ' +
-                                    '<td>' +
-                                    col.data +
-                                    '</td>' +
-                                    '</tr>' :
-                                    '';
-                            }).join('');
-
-                            return data ? $('<table class="table"/><tbody />').append(data) : false;
-                        }
-                    }
-                },
-                initComplete: function() {
-                    var column = this;
-                    var select = $(
-                            '<select id="status_invoice" class="form-select"><option value=""> Cari Status </option></select>'
-                        )
-                        .appendTo('.invoice_status').on('change', function() {
-                            dt_invoice.ajax.reload();
-                        });
-                    var option = [{
-                            "label": "Semua Data",
-                            "value": ""
-                        },
-                        {
-                            "label": "Paid Off",
-                            "value": "paid off"
-                        },
-                        {
-                            "label": "Pre Order",
-                            "value": "pre order"
-                        },
-                        {
-                            "label": "finish",
-                            "value": "finish"
-                        },
-                        {
-                            "label": "Cancel",
-                            "value": "cancel"
-                        }
-                    ];
-                    for (var i = 0; i < option.length; i++) {
-                        select.append('<option value="' + option[i].value +
-                            '" class="text-capitalize">' + option[i].label +
-                            '</option>');
-                    }
-                }
             });
         }
-        // On each datatable draw, initialize tooltip
-        dt_invoice_table.on('draw.dt', function() {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll(
-                '[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl, {
-                    boundary: document.body
-                });
-            });
-        });
+    });
+</script>
 
+<script>
+    function get_status_invoice() {
+        return $("#status_invoice").val();
+    }
+
+    $(function() {
+        var dt_invoice_table = $('.paket-list-table');
+
+        // DataTable untuk menampilkan daftar produk
+        if (dt_invoice_table.length) {
+            var dt_invoice = dt_invoice_table.DataTable({
+                order: [
+                    [0, 'desc']
+                ],
+                processing: true,
+                responsive: true,
+                serverSide: true,
+                ordering: true,
+                stateSave: true,
+                ajax: {
+                    "url": "<?php echo $base_url; ?>/admin/data/produk_list.php",
+                    "data": function(d) {
+                        d.action = "paket_data";
+                        d.status = get_status_invoice();
+                    },
+                    "type": "POST"
+                },
+                columns: [{
+                        "data": "id_product"
+                    },
+                    {
+                        "data": "id_category"
+                    },
+                    {
+                        "data": "name_product"
+                    },
+                    {
+                        "data": "selling_price"
+                    },
+                    {
+                        "data": "stock"
+                    },
+                    {
+                        "data": "aksi"
+                    }
+                ],
+            });
+        }
+    });
+</script>
+<script>
+    function get_status_customer() {
+        return $("#status_customer").val();
+    }
+
+    $(function() {
+        var dt_customer_table = $('.pelanggan-list-table');
+
+        // DataTable untuk menampilkan daftar pelanggan
+        if (dt_customer_table.length) {
+            var dt_customer = dt_customer_table.DataTable({
+                order: [
+                    [0, 'desc']
+                ],
+                processing: true,
+                responsive: true,
+                serverSide: true,
+                ordering: true,
+                stateSave: true,
+                ajax: {
+                    "url": "<?php echo $base_url; ?>/admin/data/produk_list.php",
+                    "data": function(d) {
+                        d.action = "pelanggan_data";
+                        d.status = get_status_customer();
+                    },
+                    "type": "POST"
+                },
+                columns: [{
+                        "data": "id_customer"
+                    },
+                    {
+                        "data": "name_customer"
+                    },
+                    {
+                        "data": "telephone"
+                    },
+                    {
+                        "data": "email"
+                    },
+                    {
+                        "data": "address"
+                    },
+                    {
+                        "data": "aksi"
+                    }
+                ],
+            });
+        }
     });
 </script>
