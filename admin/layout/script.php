@@ -21,16 +21,13 @@
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/swiper/swiper.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/flatpickr/flatpickr.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+<script src="<?php echo $base_url; ?>/assets/vendor/libs/select2/select2.js"></script>
 
 <!-- Main JS -->
 <script src=" <?php echo $base_url; ?>/assets/js/main.js"></script>
 
 <!-- Page JS -->
 <!-- <script src="<?php echo $base_url; ?>/assets/js/dashboards-crm.js"></script> -->
-
-<script src="<?php echo $base_url; ?>/admin/js/home.js?v=6"></script>
-<script src="<?php echo $base_url; ?>/admin/js/penagihan.js?v=7"></script>
-
 
 <script>
     const colors = ['#6667AB', '#5CB85C']; // Example colors for the chart segments
@@ -45,7 +42,7 @@
             tambah_history_index++;
         }
     }
-    window.onpopstate = function(event) {
+    window.onpopstate = function (event) {
         var pageURL = window.location.href;
         var lastURLSegment = pageURL.substr(pageURL.lastIndexOf('/') + 1);
         loadPage(lastURLSegment);
@@ -53,7 +50,7 @@
     async function loadPage(page) {
         await $.ajax({
             url: "jquery_page.php?page=" + page.replace("?", "&"),
-            success: function(result) {
+            success: function (result) {
                 $("#jquery_page").html(result);
             }
         });
@@ -130,7 +127,7 @@
                 },
                 {
                     "data": "img",
-                    "render": function(data) {
+                    "render": function (data) {
                         return "<div class='avatar avatar-md me-2'><a target=_blank href='" + data +
                             "'><img class='rounded-circle' src='" +
                             data + "'/></a></div>";
@@ -141,7 +138,7 @@
                 }
             ],
         });
-        productsTable.on('click', 'td.dt-control', function(e) {
+        productsTable.on('click', 'td.dt-control', function (e) {
             let tr = e.target.closest('tr');
             let row = productsTable.row(tr);
 
@@ -178,7 +175,7 @@
 <!-- Page Produksi pojok kanan atas -->
 <script>
     // Ensure that the document is fully loaded before initializing the chart
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const sessionsChartEl = document.querySelector('#sessions');
         if (sessionsChartEl) {
             const sessionsChartConfig = {
@@ -303,7 +300,7 @@
 </script>
 <!-- Page Produksi daftar penjualan -->
 <script>
-    $(function() {
+    $(function () {
         $('#packing').DataTable({
             "order": [
                 [0, 'desc']

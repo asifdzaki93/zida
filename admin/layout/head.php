@@ -13,8 +13,10 @@
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/node-waves/node-waves.css" />
 
 <!-- Core CSS -->
-<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
-<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/rtl/core.css"
+    class="template-customizer-core-css" />
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/rtl/theme-default.css"
+    class="template-customizer-theme-css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/demo.css" />
 
 <!-- Vendors CSS -->
@@ -22,11 +24,13 @@
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/fullcalendar/fullcalendar.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/typeahead-js/typeahead.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
-<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+<link rel="stylesheet"
+    href="<?php echo $base_url; ?>/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/apex-charts/apex-charts.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/swiper/swiper.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/flatpickr/flatpickr.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css" />
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/select2/select2.css" />
 
 
 <!-- Page CSS -->

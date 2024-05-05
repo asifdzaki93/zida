@@ -121,13 +121,15 @@ $icon = getPercentageChangeIcon($percentageChange);
                             <h6 class="mb-0 me-2 text-primary">
                                 <strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong>
                             </h6>
-                            <small class="">Diterima: <?= number_format($lunas2, 0, ',', '.'); ?>%</small><small class="text-success"><?= '(Rp.' . number_format($totalBayar, 0, ',', '.') . ')' ?></small>
+                            <small class="">Diterima: <?= number_format($lunas2, 0, ',', '.'); ?>%</small><small
+                                class="text-success"><?= '(Rp.' . number_format($totalBayar, 0, ',', '.') . ')' ?></small>
                         </div>
                     </div>
                 </div>
                 <div class="col-6 text-end d-flex align-items-end justify-content-center">
                     <div class="card-body pb-0 pt-3 position-absolute bottom-0">
-                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-ratings-illustration.png" alt="Ratings" width="95" />
+                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-ratings-illustration.png"
+                            alt="Ratings" width="95" />
                     </div>
                 </div>
             </div>
@@ -151,13 +153,15 @@ $icon = getPercentageChangeIcon($percentageChange);
                                 <strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong>
                             </h6>
                             <small class="">Piutang: <?= number_format($lunas1, 0, ',', '.'); ?>%</small>
-                            <small class="text-danger"><?= '(Rp.' . number_format($selisih, 0, ',', '.') . ')' ?></small>
+                            <small
+                                class="text-danger"><?= '(Rp.' . number_format($selisih, 0, ',', '.') . ')' ?></small>
                         </div>
                     </div>
                 </div>
                 <div class="col-6 text-end d-flex align-items-end justify-content-center">
                     <div class="card-body pb-0 pt-3 position-absolute bottom-0">
-                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-session-illustration.png" alt="Ratings" width="81" />
+                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-session-illustration.png"
+                            alt="Ratings" width="81" />
                     </div>
                 </div>
             </div>
@@ -174,7 +178,8 @@ $icon = getPercentageChangeIcon($percentageChange);
                 <div class="d-flex justify-content-between">
                     <h5 class="mb-1">Grafik Transaksi</h5>
                     <div class="dropdown">
-                        <button class="btn p-0" type="button" id="weeklyOverviewDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button class="btn p-0" type="button" id="weeklyOverviewDropdown" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical mdi-24px"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="weeklyOverviewDropdown">
@@ -254,8 +259,10 @@ $icon = getPercentageChangeIcon($percentageChange);
                     </div>
                     <div class="d-flex align-items-center mt-2 pt-1">
                         <div class="progress w-100 rounded" style="height: 10px">
-                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar"
+                                aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%"
+                                aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -293,8 +300,10 @@ $icon = getPercentageChangeIcon($percentageChange);
                     </div>
                     <div class="d-flex align-items-center mt-2 pt-1">
                         <div class="progress w-100 rounded" style="height: 10px">
-                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar"
+                                aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%"
+                                aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -339,7 +348,8 @@ $icon = getPercentageChangeIcon($percentageChange);
                         </div>
                         <div class="d-flex align-items-center mt-2 pt-1">
                             <div class="progress w-100 rounded" style="height: 10px">
-                                <div class="progress-bar bg-warning" style="width: 0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar bg-warning" style="width: 0%" role="progressbar"
+                                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                     </div>
@@ -358,12 +368,14 @@ $icon = getPercentageChangeIcon($percentageChange);
             <ul class="doughnut-legend d-flex justify-content-around ps-0 mb-2 pt-1">
                 <li class="ct-series-0 d-flex flex-column">
                     <h5 class="mb-0 fw-bold">Pemasukan</h5>
-                    <span id="incomeColor" class="badge badge-dot my-2 cursor-pointer rounded-pill" style="width: 35px; height: 6px"></span>
+                    <span id="incomeColor" class="badge badge-dot my-2 cursor-pointer rounded-pill"
+                        style="width: 35px; height: 6px"></span>
                     <div id="incomePercentage" class="text-muted">80 %</div>
                 </li>
                 <li class="ct-series-1 d-flex flex-column">
                     <h5 class="mb-0 fw-bold">Penagihan</h5>
-                    <span id="billingColor" class="badge badge-dot my-2 cursor-pointer rounded-pill" style="width: 35px; height: 6px"></span>
+                    <span id="billingColor" class="badge badge-dot my-2 cursor-pointer rounded-pill"
+                        style="width: 35px; height: 6px"></span>
                     <div id="billingPercentage" class="text-muted">10 %</div>
                 </li>
 
@@ -380,29 +392,274 @@ $icon = getPercentageChangeIcon($percentageChange);
 
 
 <script>
+    // Define global reference to the chart instance
+    var currentChart = null;
+
+    // Update the chart with new data based on timeframe
+    function updateChart(timeframe) {
+        fetch(baseUrl + 'admin/data/chart-data2.php?timeframe=' + timeframe) // Dynamic URL based on selected timeframe
+            .then(response => response.json())
+            .then(data => {
+                var chartOptions = {
+                    chart: {
+                        type: 'line',
+                        height: 350,
+                        toolbar: {
+                            show: false
+                        }
+                    },
+                    series: [{
+                            name: 'Pemasukan',
+                            type: 'line',
+                            data: data.pemasukan,
+                            color: '#556ee6' // Blue for Pemasukan
+                        },
+                        {
+                            name: 'Pengeluaran',
+                            type: 'bar',
+                            data: data.pengeluaran,
+                            color: '#34C38F' // Green for Pengeluaran
+                        },
+                        {
+                            name: 'Belanja Produk',
+                            type: 'bar',
+                            data: data.belanjaProduk,
+                            color: '#f46a6a' // Red for Belanja Produk
+                        }
+                    ],
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 5,
+                            columnWidth: '40%'
+                        }
+                    },
+                    markers: {
+                        size: 5,
+                        strokeWidth: 2,
+                        fillOpacity: 1,
+                        strokeOpacity: 1,
+                        strokeColors: '#fff'
+                    },
+                    stroke: {
+                        width: [2, 0, 0], // Width 2 for line, 0 for bars
+                        curve: 'smooth'
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    legend: {
+                        show: true,
+                        position: 'top',
+                        horizontalAlign: 'center'
+                    },
+                    grid: {
+                        strokeDashArray: 5
+                    },
+                    xaxis: {
+                        categories: data.labels,
+                        tickPlacement: 'on'
+                    },
+                    yaxis: {
+                        labels: {
+                            formatter: function (val) {
+                                if (val >= 1000000) {
+                                    return Math.floor(val / 1000000) + ' Jt';
+                                } else if (val >= 1000) {
+                                    return Math.floor(val / 1000) + 'K';
+                                }
+                                return val;
+                            },
+                            style: {
+                                fontSize: '12px'
+                            }
+                        }
+                    },
+                    responsive: [{
+                        breakpoint: 1000,
+                        options: {
+                            plotOptions: {
+                                bar: {
+                                    horizontal: false
+                                }
+                            },
+                            legend: {
+                                position: "bottom"
+                            }
+                        }
+                    }]
+                };
+
+                // Destroy previous chart instance if exists
+                if (currentChart) {
+                    currentChart.destroy();
+                }
+
+                // Create new chart instance
+                var chartElement = document.querySelector('#weeklyOverviewChart');
+                currentChart = new ApexCharts(chartElement, chartOptions);
+                currentChart.render();
+            })
+            .catch(error => console.error('Error loading the chart data:', error));
+    }
+
+    // Update the sales performance comparison
+    function updatePerformance(timeframe) {
+        fetch(baseUrl + 'admin/data/chart-data2.php?timeframe=' + timeframe)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                var salesData = data.pemasukan;
+                var currentPeriodSales = salesData[salesData.length - 1];
+                var previousPeriodSales = salesData[salesData.length - 2];
+                var performanceChange = currentPeriodSales - previousPeriodSales;
+                var performancePercentage = ((performanceChange / previousPeriodSales) * 100).toFixed(2);
+
+                // Determine whether sales performance increased or decreased
+                var performanceText;
+                if (performanceChange > 0) {
+                    performanceText =
+                        `Kinerja Penjualan Hari ini Meningkat Rp. ${formatRupiah(performanceChange)} dibanding kemarin. 😎`;
+                } else if (performanceChange < 0) {
+                    performanceText =
+                        `Kinerja Penjualan Hari ini Menurun Rp. ${formatRupiah(Math.abs(performanceChange))} dibanding kemarin. 😕`;
+                } else {
+                    performanceText = `Kinerja Penjualan Hari ini masih sama dibanding kemarin. 😐`;
+                }
+
+                var performanceElement = document.querySelector('#performance');
+                if (performanceElement) {
+                    performanceElement.textContent = performanceText;
+                }
+
+                var h3Element = document.getElementById('percentage');
+                h3Element.textContent = performancePercentage + '%';
+
+            })
+            .catch(error => {
+                console.error('Error loading performance data:', error);
+            });
+    }
+
+    // Helper function to format numbers as rupiah
+    function formatRupiah(angka) {
+        var reverse = angka.toString().split('').reverse().join('');
+        var ribuan = reverse.match(/\d{1,3}/g);
+        ribuan = ribuan.join('.').split('').reverse().join('');
+        return ribuan;
+    }
+
+    function getRandomColor() {
+        var varters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += varters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+    // Color Variables
+    var purpleColor = '#836AF9',
+        yellowColor = '#ffe800',
+        cyanColor = '#28dac6',
+        orangeColor = '#FF8132',
+        orangeLightColor = '#ffcf5c',
+        oceanBlueColor = '#299AFF',
+        greyColor = '#4F5D70',
+        greyLightColor = '#EDF1F4',
+        blueColor = '#2B9AFF',
+        blueLightColor = '#84D0FF';
+
+    var cardColor, headingColor, labelColor, borderColor, legendColor;
+
+    if (isDarkStyle) {
+        cardColor = config.colors_dark.cardColor;
+        headingColor = config.colors_dark.headingColor;
+        labelColor = config.colors_dark.textMuted;
+        legendColor = config.colors_dark.bodyColor;
+        borderColor = config.colors_dark.borderColor;
+    } else {
+        cardColor = config.colors.cardColor;
+        headingColor = config.colors.headingColor;
+        labelColor = config.colors.textMuted;
+        legendColor = config.colors.bodyColor;
+        borderColor = config.colors.borderColor;
+    }
+    // Doughnut Chart
+    // --------------------------------------------------------------------
+
+    function loadHome() {
+        var doughnutChart = document.getElementById('doughnutChart');
+        if (doughnutChart) {
+            var doughnutChartVar = new Chart(doughnutChart, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tabvar', 'Mobile', 'Desktop'],
+                    datasets: [{
+                        data: [10, 10, 80],
+                        backgroundColor: [getRandomColor(), getRandomColor(), getRandomColor()],
+                        borderWidth: 0,
+                        pointStyle: 'rectRounded'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    animation: {
+                        duration: 500
+                    },
+                    cutout: '68%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.labels || '',
+                                        value = context.parsed;
+                                    var output = ' ' + label + ' : ' + value + ' %';
+                                    return output;
+                                }
+                            },
+                            // Updated default tooltip UI
+                            rtl: isRtl,
+                            backgroundColor: cardColor,
+                            titleColor: headingColor,
+                            bodyColor: legendColor,
+                            borderWidth: 1,
+                            borderColor: borderColor
+                        }
+                    }
+                }
+            });
+        }
+    }
+    loadHome();
+
     updateChart('monthly');
     updatePerformance('monthly');
-    loadHome();
 
     var doughnutChartVar = null;
 
     fetch(baseUrl + 'admin/data/home-chart.php')
         .then(response => response.json())
         .then(data => {
-            const doughnutChart = document.getElementById('doughnutChart');
+            var doughnutChart = document.getElementById('doughnutChart');
             if (doughnutChart) {
-                const incomePercentageElement = document.getElementById('incomePercentage');
-                const billingPercentageElement = document.getElementById('billingPercentage');
-                const incomeColorElement = document.getElementById('incomeColor');
-                const billingColorElement = document.getElementById('billingColor');
-                const detailButton = document.getElementById('detailButton');
+                var incomePercentageElement = document.getElementById('incomePercentage');
+                var billingPercentageElement = document.getElementById('billingPercentage');
+                var incomeColorElement = document.getElementById('incomeColor');
+                var billingColorElement = document.getElementById('billingColor');
+                var detailButton = document.getElementById('detailButton');
 
-                const totalIncome = parseInt(data.totalIncome, 10);
-                const totalBilling = parseInt(data.totalBilling, 10);
-                const totalAmount = totalIncome + totalBilling;
+                var totalIncome = parseInt(data.totalIncome, 10);
+                var totalBilling = parseInt(data.totalBilling, 10);
+                var totalAmount = totalIncome + totalBilling;
 
-                //const incomePercentage = ((totalIncome / totalAmount) * 100).toFixed(2);
-                //const billingPercentage = ((totalBilling / totalAmount) * 100).toFixed(2);
+                //var incomePercentage = ((totalIncome / totalAmount) * 100).toFixed(2);
+                //var billingPercentage = ((totalBilling / totalAmount) * 100).toFixed(2);
 
                 // Update text and background color
                 incomePercentageElement.innerText = `Rp. ${totalIncome.toLocaleString()}`;
@@ -410,7 +667,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                 detailButton.innerText = `Rp. ${totalAmount.toLocaleString()}`;
                 incomeColorElement.style.backgroundColor = colors[0];
                 billingColorElement.style.backgroundColor = colors[1];
-                let chartStatus = Chart.getChart("doughnutChart"); // <canvas> id
+                var chartStatus = Chart.getChart("doughnutChart"); // <canvas> id
                 if (chartStatus != undefined) {
                     chartStatus.destroy();
                 }
@@ -437,11 +694,11 @@ $icon = getPercentageChangeIcon($percentageChange);
                             },
                             tooltip: {
                                 callbacks: {
-                                    label: function(tooltipItem) {
-                                        const label = tooltipItem.chart.data.labels[tooltipItem
+                                    label: function (tooltipItem) {
+                                        var label = tooltipItem.chart.data.labels[tooltipItem
                                             .dataIndex];
-                                        const value = tooltipItem.raw;
-                                        const percentage = ((value / totalAmount) * 100).toFixed(2);
+                                        var value = tooltipItem.raw;
+                                        var percentage = ((value / totalAmount) * 100).toFixed(2);
                                         return `${label}: ${value} (${percentage} %)`;
                                     }
                                 },
@@ -457,7 +714,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                 });
 
                 // Handle button click to show total amount
-                detailButton.addEventListener('click', function() {
+                detailButton.addEventListener('click', function () {
                     alert(`Total Estimasi Uang Masuk: Rp ${totalAmount.toLocaleString()}`);
                 });
             }
