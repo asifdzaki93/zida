@@ -1,73 +1,82 @@
-<!-- Content -->
+<div class="card app-calendar-wrapper">
+    <div class="row g-0">
+        <!-- Calendar Sidebar -->
+        <div class="col app-calendar-sidebar pt-1" id="app-calendar-sidebar">
+            <div class="p-4">
+                <!-- inline calendar (flatpicker) -->
+                <div class="inline-calendar"></div>
 
-<div class="container-xxl flex-grow-1 container-p-y">
-    <div class="card app-calendar-wrapper">
-        <div class="row g-0">
-            <!-- Calendar Sidebar -->
-            <div class="col app-calendar-sidebar pt-1" id="app-calendar-sidebar">
-                <div class="p-4">
-                    <!-- inline calendar (flatpicker) -->
-                    <div class="inline-calendar"></div>
+                <hr class="container-m-nx my-4" />
 
-                    <hr class="container-m-nx my-4" />
+                <!-- Filter -->
+                <div class="mb-4">
+                    <small class="text-small text-muted text-uppercase align-middle">Filter</small>
+                </div>
 
-                    <!-- Filter -->
-                    <div class="mb-4">
-                        <small class="text-small text-muted text-uppercase align-middle">Filter</small>
-                    </div>
+                <div class="form-check form-check-secondary mb-3">
+                    <input class="form-check-input select-all" type="checkbox" id="selectAll" data-value="all"
+                        checked />
+                    <label class="form-check-label" for="selectAll">Semua</label>
+                </div>
 
-                    <div class="form-check form-check-secondary mb-3">
-                        <input class="form-check-input select-all" type="checkbox" id="selectAll" data-value="all"
+                <div class="app-calendar-events-filter">
+                    <div class="form-check form-check-danger mb-3">
+                        <input class="form-check-input input-filter" type="checkbox" id="paid-off" data-value="paid off"
                             checked />
-                        <label class="form-check-label" for="selectAll">View All</label>
+                        <label class="form-check-label" for="paid-off">Lunas</label>
                     </div>
-
-                    <div class="app-calendar-events-filter">
-                        <div class="form-check form-check-danger mb-3">
-                            <input class="form-check-input input-filter" type="checkbox" id="select-personal"
-                                data-value="personal" checked />
-                            <label class="form-check-label" for="select-personal">Personal</label>
-                        </div>
-                        <div class="form-check mb-3">
-                            <input class="form-check-input input-filter" type="checkbox" id="select-business"
-                                data-value="business" checked />
-                            <label class="form-check-label" for="select-business">Business</label>
-                        </div>
-                        <div class="form-check form-check-warning mb-3">
-                            <input class="form-check-input input-filter" type="checkbox" id="select-family"
-                                data-value="family" checked />
-                            <label class="form-check-label" for="select-family">Family</label>
-                        </div>
-                        <div class="form-check form-check-success mb-3">
-                            <input class="form-check-input input-filter" type="checkbox" id="select-holiday"
-                                data-value="holiday" checked />
-                            <label class="form-check-label" for="select-holiday">Holiday</label>
-                        </div>
-                        <div class="form-check form-check-info">
-                            <input class="form-check-input input-filter" type="checkbox" id="select-etc"
-                                data-value="etc" checked />
-                            <label class="form-check-label" for="select-etc">ETC</label>
-                        </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input input-filter" type="checkbox" id="pre-order"
+                            data-value="pre order" checked />
+                        <label class="form-check-label" for="pre-order">Pre Order</label>
                     </div>
                 </div>
             </div>
-            <!-- /Calendar Sidebar -->
-
-            <!-- Calendar & Modal -->
-            <div class="col app-calendar-content">
-                <div class="card shadow-none border-0 border-start rounded-0">
-                    <div class="card-body pb-0">
-                        <!-- FullCalendar -->
-                        <div id="calendar"></div>
-                    </div>
-                </div>
-                <div class="app-overlay"></div>
-            </div>
-            <!-- /Calendar & Modal -->
         </div>
+        <!-- /Calendar Sidebar -->
+
+        <!-- Calendar & Modal -->
+        <div class="col app-calendar-content">
+            <div class="card shadow-none border-0 border-start rounded-0">
+                <div class="card-body pb-0">
+                    <!-- FullCalendar -->
+                    <div id="calendar"></div>
+                </div>
+            </div>
+            <div class="app-overlay"></div>
+        </div>
+        <!-- /Calendar & Modal -->
     </div>
 </div>
 <!-- / Content -->
+
+<!-- Modal -->
+<div class="modal fade" id="buka_invoice" tabindex="-1" aria-labelledby="buka_invoice_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buka_invoice_label">Invoice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div id=buka_invoice_content></div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="bukaInvoice()">Buka</button>
+                <a class="btn btn-secondary" onclick="$('#buka_invoice').modal('hide');" target=_blank
+                    id="buka_invoice_cetak">
+                    Cetak
+                </a>
+                <a class="btn btn-success" onclick="$('#buka_invoice').modal('hide');" target=_blank
+                    id="buka_invoice_resi">
+                    Resi
+                </a>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
     var date = new Date();
     var nextDay = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
@@ -78,128 +87,15 @@
     var prevMonth = date.getMonth() === 11 ? new Date(date.getFullYear() - 1, 0, 1) : new Date(date.getFullYear(), date
         .getMonth() - 1, 1);
 
-    var events = [{
-            id: 1,
-            url: '',
-            title: 'Design Review',
-            start: date,
-            end: nextDay,
-            allDay: false,
-            extendedProps: {
-                calendar: 'Business'
-            }
-        },
-        {
-            id: 2,
-            url: '',
-            title: 'Meeting With Client',
-            start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
-            end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
-            allDay: true,
-            extendedProps: {
-                calendar: 'Business'
-            }
-        },
-        {
-            id: 3,
-            url: '',
-            title: 'Family Trip',
-            allDay: true,
-            start: new Date(date.getFullYear(), date.getMonth() + 1, -9),
-            end: new Date(date.getFullYear(), date.getMonth() + 1, -7),
-            extendedProps: {
-                calendar: 'Holiday'
-            }
-        },
-        {
-            id: 4,
-            url: '',
-            title: "Doctor's Appointment",
-            start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
-            end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
-            extendedProps: {
-                calendar: 'Personal'
-            }
-        },
-        {
-            id: 5,
-            url: '',
-            title: 'Dart Game?',
-            start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-            end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-            allDay: true,
-            extendedProps: {
-                calendar: 'ETC'
-            }
-        },
-        {
-            id: 6,
-            url: '',
-            title: 'Meditation',
-            start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-            end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-            allDay: true,
-            extendedProps: {
-                calendar: 'Personal'
-            }
-        },
-        {
-            id: 7,
-            url: '',
-            title: 'Dinner',
-            start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-            end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-            extendedProps: {
-                calendar: 'Family'
-            }
-        },
-        {
-            id: 8,
-            url: '',
-            title: 'Product Review',
-            start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-            end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-            allDay: true,
-            extendedProps: {
-                calendar: 'Business'
-            }
-        },
-        {
-            id: 9,
-            url: '',
-            title: 'Monthly Meeting',
-            start: nextMonth,
-            end: nextMonth,
-            allDay: true,
-            extendedProps: {
-                calendar: 'Business'
-            }
-        },
-        {
-            id: 10,
-            url: '',
-            title: 'Monthly Checkup',
-            start: prevMonth,
-            end: prevMonth,
-            allDay: true,
-            extendedProps: {
-                calendar: 'Personal'
-            }
-        }
-    ];
-
-
+    var events = [];
     (function () {
         var calendarEl = document.getElementById('calendar'),
             appCalendarSidebar = document.querySelector('.app-calendar-sidebar'),
             addEventSidebar = document.getElementById('addEventSidebar'),
             appOverlay = document.querySelector('.app-overlay'),
             calendarsColor = {
-                Business: 'primary',
-                Holiday: 'success',
-                Personal: 'danger',
-                Family: 'warning',
-                ETC: 'info'
+                "pre order": 'danger',
+                "paid off": 'success'
             },
             eventTitle = document.querySelector('#eventTitle'),
             eventStartDate = document.querySelector('#eventStartDate'),
@@ -311,9 +207,29 @@
             });
         }
 
+        var invoice_terpilih = "";
         // Event click function
-        function eventClick(info) {
-            alert(info.event.title);
+        async function eventClick(info) {
+            var no_invoice = info.event.extendedProps.no_invoice;
+            $("#buka_invoice").modal("show");
+            $("#buka_invoice_resi").attr("href", "<?php echo $base_url?>/admin/cetak_resi.php?no_invoice=" +
+                no_invoice)
+            $("#buka_invoice_cetak").attr("href",
+                "<?php echo $base_url?>/admin/cetak_invoice.php?no_invoice=" +
+                no_invoice)
+            await $.ajax({
+                url: "<?php echo $base_url;?>/admin/jquery_page.php?page=order_detail.php&no_invoice=" +
+                    no_invoice +
+                    "&is_modal_request=true",
+                success: function (resultX) {
+                    $("#buka_invoice_content").html(resultX);
+                }
+            });
+        }
+
+        function bukaInvoice() {
+            $("#buka_invoice").modal("hide");
+            loadPage("order_detail.php&no_invoice=" + invoice_terpilih);
         }
 
         // Modify sidebar toggler
@@ -347,33 +263,56 @@
         // AXIOS: fetchEvents
         // * This will be called by fullCalendar to fetch events. Also this can be used to refetch events.
         // --------------------------------------------------------------------------------------------------
-        function fetchEvents(info, successCallback) {
+        async function fetchEvents(info, successCallback) {
             // Fetch Events from API endpoint reference
-            /* $.ajax(
-              {
-                url: '../../../app-assets/data/app-calendar-events.js',
-                type: 'GET',
+            var due_date = info.start.toISOString().split('T')[0];
+            var due_date_last = info.start.toISOString().split('T')[0];
+            // Get requested calendars as Array
+            var calendars = selectedCalendars();
+            await $.ajax({
+                url: "<?php echo $base_url;?>/admin/data/pengiriman.php?due_date=" +
+                    due_date + "due_date_last=" +
+                    due_date_last + "&filter=" + calendars.join(","),
                 success: function (result) {
-                  // Get requested calendars as Array
-                  var calendars = selectedCalendars();
-
-                  return [result.events.filter(event => calendars.includes(event.extendedProps.calendar))];
+                    var result_data = [];
+                    for (var i = 0; i < result.result.length; i++) {
+                        var row = result.result[i];
+                        var jam = row.note.split(", ")[0].split(": ")[1];
+                        if (jam == null) {
+                            jam = "00:00";
+                        }
+                        var objDate = Date.parse(row.due_date + " " + jam);
+                        var obj = {
+                            id: i + 1,
+                            url: '',
+                            title: row.no_invoice,
+                            start: objDate,
+                            end: objDate,
+                            allDay: false,
+                            extendedProps: {
+                                no_invoice: row.no_invoice,
+                                calendar: row.filter
+                            }
+                        }
+                        result_data.push(obj);
+                    }
+                    successCallback(result_data);
+                    return result_data;
                 },
                 error: function (error) {
-                  console.log(error);
+                    console.log(error);
                 }
-              }
-            ); */
-
-            var calendars = selectedCalendars();
-            // We are reading event object from app-calendar-events.js file directly by including that file above app-calendar file.
-            // You should make an API call, look into above commented API call for reference
-            var selectedEvents = currentEvents.filter(function (event) {
-                // console.log(event.extendedProps.calendar.toLowerCase());
-                return calendars.includes(event.extendedProps.calendar.toLowerCase());
             });
+
+            // var calendars = selectedCalendars();
+            // // We are reading event object from app-calendar-events.js file directly by including that file above app-calendar file.
+            // // You should make an API call, look into above commented API call for reference
+            // var selectedEvents = currentEvents.filter(function (event) {
+            //     // console.log(event.extendedProps.calendar.toLowerCase());
+            //     return calendars.includes(event.extendedProps.calendar.toLowerCase());
+            // });
             // if (selectedEvents.length > 0) {
-            successCallback(selectedEvents);
+            //     successCallback(selectedEvents);
             // }
         }
 

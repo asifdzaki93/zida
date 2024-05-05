@@ -24,15 +24,6 @@ function gantiformat($nomorhp)
 
 if ($_POST['action'] == "sales_data") {
     $usernya = $mysqli->user_master;
-    $columns = array(
-        0 => 'id_sales_data',
-        1 => 'img',
-        2 => 'operator',
-        3 => 'totalorder',
-        4 => 'note',
-        5 => 'aksi',
-    );
-
     $limit = $_POST['length'] ?? 10;
     $start = $_POST['start'] ?? 0;
     $orderIndex = $_POST['order']['0']['column'] ?? 0;

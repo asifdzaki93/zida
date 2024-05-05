@@ -16,6 +16,7 @@ if($editing){
     }
 }
 
+$is_modal_request = ($_GET["is_modal_request"]??"")=="true";
 $data = getOrderData($mysqli,$_GET["no_invoice"]??"");
 if($data["success"]!=true){
     echo "404 Data tidak ditemukan";
@@ -28,17 +29,20 @@ $jenis_pengiriman = str_replace("Jenis Pengiriman : ","",$note[1]??"");
 $jam_acara = str_replace("Jam Acara : ","",$note[0]??"");
 $catatan = str_replace("Catatan : ", "", $note[2]??"");
 $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum Lunas";
+$invoice_content_body="modal-body";
+if(!$is_modal_request){
+    $invoice_content_body="card-body";
 ?>
-
 <div class="row invoice-preview">
     <!-- Invoice -->
     <div class="col-xl-9 col-md-8 col-12 mb-md-0 mb-4">
         <div class="card invoice-preview-card">
-            <div class="card-body">
+            <?php };?>
+            <div class="<?php echo $invoice_content_body;?>">
                 <div class="d-flex justify-content-between flex-xl-row flex-md-column flex-sm-row flex-column">
                     <div class="mb-xl-0 pb-3">
                         <div class="d-flex svg-illustration align-items-center gap-2 mb-4">
-                            <img src="<?php echo $base_url; ?>assets//img/branding/ZIEDA.png" width=180>
+                            <img src="<?php echo $base_url; ?>/assets/img/branding/ZIEDA.png" width=180>
                             <span class="h4 mb-0 app-brand-text fw-bold"></span>
                         </div>
                         <p class="mb-1">Jl. Jambian 21 Kelurahan Sokorejo, Kecamatan Limpung</p>
@@ -109,7 +113,7 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
                 </div>
             </div>
             <hr class="my-0">
-            <div class="card-body">
+            <div class="<?php echo $invoice_content_body;?>">
                 <div class="d-flex justify-content-between flex-wrap">
                     <div class="col-6">
                         <h6 class="pb-2">Kepada Yth:</h6>
@@ -274,7 +278,7 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
                 </table>
             </div>
 
-            <div class="card-body">
+            <div class="<?php echo $invoice_content_body;?>">
                 <div class="row">
                     <div class="col-12">
                         <span class="fw-bold">Catatan :</span>
@@ -308,6 +312,7 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
         </div>
     </div>
     <!-- /Invoice -->
+    <?php if(!$is_modal_request){;?>
 
     <!-- Invoice Actions -->
     <div class="col-xl-3 col-md-4 col-12 invoice-actions">
@@ -681,3 +686,5 @@ $status_tagihan = $order["totalpay"] >= $order["totalorder"] ? "Lunas" : "Belum 
         loadPage("order_detail.php?no_invoice=" + no_invoice + "&editing=true");
     }
 </script>
+
+<?php };?>

@@ -2,6 +2,7 @@
 // memanggil library FPDF   
 require('../fpdfnew/fpdf.php');
 require_once 'data/koneksi.php'; // Menggunakan file koneksi yang sama
+include "data/base_sistem.php";
 include "data/produksi2.php";
 
 //fpdf setting

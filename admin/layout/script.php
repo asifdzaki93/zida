@@ -20,6 +20,7 @@
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/chartjs/chartjs.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/swiper/swiper.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/flatpickr/flatpickr.js"></script>
+<script src="<?php echo $base_url; ?>/assets/vendor/libs/moment/moment.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/select2/select2.js"></script>
 
@@ -48,6 +49,7 @@
         loadPage(lastURLSegment);
     }
     async function loadPage(page) {
+        $(".tooltip").remove();
         await $.ajax({
             url: "jquery_page.php?page=" + page.replace("?", "&"),
             success: function (result) {
