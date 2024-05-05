@@ -88,6 +88,13 @@
         .getMonth() - 1, 1);
 
     var events = [];
+    var invoice_terpilih = "";
+
+    function bukaInvoice() {
+        $("#buka_invoice").modal("hide");
+        loadPage("order_detail.php&no_invoice=" + invoice_terpilih);
+    }
+
     (function () {
         var calendarEl = document.getElementById('calendar'),
             appCalendarSidebar = document.querySelector('.app-calendar-sidebar'),
@@ -207,10 +214,10 @@
             });
         }
 
-        var invoice_terpilih = "";
         // Event click function
         async function eventClick(info) {
             var no_invoice = info.event.extendedProps.no_invoice;
+            invoice_terpilih = no_invoice;
             $("#buka_invoice").modal("show");
             $("#buka_invoice_resi").attr("href", "<?php echo $base_url?>/admin/cetak_resi.php?no_invoice=" +
                 no_invoice)
@@ -225,11 +232,6 @@
                     $("#buka_invoice_content").html(resultX);
                 }
             });
-        }
-
-        function bukaInvoice() {
-            $("#buka_invoice").modal("hide");
-            loadPage("order_detail.php&no_invoice=" + invoice_terpilih);
         }
 
         // Modify sidebar toggler
