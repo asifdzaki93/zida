@@ -26,10 +26,10 @@ $pdf = new Pdf('P', 'mm', array(105, 149));
 $pdf->SetMargins(5, 5, 10);
 $pdf->SetAutoPageBreak(true, 10);
 
-$no_invoices = explode(",",$_REQUEST['no_invoice']??"");
-foreach($no_invoices as $no_invoice){
+$no_invoices = explode(",", $_REQUEST['no_invoice'] ?? "");
+foreach ($no_invoices as $no_invoice) {
     $output = getOrderData($mysqli, $no_invoice);
-    if($output["success"]!=true){
+    if ($output["success"] != true) {
         continue;
     }
     $r = $output["orderDetails"];
@@ -39,7 +39,8 @@ foreach($no_invoices as $no_invoice){
 
     // Insert a picture in the top-left corner at 300 dpi
     $pdf->Image('../img/resi.png', 0, 0, 105, 149);
-    $pdf->Image('http://localhost/zida/admin/qr_generator.php?code=http://localhost/zida/admin/cetak_resi.php?no_invoice=3-BDM07-P080523', 7, 107, 28, 28, 'png');
+
+    $pdf->Image($base_url . '/admin/qr_generator.php?code=' . $base_url . '/admin/cetak_resi.php?no_invoice=3-BDM07-P080523', 7, 107, 28, 28, 'png');
     // setting jenis font yang akan digunakan
     $pdf->SetFont('Arial', 'B', 10);
     // Memberikan space kebawah agar tidak terlalu rapat
