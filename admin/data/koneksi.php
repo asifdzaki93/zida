@@ -18,3 +18,4 @@ $koneksi = mysqli_connect($server, $username, $password, $database);
 
 $mysqli->user_master = $user_master; 
 $mysqli->user_master_query = "user = '$user_master'"; 
+$mysqli->tanggal_sekarang = date('2023-08-d');

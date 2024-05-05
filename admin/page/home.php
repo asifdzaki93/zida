@@ -360,30 +360,32 @@ $icon = getPercentageChangeIcon($percentageChange);
 
 </div>
 <!-- Doughnut Chart -->
-<div class="col-lg-3 col-12">
+<div class="col-12">
     <div class="card h-100">
-        <h5 class="card-header">Estimasi Uang Masuk</h5>
-        <div class="card-body">
-            <canvas id="doughnutChart" class="chartjs mb-4" data-height="350"></canvas>
-            <ul class="doughnut-legend d-flex justify-content-around ps-0 mb-2 pt-1">
-                <li class="ct-series-0 d-flex flex-column">
-                    <h5 class="mb-0 fw-bold">Pemasukan</h5>
-                    <span id="incomeColor" class="badge badge-dot my-2 cursor-pointer rounded-pill"
-                        style="width: 35px; height: 6px"></span>
-                    <div id="incomePercentage" class="text-muted">80 %</div>
-                </li>
-                <li class="ct-series-1 d-flex flex-column">
-                    <h5 class="mb-0 fw-bold">Penagihan</h5>
-                    <span id="billingColor" class="badge badge-dot my-2 cursor-pointer rounded-pill"
-                        style="width: 35px; height: 6px"></span>
-                    <div id="billingPercentage" class="text-muted">10 %</div>
-                </li>
-
-            </ul>
-            <button id="detailButton" class="btn btn-secondary w-100" type="button">detail</button>
-
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="text-center">Estimasi Uang Masuk</h5>
+                    <canvas id="estimasiUangMasuk" class="chartjs mb-4" data-height="350"></canvas>
+                    <p class="text-center">Total : <b id=estimasiUangMasukTotal></b></p>
+                </div>
+            </div>
+            <div class="col-md-8 table-responsive">
+                <table class="table table-stripped table-border">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Penanggung Jawab</th>
+                            <th>Pemasukan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="estimasiUangMasukTable">
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="card-footer">
+
+        <div class=" card-footer">
             <small>* Informasi ini mencakup penjualan tunai, DP order, dan penagihan.</small>
         </div>
     </div>
@@ -392,12 +394,22 @@ $icon = getPercentageChangeIcon($percentageChange);
 
 
 <script>
+    function formatRupiah(angkaX) {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+            currency: "IDR"
+        }).format(angkaX);
+    }
+
     // Define global reference to the chart instance
     var currentChart = null;
 
     // Update the chart with new data based on timeframe
     function updateChart(timeframe) {
-        fetch(baseUrl + 'admin/data/chart-data2.php?timeframe=' + timeframe) // Dynamic URL based on selected timeframe
+        fetch(baseUrl + 'admin/data/chart-data2.php?timeframe=' +
+                timeframe) // Dynamic URL based on selected timeframe
             .then(response => response.json())
             .then(data => {
                 var chartOptions = {
@@ -544,14 +556,6 @@ $icon = getPercentageChangeIcon($percentageChange);
             });
     }
 
-    // Helper function to format numbers as rupiah
-    function formatRupiah(angka) {
-        var reverse = angka.toString().split('').reverse().join('');
-        var ribuan = reverse.match(/\d{1,3}/g);
-        ribuan = ribuan.join('.').split('').reverse().join('');
-        return ribuan;
-    }
-
     function getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
@@ -559,6 +563,14 @@ $icon = getPercentageChangeIcon($percentageChange);
             color += letters[Math.floor(Math.random() * 16)];
         }
         return color;
+    }
+
+    function getRandomColorInt(count) {
+        var result = [];
+        for (var i = 0; i < count; i++) {
+            result.push(getRandomColor());
+        }
+        return result;
     }
     // Color Variables
     var purpleColor = '#836AF9',
@@ -590,94 +602,42 @@ $icon = getPercentageChangeIcon($percentageChange);
     // Doughnut Chart
     // --------------------------------------------------------------------
 
-    function loadHome() {
-        var doughnutChart = document.getElementById('doughnutChart');
-        if (doughnutChart) {
-            var doughnutChartVar = new Chart(doughnutChart, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Tabvar', 'Mobile', 'Desktop'],
-                    datasets: [{
-                        data: [10, 10, 80],
-                        backgroundColor: [getRandomColor(), getRandomColor(), getRandomColor()],
-                        borderWidth: 0,
-                        pointStyle: 'rectRounded'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    animation: {
-                        duration: 500
-                    },
-                    cutout: '68%',
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    var label = context.labels || '',
-                                        value = context.parsed;
-                                    var output = ' ' + label + ' : ' + value + ' %';
-                                    return output;
-                                }
-                            },
-                            // Updated default tooltip UI
-                            rtl: isRtl,
-                            backgroundColor: cardColor,
-                            titleColor: headingColor,
-                            bodyColor: legendColor,
-                            borderWidth: 1,
-                            borderColor: borderColor
-                        }
-                    }
-                }
-            });
-        }
-    }
-    loadHome();
-
     updateChart('monthly');
     updatePerformance('monthly');
 
     var doughnutChartVar = null;
 
-    fetch(baseUrl + 'admin/data/home-chart.php')
+    fetch(baseUrl + 'admin/data/chart_sales_data_operator.php')
         .then(response => response.json())
         .then(data => {
-            var doughnutChart = document.getElementById('doughnutChart');
+            $("#estimasiUangMasukTable").html("");
+            var i = 0;
+            var total = 0;
+            data.data.forEach(function (element) {
+                i++;
+                total += element.jml * 1;
+                $("#estimasiUangMasukTable").append(
+                    $("<tr></tr>").append(
+                        $("<td></td>").html(i),
+                        $("<td></td>").html(element.penanggungjawab),
+                        $("<td></td>").html(formatRupiah(element.jml))
+                    )
+                );
+            });
+            $("#estimasiUangMasukTotal").html(formatRupiah(total));
+            var doughnutChart = document.getElementById('estimasiUangMasuk');
             if (doughnutChart) {
-                var incomePercentageElement = document.getElementById('incomePercentage');
-                var billingPercentageElement = document.getElementById('billingPercentage');
-                var incomeColorElement = document.getElementById('incomeColor');
-                var billingColorElement = document.getElementById('billingColor');
-                var detailButton = document.getElementById('detailButton');
-
-                var totalIncome = parseInt(data.totalIncome, 10);
-                var totalBilling = parseInt(data.totalBilling, 10);
-                var totalAmount = totalIncome + totalBilling;
-
-                //var incomePercentage = ((totalIncome / totalAmount) * 100).toFixed(2);
-                //var billingPercentage = ((totalBilling / totalAmount) * 100).toFixed(2);
-
-                // Update text and background color
-                incomePercentageElement.innerText = `Rp. ${totalIncome.toLocaleString()}`;
-                billingPercentageElement.innerText = `Rp. ${totalBilling.toLocaleString()}`;
-                detailButton.innerText = `Rp. ${totalAmount.toLocaleString()}`;
-                incomeColorElement.style.backgroundColor = colors[0];
-                billingColorElement.style.backgroundColor = colors[1];
-                var chartStatus = Chart.getChart("doughnutChart"); // <canvas> id
+                var chartStatus = Chart.getChart("estimasiUangMasuk"); // <canvas> id
                 if (chartStatus != undefined) {
                     chartStatus.destroy();
                 }
                 doughnutChartVar = new Chart(doughnutChart, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Pemasukan', 'Penagihan'],
+                        labels: data.penanggungjawab,
                         datasets: [{
-                            data: [totalIncome, totalBilling],
-                            backgroundColor: colors,
+                            data: data.jml,
+                            backgroundColor: getRandomColorInt(data.penanggungjawab.length),
                             borderWidth: 0,
                             pointStyle: 'rectRounded'
                         }]
@@ -697,9 +657,8 @@ $icon = getPercentageChangeIcon($percentageChange);
                                     label: function (tooltipItem) {
                                         var label = tooltipItem.chart.data.labels[tooltipItem
                                             .dataIndex];
-                                        var value = tooltipItem.raw;
-                                        var percentage = ((value / totalAmount) * 100).toFixed(2);
-                                        return `${label}: ${value} (${percentage} %)`;
+                                        var value = formatRupiah(tooltipItem.raw);
+                                        return `${label}: ${value}`;
                                     }
                                 },
                                 rtl: isRtl,
