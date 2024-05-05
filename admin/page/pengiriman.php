@@ -277,10 +277,9 @@
                     var result_data = [];
                     for (var i = 0; i < result.result.length; i++) {
                         var row = result.result[i];
-                        var jam = row.note.split(", ")[0].split(": ")[1];
-                        if (jam == null) {
-                            jam = "00:00";
-                        }
+                        var jam = row.note.split(", ")[1].split(" : ")[1].split(" | ")[0] ==
+                            "Sore" ?
+                            "14:00" : "07:00";
                         var objDate = Date.parse(row.due_date + " " + jam);
                         var obj = {
                             id: i + 1,
