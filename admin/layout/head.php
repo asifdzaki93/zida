@@ -19,6 +19,7 @@
 
 <!-- Vendors CSS -->
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/fullcalendar/fullcalendar.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/typeahead-js/typeahead.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
@@ -31,6 +32,7 @@
 <!-- Page CSS -->
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/pages/app-chat.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/admin/js/history.css">
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/pages/app-calendar.css" />
 
 <!-- Helpers -->
 <script src="<?php echo $base_url; ?>/assets/vendor/js/helpers.js"></script>

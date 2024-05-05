@@ -14,13 +14,13 @@
 <!-- endbuild -->
 
 <!-- Vendors JS -->
+<script src="<?php echo $base_url; ?>/assets/vendor/libs/fullcalendar/fullcalendar.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/apex-charts/apexcharts.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/chartjs/chartjs.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/swiper/swiper.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/flatpickr/flatpickr.js"></script>
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js"></script>
-
 
 <!-- Main JS -->
 <script src=" <?php echo $base_url; ?>/assets/js/main.js"></script>
