@@ -9,10 +9,10 @@
                 <hr class="container-m-nx my-4" />
 
                 <!-- Filter -->
-                <div class="mb-4">
-                    <small class="text-small text-muted text-uppercase align-middle">Filter</small>
-                </div>
+                <small class="text-small text-muted text-uppercase align-middle">Filter Operator</small>
+                <select id="select_operator" class="form-control mb-2"></select>
 
+                <small class="text-small text-muted text-uppercase align-middle">Filter Tagihan</small>
                 <div class="form-check form-check-secondary mb-3">
                     <input class="form-check-input select-all" type="checkbox" id="selectAll" data-value="all"
                         checked />
@@ -272,7 +272,7 @@
             await $.ajax({
                 url: "<?php echo $base_url;?>/admin/data/pengiriman.php?due_date=" +
                     due_date + "due_date_last=" +
-                    due_date_last + "&filter=" + calendars.join(","),
+                    due_date_last + "&filter=" + calendars.join(",") + "&operator=" + operator,
                 success: function (result) {
                     var result_data = [];
                     for (var i = 0; i < result.result.length; i++) {
@@ -423,5 +423,25 @@
             appCalendarSidebar.classList.remove('show');
             appOverlay.classList.remove('show');
         });
+
+        $("#select_operator").select2({
+            ajax: {
+                url: "<?php echo $base_url;?>/admin/data/cari_operator.php",
+                type: "GET",
+                data: function (params) {
+
+                    var queryParameters = {
+                        search: params.term
+                    }
+                    return queryParameters;
+                },
+            }
+        });
+        var operator = ""
+        $('#select_operator').on('change', function () {
+            operator = $("#select_operator option:selected").val();
+            calendar.refetchEvents();
+        })
+
     })();
 </script>
