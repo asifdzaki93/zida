@@ -52,7 +52,7 @@
         document.getElementById('sessionForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const sessionName = document.getElementById('sessionName').value;
-            const eventSource = new EventSource(`http://localhost:3000/sessions/${sessionName}/add-sse?api_key=a6bc226axxxxxxxxxxxxxxxxxxxxx`);
+            const eventSource = new EventSource(`http://localhost:3000/sessions/${sessionName}/add-sse?api_key=a6bc226axxxxxxxxxxxxxx`);
             eventSource.onerror = eventSource.close;
             eventSource.onmessage = (event) => {
                 const data = JSON.parse(event.data);
@@ -65,7 +65,7 @@
         // Fetch sessions and display them
         fetch('http://localhost:3000/sessions', {
                 headers: {
-                    'x-api-key': 'a6bc226axxxxxxxxxxxxxxxxxxxxx'
+                    'x-api-key': 'a6bc226axxxxxxxxxxxxxx'
                 }
             })
             .then(response => response.json())
@@ -75,6 +75,17 @@
                     const listItem = document.createElement('li');
                     listItem.className = 'list-group-item';
                     listItem.textContent = `ID: ${session.id}, Status: ${session.status || 'Unknown'}`;
+
+                    // Create a button to display QR code
+                    const qrButton = document.createElement('button');
+                    qrButton.textContent = 'Show QR';
+                    qrButton.addEventListener('click', () => {
+                        // Logic to display QR code for the selected session
+                        const qrData = getQRDataForSession(session.id); // Implement this function to get QR data
+                        // Display QR code using qrData
+                    });
+
+                    listItem.appendChild(qrButton);
                     sessionList.appendChild(listItem);
                 });
             })
