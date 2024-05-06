@@ -26,16 +26,61 @@
                 </div>
             </div>
         </div>
+        <!-- Form untuk mengisi nama sesi -->
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <form id="sessionForm">
+                    <div class="mb-3">
+                        <label for="sessionName" class="form-label">Nama Sesi:</label>
+                        <input type="text" class="form-control" id="sessionName" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Mulai Sesi</button>
+                </form>
+            </div>
+        </div>
+        <!-- List sesi -->
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <h3>Daftar Sesi:</h3>
+                <ul id="sessionList" class="list-group">
+                    <!-- List items will be added here dynamically -->
+                </ul>
+            </div>
+        </div>
     </div>
     <script type="text/javascript">
-        const eventSource = new EventSource('http://localhost:3000/sessions/tes/add-sse?api_key=a6bc226axxxxxxxxxxxxxxxxxxxxx');
-        eventSource.onerror = eventSource.close;
-        eventSource.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log(data);
-            document.querySelector('#qr').src = data.qr || '';
-            document.querySelector('#data').innerHTML = event.data;
-        };
+        document.getElementById('sessionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const sessionName = document.getElementById('sessionName').value;
+            const eventSource = new EventSource(`http://localhost:3000/sessions/${sessionName}/add-sse?api_key=a6bc226axxxxxxxxxxxxxxxxxxxxx`);
+            eventSource.onerror = eventSource.close;
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log(data);
+                document.querySelector('#qr').src = data.qr || '';
+                document.querySelector('#data').innerHTML = event.data;
+            };
+        });
+
+        // Fetch sessions and display them
+        fetch('http://localhost:3000/sessions', {
+                headers: {
+                    'x-api-key': 'a6bc226axxxxxxxxxxxxxxxxxxxxx'
+                }
+            })
+            .then(response => response.json())
+            .then(sessions => {
+                const sessionList = document.getElementById('sessionList');
+                sessions.forEach(session => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'list-group-item';
+                    listItem.textContent = `ID: ${session.id}, Status: ${session.status || 'Unknown'}`;
+                    sessionList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
     </script>
 </body>
 
