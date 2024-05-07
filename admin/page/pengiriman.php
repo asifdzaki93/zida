@@ -234,7 +234,7 @@
             var calendars = selectedCalendars();
             await $.ajax({
                 url: "<?php echo $base_url;?>/admin/data/pengiriman.php?due_date=" +
-                    due_date + "due_date_last=" +
+                    due_date + "&due_date_last=" +
                     due_date_last + "&filter=" + calendars.join(",") + "&operator=" + operator,
                 success: function (result) {
                     successCallback(result.result);
