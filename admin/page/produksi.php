@@ -14,7 +14,9 @@ nota_admin_render($mysqli, $base_url);
         <div class="row g-4">
             <div class="col-md-6">
                 <div class="form-floating form-floating-outline">
-                    <input onchange="produksiChange(event)" type="text" id=from-datepicker class="form-control" name="due_date" placeholder="Tanggal" value="<?php echo $_GET["due_date"] ?? Date("Y-m-d") ?>" />
+                    <input onchange="produksiChange(event)" type="text" id=from-datepicker class="form-control"
+                        name="due_date" placeholder="Tanggal"
+                        value="<?php echo $_GET["due_date"] ?? Date("Y-m-d") ?>" />
                     <!-- <input type="text" id="multicol-username" class="form-control" placeholder="john.doe" /> -->
                     <label for="from-datepicker">Tanggal</label>
                 </div>
@@ -23,11 +25,14 @@ nota_admin_render($mysqli, $base_url);
                 <div class="input-group input-group-merge">
                     <div class="form-floating form-floating-outline">
                         <!-- <input type="text" id="multicol-email" class="form-control" placeholder="john.doe" aria-label="john.doe" aria-describedby="multicol-email2" /> -->
-                        <select onchange="produksiChange(event)" class="form-control" name="jenis_pengiriman" id="waktu">
-                            <option value="Pagi" <?php echo ($_GET["jenis_pengiriman"] ?? "") == "Pagi" ? "selected=selected" : "" ?>>
+                        <select onchange="produksiChange(event)" class="form-control" name="jenis_pengiriman"
+                            id="waktu">
+                            <option value="Pagi"
+                                <?php echo ($_GET["jenis_pengiriman"] ?? "") == "Pagi" ? "selected=selected" : "" ?>>
                                 Pagi
                             </option>
-                            <option value="Sore" <?php echo ($_GET["jenis_pengiriman"] ?? "") == "Sore" ? "selected=selected" : "" ?>>
+                            <option value="Sore"
+                                <?php echo ($_GET["jenis_pengiriman"] ?? "") == "Sore" ? "selected=selected" : "" ?>>
                                 Sore
                             </option>
                         </select>
@@ -41,7 +46,8 @@ nota_admin_render($mysqli, $base_url);
             <button class="btn btn-primary mx-1">
                 <span><i class="fa fa-search"></i> Filter</span>
             </button>
-            <a href="rekap_produksi.php?due_date=<?php echo $_GET["due_date"] ?? Date("Y-m-d") ?>&jenis_pengiriman=<?php echo $_GET["jenis_pengiriman"] ?? "Pagi" ?>" class="btn btn-secondary">
+            <a href="rekap_produksi.php?due_date=<?php echo $_GET["due_date"] ?? Date("Y-m-d") ?>&jenis_pengiriman=<?php echo $_GET["jenis_pengiriman"] ?? "Pagi" ?>"
+                class="btn btn-secondary">
                 <span><i class="mdi mdi-file-pdf-box me-1"></i> Export</span>
             </a>
         </div>
@@ -90,20 +96,25 @@ nota_admin_render($mysqli, $base_url);
 <div class="nav-align-top mb-4">
     <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
         <li class="nav-item">
-            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home" aria-selected="true">
+            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home"
+                aria-selected="true">
                 <i class="tf-icons mdi mdi-cart-arrow-right me-1"></i> Nota
                 <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1">3</span>
             </button>
         </li>
         <li class="nav-item">
-            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile" aria-selected="false">
+            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile"
+                aria-selected="false">
                 <i class="tf-icons mdi mdi-cookie-settings me-1"></i> Produk
             </button>
         </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade show active" id="navs-pills-justified-home" role="tabpanel">
-            <table id="kirim_hari_ini" class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+            <table id="kirim_hari_ini"
+                class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
                 <thead>
                     <tr>
                         <th style="width:2%" class="sort-numeric">No</th>
@@ -121,7 +132,8 @@ nota_admin_render($mysqli, $base_url);
             </table>
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-profile" role="tabpanel">
-            <table id="kirim_hari_ini_products" class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+            <table id="kirim_hari_ini_products"
+                class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
                 <thead>
                     <tr>
                         <th style="width:1%"></th>
@@ -146,5 +158,95 @@ nota_admin_render($mysqli, $base_url);
     var base_url = "<?php echo $base_url; ?>";
     var pageURL = window.location.href;
     var page = pageURL.substr(pageURL.lastIndexOf('/') + 1);
-    loadProduksi(base_url + "admin/data/kirim_hari_ini.php?" + page.split("?")[1]);
+
+    var hari_ini_table = $('#kirim_hari_ini').DataTable({
+        "order": [
+            [0, 'asc']
+        ],
+        "ajax": {
+            "dataSrc": 'orderDetails',
+            "url": "<?php echo $base_url; ?>/admin/data/kirim_hari_ini.php",
+            "data": function (d) {
+                d.due_date = $("#from-datepicker").val();
+                d.waktu = $("#waktu").val();
+            },
+            "dataType": "json",
+        },
+        "columns": [{
+                "data": "no"
+            },
+            {
+                "data": "no_invoice"
+            },
+            {
+                "data": "costumer"
+            },
+            {
+                "data": "status"
+            },
+            {
+                "data": "totalorder"
+            },
+            {
+                "data": "alamat"
+            },
+            {
+                "data": "aksi"
+            },
+        ],
+    });
+    var productsTable = $('#kirim_hari_ini_products').DataTable({
+        "order": [
+            [0, 'asc']
+        ],
+        "ajax": {
+            "dataSrc": 'products',
+            "url": "<?php echo $base_url; ?>/admin/data/kirim_hari_ini.php",
+            "data": function (d) {
+                d.due_date = $("#from-datepicker").val();
+                d.waktu = $("#waktu").val();
+            },
+            "dataType": "json",
+        },
+        "columns": [{
+                className: 'dt-control',
+                orderable: false,
+                data: null,
+                defaultContent: ''
+            },
+            {
+                "data": "name_product"
+            },
+            {
+                "data": "img",
+                "render": function (data) {
+                    return "<div class='avatar avatar-md me-2'><a target=_blank href='" + data +
+                        "'><img class='rounded-circle' src='" +
+                        data + "'/></a></div>";
+                }
+            },
+            {
+                "data": "amount"
+            }
+        ],
+    });
+    productsTable.on('click', 'td.dt-control', function (e) {
+        let tr = e.target.closest('tr');
+        let row = productsTable.row(tr);
+
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            row.child.hide();
+        } else {
+            // Open this row
+            row.child(row.data().invoices).show();
+        }
+    });
+
+    function produksiChange(e) {
+        e.preventDefault();
+        hari_ini_table.ajax.reload();
+        productsTable.ajax.reload();
+        return false;
+    }
 </script>

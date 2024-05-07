@@ -98,7 +98,7 @@ function getOrderData($mysqli, $raw = false)
             } else {
                 $orderDetail = [
                     'no' => $no,
-                    'no_invoice' => $row['no_invoice'],
+                    'no_invoice' => "<a href='javascript:;' onclick=\"open_invoice('" . $row['no_invoice'] . "')\">" . $row['no_invoice'] . "</a> ",
                     'totalorder' => "Rp " . number_format($row["totalorder"], 0, ',', '.'),
                     'status' => $row['totalpay'] >= $row['totalorder'] ? "Lunas" : "Rp " . number_format($row['totalpay'] - $row['totalorder'], 0, ',', '.'),
                     'costumer' => $row['name_customer'] . "<br>" . $row['telephone'],

@@ -26,13 +26,12 @@ if ($_POST['action'] == "sales_data") {
     $usernya = $mysqli->user_master;
     $limit = $_POST['length'] ?? 10;
     $start = $_POST['start'] ?? 0;
-    $orderIndex = $_POST['order']['0']['column'] ?? 0;
+    $orderIndex = $_POST['order']['0']['column'] ?? 5;
     $dir = $_POST['order']['0']['dir'] ?? 'desc';
     $columns = [
         'sd.id_sales_data',
-        'sd.id_sales_data', 
         'sd.no_invoice', 
-        'sd.due_date',
+        'sd.status',
         'c.name_customer', 
         'sd.totalorder', 
         'sd.date', 
@@ -57,6 +56,10 @@ if ($_POST['action'] == "sales_data") {
     if (!empty($_POST['status'])) {
         $status = $mysqli->real_escape_string($_POST['status']??"");
         $sqlSearch .= "AND sd.status ='$status' ";
+    }
+    if (!empty($_POST['date'])) {
+        $status = $mysqli->real_escape_string($_POST['date']??"");
+        $sqlSearch .= "AND sd.date ='$status' ";
     }
 
     $query = $mysqli->query($sqlBase.$sqlMid.$sqlSearch.$sqlEnd);
@@ -88,7 +91,7 @@ if ($_POST['action'] == "sales_data") {
                 $nestedData['tagihan']='<span class="badge rounded-pill bg-label-success" text-capitalized=""> Lunas </span>';
             }
 
-            $nestedData['no_invoice']="<a href='javascript:;' onclick=\"loadPage('order_detail.php?no_invoice=" . $r['no_invoice'] . "')\"><small>" . $r['no_invoice'] . "</small></a> ";
+            $nestedData['no_invoice']="<a href='javascript:;' onclick=\"open_invoice('" . $r['no_invoice'] . "')\"><small>" . $r['no_invoice'] . "</small></a> ";
 
             $status = $r["status"]??'-';
             $trendTitle = '<span>'.($r["status"]??'-').'<br> <strong>Balance:</strong> '.$tagihan.'<br> <strong>

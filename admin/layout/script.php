@@ -1,3 +1,29 @@
+<!-- Modal -->
+<div class="modal fade" id="buka_invoice" tabindex="-1" aria-labelledby="buka_invoice_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buka_invoice_label">Invoice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div id=buka_invoice_content></div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="bukaInvoice()">Buka</button>
+                <a class="btn btn-secondary" onclick="$('#buka_invoice').modal('hide');" target=_blank
+                    id="buka_invoice_cetak">
+                    Cetak
+                </a>
+                <a class="btn btn-success" onclick="$('#buka_invoice').modal('hide');" target=_blank
+                    id="buka_invoice_resi">
+                    Resi
+                </a>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Core JS -->
 <!-- build:js assets/vendor/js/core.js -->
 <script src="<?php echo $base_url; ?>/assets/vendor/libs/jquery/jquery.js"></script>
@@ -60,9 +86,7 @@
         menambah_history();
         var flatpickrDate = document.querySelector("#from-datepicker");
         if (flatpickrDate !== null) {
-            flatpickrDate.flatpickr({
-                monthSelectorType: "static"
-            });
+            flatpickrDate.flatpickr({});
         }
     };
 
@@ -74,97 +98,32 @@
     refreshPage();
 </script>
 
-<!-- Page Produksi daftar penjualan -->
 <script>
-    function loadProduksi(url) {
-        $('#kirim_hari_ini').DataTable({
-            "order": [
-                [0, 'asc']
-            ],
-            "ajax": {
-                "dataSrc": 'orderDetails',
-                "url": url,
-                "dataType": "json",
-            },
-            "columns": [{
-                    "data": "no"
-                },
-                {
-                    "data": "no_invoice"
-                },
-                {
-                    "data": "costumer"
-                },
-                {
-                    "data": "status"
-                },
-                {
-                    "data": "totalorder"
-                },
-                {
-                    "data": "alamat"
-                },
-                {
-                    "data": "aksi"
-                },
-            ],
-        });
-        var productsTable = $('#kirim_hari_ini_products').DataTable({
-            "order": [
-                [0, 'asc']
-            ],
-            "ajax": {
-                "dataSrc": 'products',
-                "url": url,
-                "dataType": "json",
-            },
-            "columns": [{
-                    className: 'dt-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                },
-                {
-                    "data": "name_product"
-                },
-                {
-                    "data": "img",
-                    "render": function (data) {
-                        return "<div class='avatar avatar-md me-2'><a target=_blank href='" + data +
-                            "'><img class='rounded-circle' src='" +
-                            data + "'/></a></div>";
-                    }
-                },
-                {
-                    "data": "amount"
-                }
-            ],
-        });
-        productsTable.on('click', 'td.dt-control', function (e) {
-            let tr = e.target.closest('tr');
-            let row = productsTable.row(tr);
+    var invoice_terpilih = "";
 
-            if (row.child.isShown()) {
-                // This row is already open - close it
-                row.child.hide();
-            } else {
-                // Open this row
-                row.child(row.data().invoices).show();
+    function bukaInvoice() {
+        $("#buka_invoice").modal("hide");
+        loadPage("order_detail.php&no_invoice=" + invoice_terpilih);
+    }
+
+    async function open_invoice(no_invoice) {
+        invoice_terpilih = no_invoice;
+        $("#buka_invoice").modal("show");
+        $("#buka_invoice_resi").attr("href", "<?php echo $base_url?>/admin/cetak_resi.php?no_invoice=" +
+            no_invoice)
+        $("#buka_invoice_cetak").attr("href",
+            "<?php echo $base_url?>/admin/cetak_invoice.php?no_invoice=" +
+            no_invoice)
+        await $.ajax({
+            url: "<?php echo $base_url;?>/admin/jquery_page.php?page=order_detail.php&no_invoice=" +
+                no_invoice +
+                "&is_modal_request=true",
+            success: function (resultX) {
+                $("#buka_invoice_content").html(resultX);
             }
         });
-    };
-
-    function produksiChange(e) {
-        e.preventDefault();
-        var form = $('#produksiFilter')[0];
-        var data = new FormData(form);
-        var u = new URLSearchParams(data).toString();
-        loadPage("produksi.php?" + u);
-        return false;
     }
-</script>
 
-<script>
     function openInvoice(noInvoice) {
         window.location.href = 'https://pro.kasir.vip/pdf/invoice.php?no_invoice=' + noInvoice;
     }

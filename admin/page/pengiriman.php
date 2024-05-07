@@ -50,33 +50,6 @@
 </div>
 <!-- / Content -->
 
-<!-- Modal -->
-<div class="modal fade" id="buka_invoice" tabindex="-1" aria-labelledby="buka_invoice_label" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="buka_invoice_label">Invoice</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-            <div id=buka_invoice_content></div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" onclick="bukaInvoice()">Buka</button>
-                <a class="btn btn-secondary" onclick="$('#buka_invoice').modal('hide');" target=_blank
-                    id="buka_invoice_cetak">
-                    Cetak
-                </a>
-                <a class="btn btn-success" onclick="$('#buka_invoice').modal('hide');" target=_blank
-                    id="buka_invoice_resi">
-                    Resi
-                </a>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <script>
     var date = new Date();
     var nextDay = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
@@ -88,12 +61,6 @@
         .getMonth() - 1, 1);
 
     var events = [];
-    var invoice_terpilih = "";
-
-    function bukaInvoice() {
-        $("#buka_invoice").modal("hide");
-        loadPage("order_detail.php&no_invoice=" + invoice_terpilih);
-    }
 
     (function () {
         var calendarEl = document.getElementById('calendar'),
@@ -217,21 +184,7 @@
         // Event click function
         async function eventClick(info) {
             var no_invoice = info.event.extendedProps.no_invoice;
-            invoice_terpilih = no_invoice;
-            $("#buka_invoice").modal("show");
-            $("#buka_invoice_resi").attr("href", "<?php echo $base_url?>/admin/cetak_resi.php?no_invoice=" +
-                no_invoice)
-            $("#buka_invoice_cetak").attr("href",
-                "<?php echo $base_url?>/admin/cetak_invoice.php?no_invoice=" +
-                no_invoice)
-            await $.ajax({
-                url: "<?php echo $base_url;?>/admin/jquery_page.php?page=order_detail.php&no_invoice=" +
-                    no_invoice +
-                    "&is_modal_request=true",
-                success: function (resultX) {
-                    $("#buka_invoice_content").html(resultX);
-                }
-            });
+            open_invoice(no_invoice);
         }
 
         // Modify sidebar toggler
@@ -247,6 +200,11 @@
             fcSidebarToggleButton.setAttribute('data-target', '#app-calendar-sidebar');
             fcSidebarToggleButton.insertAdjacentHTML('beforeend',
                 '<i class="mdi mdi-menu mdi-24px text-body"></i>');
+
+            $('.fc-dayGridMonth-button').html("Kalender");
+            $('.fc-timeGridWeek-button').html("Mingguan");
+            $('.fc-listMonth-button').html("Daftar");
+            $('.fc-listDay-button').html("Harian");
         }
 
         // Filter events by calender
@@ -304,7 +262,7 @@
             direction = 'rtl';
         }
         var calendar = new Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
+            initialView: '<?php echo empty($_GET["harian"])? "dayGridMonth":"listDay";?>',
             events: fetchEvents,
             plugins: [dayGridPlugin, interactionPlugin, listPlugin, timegridPlugin],
             editable: true,
@@ -318,7 +276,7 @@
             },
             headerToolbar: {
                 start: 'sidebarToggle, prev,next, title',
-                end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                end: 'dayGridMonth,timeGridWeek,listMonth,listDay'
             },
             direction: direction,
             initialDate: new Date(),
@@ -350,7 +308,7 @@
             },
             viewDidMount: function () {
                 modifyToggler();
-            }
+            },
         });
 
         // Render calendar

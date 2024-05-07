@@ -6,7 +6,8 @@ nota_admin_render($mysqli, $base_url);
 ?>
 <div class="card">
     <div class="card-datatable table-responsive pt-0">
-        <table class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+        <table class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm"
+            style="width:100%">
             <thead>
                 <tr>
                     <th></th>
@@ -40,15 +41,18 @@ nota_admin_render($mysqli, $base_url);
                 Apakah kamu yakin untuk mencetak <b id="modal_cetak_resi_no_invoice"></b>?
             </div>
             <div class="modal-footer">
-                <a target=_blank id="modal_cetak_resi_resi" onclick="$('#modal_cetak_resi').modal('hide')" class="btn btn-primary">Cetak Resi</a>
-                <a target=_blank id="modal_cetak_resi_invoice" onclick="$('#modal_cetak_resi').modal('hide')" class="btn btn-primary">Cetak Invoice</a>
+                <a target=_blank id="modal_cetak_resi_resi" onclick="$('#modal_cetak_resi').modal('hide')"
+                    class="btn btn-primary">Cetak Resi</a>
+                <a target=_blank id="modal_cetak_resi_invoice" onclick="$('#modal_cetak_resi').modal('hide')"
+                    class="btn btn-primary">Cetak Invoice</a>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modal_selesai_produksi" tabindex="-1" aria-labelledby="modal_selesai_produksi_label" aria-hidden="true">
+<div class="modal fade" id="modal_selesai_produksi" tabindex="-1" aria-labelledby="modal_selesai_produksi_label"
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -206,7 +210,7 @@ nota_admin_render($mysqli, $base_url);
             url: "<?php echo $base_url; ?>/admin/data/add_payment.php",
             data: data,
             method: "post",
-            success: function(resultX) {
+            success: function (resultX) {
                 if (resultX == "success") {
                     $('#pelunasan_list_' + no_invoice).remove();
                     delete pelunasan_object[no_invoice];
@@ -244,7 +248,7 @@ nota_admin_render($mysqli, $base_url);
             url: "<?php echo $base_url; ?>/admin/data/selesai_produksi.php",
             data: data,
             method: "post",
-            success: function(resultX) {
+            success: function (resultX) {
                 if (resultX == "success") {
                     dt_invoice.ajax.reload();
                 } else {
@@ -254,10 +258,7 @@ nota_admin_render($mysqli, $base_url);
         });
     }
 
-    function get_status_invoice() {
-        return $("#status_invoice").val();
-    }
-    $(function() {
+    $(function () {
         // Variable declaration for table
         var dt_invoice_table = $('.invoice-list-table');
 
@@ -265,7 +266,7 @@ nota_admin_render($mysqli, $base_url);
         if (dt_invoice_table.length) {
             dt_invoice = dt_invoice_table.DataTable({
                 order: [
-                    [0, 'desc']
+                    [5, 'desc']
                 ],
                 processing: true,
                 responsive: true,
@@ -319,9 +320,10 @@ nota_admin_render($mysqli, $base_url);
                 ],
                 ajax: {
                     "url": "<?php echo $base_url; ?>/admin/data/history.php",
-                    "data": function(d) {
+                    "data": function (d) {
                         d.action = "sales_data";
-                        d.status = get_status_invoice();
+                        d.status = $("#status_invoice").val();
+                        d.date = $("#filter_tanggal").val();
                     },
                     "type": "POST"
                 },
@@ -352,7 +354,7 @@ nota_admin_render($mysqli, $base_url);
                 ],
                 dom: '<"row ms-2 me-3"' +
                     '<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-3"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B><"invoice_aksi">>' +
-                    '<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-3"f<"invoice_status mb-3 mb-md-0">>' +
+                    '<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-3"f<"invoice_status d-flex mb-3 mb-md-0">>' +
                     '>t' +
                     '<"row mx-2"' +
                     '<"col-sm-12 col-md-6"i>' +
@@ -367,7 +369,7 @@ nota_admin_render($mysqli, $base_url);
                 buttons: [{
                     text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-md-inline-block d-none"> Transaksi</span>',
                     className: 'btn btn-primary',
-                    action: function(e, dt, button, config) {
+                    action: function (e, dt, button, config) {
                         alert("Belum ada fitur menambahkan invoice")
                     }
                 }],
@@ -375,14 +377,14 @@ nota_admin_render($mysqli, $base_url);
                 responsive: {
                     details: {
                         display: $.fn.dataTable.Responsive.display.modal({
-                            header: function(row) {
+                            header: function (row) {
                                 var data = row.data();
                                 return 'Details of ' + data['full_name'];
                             }
                         }),
                         type: 'column',
-                        renderer: function(api, rowIdx, columns) {
-                            var data = $.map(columns, function(col, i) {
+                        renderer: function (api, rowIdx, columns) {
+                            var data = $.map(columns, function (col, i) {
                                 return col.title !==
                                     '' // ? Do not show row in modal popup if title is blank (for check box)
                                     ?
@@ -406,14 +408,24 @@ nota_admin_render($mysqli, $base_url);
                         }
                     }
                 },
-                initComplete: function() {
+                initComplete: function () {
                     var column = this;
                     var select = $(
                             '<select id="status_invoice" class="form-select"><option value=""> Cari Status </option></select>'
                         )
-                        .appendTo('.invoice_status').on('change', function() {
+                        .appendTo('.invoice_status').on('change', function () {
                             dt_invoice.ajax.reload();
                         });
+                    $('<input>').attr('id', "filter_tanggal").attr('class', 'form-control ms-2')
+                        .attr("placeholder", "Tanggal")
+                        .appendTo('.invoice_status').on('change', function () {
+                            dt_invoice.ajax.reload();
+                        });
+                    var filter_tanggal = document.querySelector("#filter_tanggal");
+                    if (filter_tanggal !== null) {
+                        filter_tanggal.flatpickr({});
+                    }
+
                     var option = [{
                             "label": "Semua Data",
                             "value": ""
@@ -453,16 +465,16 @@ nota_admin_render($mysqli, $base_url);
             });
         }
         // On each datatable draw, initialize tooltip
-        dt_invoice_table.on('draw.dt', function() {
+        dt_invoice_table.on('draw.dt', function () {
 
             var tooltipTriggerList = [].slice.call(document.querySelectorAll(
                 '[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl, {
                     boundary: document.body
                 });
             });
-            $(".checkbox_invoice").each(function(index) {
+            $(".checkbox_invoice").each(function (index) {
                 var no_invoice = $(this).val();
                 if (selected_invoice.hasOwnProperty(no_invoice)) {
                     $(this).prop('checked', true);
