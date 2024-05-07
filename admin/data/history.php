@@ -51,7 +51,7 @@ if ($_POST['action'] == "sales_data") {
 
     if (!empty($_POST['search']['value'])) {
         $search = $mysqli->real_escape_string($_POST['search']['value']??"");
-        $sqlSearch = "AND sd.no_invoice LIKE '%$search%' or sd.due_date LIKE '%$search%' or c.name_customer LIKE '%$search%' or c.telephone LIKE '%$search%' ";
+        $sqlSearch = "AND (sd.no_invoice LIKE '%$search%' or sd.due_date LIKE '%$search%' or c.name_customer LIKE '%$search%' or c.telephone LIKE '%$search%') ";
     }
     if (!empty($_POST['status'])) {
         $status = $mysqli->real_escape_string($_POST['status']??"");

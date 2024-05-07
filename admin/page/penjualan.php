@@ -133,6 +133,8 @@ nota_admin_render($mysqli, $base_url);
 </div>
 
 <script>
+    sidebarBuka("penjualan", "sistem");
+
     var dt_invoice = null;
     var selected_invoice = {};
 

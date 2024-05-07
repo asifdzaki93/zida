@@ -25,14 +25,13 @@ nota_admin_render($mysqli, $base_url);
                 <div class="input-group input-group-merge">
                     <div class="form-floating form-floating-outline">
                         <!-- <input type="text" id="multicol-email" class="form-control" placeholder="john.doe" aria-label="john.doe" aria-describedby="multicol-email2" /> -->
-                        <select onchange="produksiChange(event)" class="form-control" name="jenis_pengiriman"
-                            id="waktu">
+                        <select onchange="produksiChange(event)" class="form-control" name="waktu" id="waktu">
                             <option value="Pagi"
-                                <?php echo ($_GET["jenis_pengiriman"] ?? "") == "Pagi" ? "selected=selected" : "" ?>>
+                                <?php echo ($_GET["waktu"] ?? "") == "Pagi" ? "selected=selected" : "" ?>>
                                 Pagi
                             </option>
                             <option value="Sore"
-                                <?php echo ($_GET["jenis_pengiriman"] ?? "") == "Sore" ? "selected=selected" : "" ?>>
+                                <?php echo ($_GET["waktu"] ?? "") == "Sore" ? "selected=selected" : "" ?>>
                                 Sore
                             </option>
                         </select>
@@ -46,52 +45,12 @@ nota_admin_render($mysqli, $base_url);
             <button class="btn btn-primary mx-1">
                 <span><i class="fa fa-search"></i> Filter</span>
             </button>
-            <a href="rekap_produksi.php?due_date=<?php echo $_GET["due_date"] ?? Date("Y-m-d") ?>&jenis_pengiriman=<?php echo $_GET["jenis_pengiriman"] ?? "Pagi" ?>"
-                class="btn btn-secondary">
+            <a id="export_produksi" href="rekap_produksi.php" class="btn btn-secondary" target=_blank>
                 <span><i class="mdi mdi-file-pdf-box me-1"></i> Export</span>
             </a>
         </div>
     </form>
 </div>
-
-
-<!-- <div class="card">
-    <form class="row" onsubmit="return produksiChange(event);" id="produksiFilter">
-        <div class="card-body">
-            <div class="col-md-4">
-                <div class="input-group input-group-lg">
-                    <span class="input-group-text">Tanggal</span>
-                    <input onchange="produksiChange(event)" type="text" id=from-datepicker class="form-control" name="due_date" placeholder="Tanggal" value="<?php echo $_GET["due_date"] ?? Date("Y-m-d") ?>" />
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="input-group input-group-lg">
-                    <span class="input-group-text">Waktu</span>
-                    <select onchange="produksiChange(event)" class="form-control" name="jenis_pengiriman">
-                        <option value="Pagi" <?php echo ($_GET["jenis_pengiriman"] ?? "") == "Pagi" ? "selected=selected" : "" ?>>
-                            Pagi
-                        </option>
-                        <option value="Sore" <?php echo ($_GET["jenis_pengiriman"] ?? "") == "Sore" ? "selected=selected" : "" ?>>
-                            Sore
-                        </option>
-                    </select>
-                </div>
-            </div>
-
-
-        </div>
-        <div class="card-footer">
-            <button class="btn btn-primary mx-1">
-                <span><i class="fa fa-search"></i> Filter</span>
-            </button>
-            <a href="rekap_produksi.php?due_date=<?php echo $_GET["due_date"] ?? Date("Y-m-d") ?>&jenis_pengiriman=<?php echo $_GET["jenis_pengiriman"] ?? "Pagi" ?>" class="btn btn-secondary">
-                <span><i class="mdi mdi-file-pdf-box me-1"></i> Export</span>
-            </a>
-        </div>
-    </form>
-</div>
-<br> -->
-
 
 <div class="nav-align-top mb-4">
     <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
@@ -100,7 +59,7 @@ nota_admin_render($mysqli, $base_url);
                 data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home"
                 aria-selected="true">
                 <i class="tf-icons mdi mdi-cart-arrow-right me-1"></i> Nota
-                <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1">3</span>
+                <span id="jumlah_nota" class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1">0</span>
             </button>
         </li>
         <li class="nav-item">
@@ -108,6 +67,7 @@ nota_admin_render($mysqli, $base_url);
                 data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile"
                 aria-selected="false">
                 <i class="tf-icons mdi mdi-cookie-settings me-1"></i> Produk
+                <span id="jumlah_produk" class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1">0</span>
             </button>
         </li>
     </ul>
@@ -155,6 +115,8 @@ nota_admin_render($mysqli, $base_url);
 
 
 <script>
+    sidebarBuka("produksi", "sistem");
+
     var base_url = "<?php echo $base_url; ?>";
     var pageURL = window.location.href;
     var page = pageURL.substr(pageURL.lastIndexOf('/') + 1);
@@ -194,6 +156,9 @@ nota_admin_render($mysqli, $base_url);
                 "data": "aksi"
             },
         ],
+        "drawCallback": function () {
+            $('#jumlah_nota').html(hari_ini_table.data().count());
+        }
     });
     var productsTable = $('#kirim_hari_ini_products').DataTable({
         "order": [
@@ -229,6 +194,9 @@ nota_admin_render($mysqli, $base_url);
                 "data": "amount"
             }
         ],
+        "drawCallback": function () {
+            $('#jumlah_produk').html(productsTable.data().count());
+        }
     });
     productsTable.on('click', 'td.dt-control', function (e) {
         let tr = e.target.closest('tr');
@@ -247,6 +215,8 @@ nota_admin_render($mysqli, $base_url);
         e.preventDefault();
         hari_ini_table.ajax.reload();
         productsTable.ajax.reload();
+        $("#export_produksi").attr("href", "rekap_produksi.php?waktu=" + $("#waktu").val() + "&due_date=" +
+            $("#from-datepicker").val());
         return false;
     }
 </script>

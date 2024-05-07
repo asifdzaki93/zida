@@ -51,6 +51,9 @@
 <!-- / Content -->
 
 <script>
+    sidebarBuka("pengiriman", "sistem");
+    var operator = ""
+
     var date = new Date();
     var nextDay = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     // prettier-ignore
@@ -375,7 +378,6 @@
                 },
             }
         });
-        var operator = ""
         $('#select_operator').on('change', function () {
             operator = $("#select_operator option:selected").val();
             calendar.refetchEvents();

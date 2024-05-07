@@ -96,6 +96,19 @@
         loadPage(lastURLSegment);
     }
     refreshPage();
+
+    function sidebarBuka(id_aktif, id_buka = "") {
+        var aktif = id_aktif.split(",");
+        $(".menu-item").removeClass("active");
+        for (var i = 0; i < aktif.length; i++) {
+            $("#menu-" + aktif[i]).addClass("active");
+        }
+        $(".menu-item").removeClass("open");
+        var buka = id_buka.split(",");
+        for (var i = 0; i < buka.length; i++) {
+            $("#menu-" + buka[i]).addClass("open");
+        }
+    }
 </script>
 
 <script>
