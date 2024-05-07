@@ -23,9 +23,28 @@ $sql="SELECT totalpay,totalorder,no_invoice,due_date,note FROM sales_data WHERE 
 $sql.="and $datequery and $operatorquery and ($filter_query)";
 $result = [];
 $query=$mysqli->query($sql);
+$i = 1;
 while($row=$query->fetch_assoc()){
-    $row["filter"]=$row["totalorder"]>$row["totalpay"]?"pre order":"paid off";
-    array_push($result,$row);
+    $jam = explode(", ",$row["note"]??"")[1]??"";
+    $jam = explode(" : ",$jam??"")[1]??"";
+    $jam = explode(" | ",$jam??"")[0]??"";
+    $jam = $jam == "Sore" ? "14:00" : "07:00";
+    $objDate = date("c",strtotime($row["due_date"] . " " . $jam));
+    $calendar=$row["totalorder"]>$row["totalpay"]?"pre order":"paid off";
+
+    array_push($result,[
+        "id"=>$i,
+        "url"=>"",
+        "title"=>$row["no_invoice"],
+        "start"=>$objDate,
+        "end"=>$objDate,
+        "allDay"=>false,
+        "extendedProps"=> [
+            "no_invoice"=> $row["no_invoice"],
+            "calendar"=> $calendar
+        ]
+    ]);
+    $i++;
 };
 echo json_encode(["result"=>$result]);
 ?>

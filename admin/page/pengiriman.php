@@ -276,29 +276,8 @@
                     due_date + "due_date_last=" +
                     due_date_last + "&filter=" + calendars.join(",") + "&operator=" + operator,
                 success: function (result) {
-                    var result_data = [];
-                    for (var i = 0; i < result.result.length; i++) {
-                        var row = result.result[i];
-                        var jam = row.note.split(", ")[1].split(" : ")[1].split(" | ")[0] ==
-                            "Sore" ?
-                            "14:00" : "07:00";
-                        var objDate = Date.parse(row.due_date + " " + jam);
-                        var obj = {
-                            id: i + 1,
-                            url: '',
-                            title: row.no_invoice,
-                            start: objDate,
-                            end: objDate,
-                            allDay: false,
-                            extendedProps: {
-                                no_invoice: row.no_invoice,
-                                calendar: row.filter
-                            }
-                        }
-                        result_data.push(obj);
-                    }
-                    successCallback(result_data);
-                    return result_data;
+                    successCallback(result.result);
+                    return result.result;
                 },
                 error: function (error) {
                     console.log(error);
