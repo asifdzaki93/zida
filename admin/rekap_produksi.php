@@ -9,7 +9,7 @@ if (isset($_GET['tglkirim'])) {
     $tglkirim = $_GET['tglkirim'];
 }
 $due_date = $_GET["due_date"] ?? date("Y-m-d");
-$jenis_pengiriman = $_GET["jenis_pengiriman"] ?? "Pagi";
+$waktu = $_GET["waktu"] ?? "Pagi";
 //fpdf setting
 class Pdf extends FPDF
 {
@@ -78,7 +78,7 @@ $ini = date('y-m-d');
 
 $orderData = $output["orderDetails"];
 $pdf->SetFont('Arial', 'B', 14);
-$pdf->Cell(190, 5, 'Rekap Shift ' . $jenis_pengiriman, 0, 0, 'C');
+$pdf->Cell(190, 5, 'Rekap Shift ' . $waktu, 0, 0, 'C');
 $pdf->Cell(10, 5, '', 0, 1);
 $pdf->SetFillColor(235, 225, 225);
 $pdf->Cell(10, 5, '', 0, 1);
