@@ -124,7 +124,7 @@ function getOrderData($mysqli, $raw = false)
                             "packages" => "YES"
                         ];
                     } else {
-                        $products[$id_product]["invoices"] = $products[$id_product]["invoices"] . ", " . invoiceMaker($orderDetail["no_invoice"], $p["amount"], $raw);
+                        $products[$id_product]["invoices"] = $products[$id_product]["invoices"] . ", " . invoiceMaker($row["no_invoice"], $p["amount"], $raw);
                     }
                     $products[$id_product]["amount"] = ($products[$id_product]["amount"] ?? 0) + $p["amount"];
                 }
