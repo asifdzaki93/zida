@@ -380,7 +380,7 @@ $icon = getPercentageChangeIcon($percentageChange);
         </div>
     </div>
 </div>
-<!-- /Doughnut Chart -->
+ /Doughnut Chart -->
 
 
 <script>

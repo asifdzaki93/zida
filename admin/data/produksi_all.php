@@ -1,7 +1,7 @@
 <?php
 function getChildProducts($sessionId, $jml, $mysqli)
 {
-    $query = $mysqli->query("SELECT * FROM packagesproduct WHERE sesi = '$sessionId'");
+    $query = $mysqli->query("SELECT * FROM packagesproduct WHERE sesi = $sessionId");
     $all_amount = 0;
     while ($row = $query->fetch_assoc()) {
         $childProducts[] = [
@@ -121,8 +121,8 @@ function getOrderData($mysqli, $raw = false)
             p.session
             FROM sales s 
             LEFT JOIN product p ON s.id_product = p.id_product 
-            WHERE no_invoice = '".$row["no_invoice"]."'");
-            $productsX=[];
+            WHERE no_invoice = '" . $row["no_invoice"] . "'");
+            $productsX = [];
             while ($product = $query->fetch_assoc()) {
                 $jml = $product['amount'];
                 // Jika produk adalah paket, ambil daftar produk anak
@@ -154,7 +154,7 @@ function getOrderData($mysqli, $raw = false)
                             "packages" => $product["packages"] ?? "YES"
                         ];
                         if ($product['img'] !== "" && $product['folder'] !== "") {
-                            $sumber = "https://zieda.id/pro/geten/images/" .$product['folder']."/". $product['img'];
+                            $sumber = "https://zieda.id/pro/geten/images/" . $product['folder'] . "/" . $product['img'];
                         } else {
                             $sumber = "https://zieda.id/pro/geten/images/no_image.jpg";
                         }

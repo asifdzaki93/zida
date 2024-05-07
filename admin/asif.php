@@ -1,140 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+include 'layout/header.php';
+?>
 
-<head>
-    <meta charset="UTF-8">
-    <title>WhatsApp Session Manager</title>
-    <style>
-        table,
-        th,
-        td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
-</head>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#basic">
+    Launch modal 2
+</button>
 
-<body>
-    <h1>WhatsApp Session Manager</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Session ID</th>
-                <th>Status</th>
-                <th>Show QR</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody id="sessionsTableBody"></tbody>
-    </table>
-    <h2>Create New Session</h2>
-    <form id="createSession">
-        <input type="text" id="sessionId" placeholder="Enter Session ID" required>
-        <button type="submit">Create Session</button>
-    </form>
+<!-- Modal -->
+<div class="modal fade" id="basic" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="dropdown btn-pinned">
+                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="mdi mdi-dots-vertical mdi-24px text-muted"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item waves-effect" href="javascript:void(0);">Share connection</a></li>
+                            <li><a class="dropdown-item waves-effect" href="javascript:void(0);">Block connection</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger waves-effect" href="javascript:void(0);">Delete</a></li>
+                        </ul>
+                    </div>
+                    <div class="mx-auto mb-4">
+                        <img src="<?= $base_url; ?>/assets/img/avatars/1.png" alt="Avatar Image" class="rounded-circle w-px-100">
+                    </div>
+                    <h5 class="mb-1 card-title">Mark Gilbert</h5>
+                    <span class="text-muted">UI Designer</span>
+                    <div class="card-datatable table-responsive pt-0">
+                        <table class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>#Invoice</th>
+                                    <th><i class="mdi mdi-trending-up"></i></th>
+                                    <th>Total</th>
+                                    <th class="text-truncate">Dibuat</th>
+                                    <th>Tagihan</th>
+                                    <th class="cell-fit">Aksi</th>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            fetchSessions();
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- List Data Menggunakan DataTable -->
+                            </tbody>
+                        </table>
+                    </div>
 
-            document.getElementById('createSession').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const sessionId = document.getElementById('sessionId').value;
-                createSession(sessionId);
-            });
-        });
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <a href="javascript:;" class="btn btn-primary d-flex align-items-center me-3 waves-effect waves-light"><i class="mdi mdi-account-check-outline me-1"></i>Connected</a>
+                        <a href="javascript:;" class="btn btn-outline-secondary btn-icon waves-effect"><i class="mdi mdi-email-outline"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        function fetchSessions() {
-            fetch('http://localhost:3000/sessions', {
-                    headers: {
-                        'x-api-key': 'a6bc226axxxxxxxxxxxxxx'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch sessions: ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(sessions => {
-                    const table = document.getElementById('sessionsTableBody');
-                    table.innerHTML = '';
-                    sessions.forEach(session => {
-                        const row = table.insertRow();
-                        row.insertCell(0).innerText = session.id;
-                        row.insertCell(1).innerText = session.status;
-                        const qrBtn = row.insertCell(2).appendChild(document.createElement('button'));
-                        qrBtn.innerText = 'Show QR';
-                        qrBtn.onclick = () => showQR(session.id);
-                        const delBtn = row.insertCell(3).appendChild(document.createElement('button'));
-                        delBtn.innerText = 'Delete';
-                        delBtn.onclick = () => deleteSession(session.id);
-                    });
-                })
-                .catch(error => console.error(error.message));
-        }
+    </div>
+</div>
 
-        function showQR(sessionId) {
-            fetch(`http://localhost:3000/sessions/${sessionId}/qr`, {
-                    headers: {
-                        'x-api-key': 'a6bc226axxxxxxxxxxxxxx'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch QR code: ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.qr) {
-                        alert('QR Code: ' + data.qr);
-                    } else {
-                        alert('QR Code not available.');
-                    }
-                })
-                .catch(error => console.error(error.message));
-        }
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#basicModal">
+    Launch modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="dropdown btn-pinned">
+                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="mdi mdi-dots-vertical mdi-24px text-muted"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item waves-effect" href="javascript:void(0);">Share connection</a></li>
+                            <li><a class="dropdown-item waves-effect" href="javascript:void(0);">Block connection</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger waves-effect" href="javascript:void(0);">Delete</a></li>
+                        </ul>
+                    </div>
+                    <div class="mx-auto mb-4">
+                        <img src="<?= $base_url; ?>/assets/img/avatars/1.png" alt="Avatar Image" class="rounded-circle w-px-100">
+                    </div>
+                    <h5 class="mb-1 card-title">Mark Gilbert</h5>
+                    <span class="text-muted">UI Designer</span>
+                    <div class="card-datatable table-responsive pt-0">
+                        <table class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>#Invoice</th>
+                                    <th><i class="mdi mdi-trending-up"></i></th>
+                                    <th>Total</th>
+                                    <th class="text-truncate">Dibuat</th>
+                                    <th>Tagihan</th>
+                                    <th class="cell-fit">Aksi</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- List Data Menggunakan DataTable -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <a href="javascript:;" class="btn btn-primary d-flex align-items-center me-3 waves-effect waves-light"><i class="mdi mdi-account-check-outline me-1"></i>Connected</a>
+                        <a href="javascript:;" class="btn btn-outline-secondary btn-icon waves-effect"><i class="mdi mdi-email-outline"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 
-        function deleteSession(sessionId) {
-            fetch(`http://localhost:3000/sessions/${sessionId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'x-api-key': 'a6bc226axxxxxxxxxxxxxx'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    console.log('Session deleted');
-                    fetchSessions(); // Refresh the list
-                })
-                .catch(error => console.error('Error deleting session:', error));
-        }
 
-        function createSession(sessionId) {
-            fetch('http://localhost:3000/sessions/add', {
-                    method: 'POST',
-                    headers: {
-                        'x-api-key': 'a6bc226axxxxxxxxxxxxxx',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        sessionId: sessionId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Session created', data);
-                    fetchSessions(); // Refresh the list
-                })
-                .catch(error => console.error('Error creating session:', error));
-        }
-    </script>
-</body>
-
-</html>
+<?php
+include 'layout/footer.php';
+?>
