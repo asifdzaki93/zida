@@ -157,7 +157,11 @@ nota_admin_render($mysqli, $base_url);
             },
         ],
         "drawCallback": function () {
-            $('#jumlah_nota').html(hari_ini_table.data().count());
+            try {
+                $('#jumlah_nota').html(hari_ini_table.data().count());
+            } catch (e) {
+                $('#jumlah_nota').html(0);
+            }
         }
     });
     var productsTable = $('#kirim_hari_ini_products').DataTable({
@@ -195,7 +199,11 @@ nota_admin_render($mysqli, $base_url);
             }
         ],
         "drawCallback": function () {
-            $('#jumlah_produk').html(productsTable.data().count());
+            try {
+                $('#jumlah_produk').html(productsTable.data().count());
+            } catch (e) {
+                $('#jumlah_produk').html(0);
+            }
         }
     });
     productsTable.on('click', 'td.dt-control', function (e) {
