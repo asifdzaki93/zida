@@ -12,7 +12,12 @@ if (mysqli_connect_errno()) {
 }
 
 //Menggunakan objek mysqli untuk membuat koneksi dan menyimpan nya dalam variabel $mysqli 
-$mysqli = new mysqli($server, $username, $password, $database);
+class NewMysqli extends mysqli {
+	public $user_master;
+	public $user_master_query;
+	public $tanggal_sekarang;
+}
+$mysqli = new NewMysqli($server, $username, $password, $database);
 
 $koneksi = mysqli_connect($server, $username, $password, $database);
 
