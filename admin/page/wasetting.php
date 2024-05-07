@@ -13,7 +13,7 @@
                     </div>
                     <div class="form-group">
                         <label for="api_key">API Key:</label>
-                        <input type="text" class="form-control" id="api_key" name="api_key" placeholder="Masukkan API key anda" required>
+                        <input type="text" class="form-control" id="api_key" name="api_key" placeholder="Masukkan API Key" required>
                     </div>
                 </div>
                 <div class="card-footer">
