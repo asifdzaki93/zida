@@ -484,6 +484,5 @@ nota_admin_render($mysqli, $base_url);
             })
 
         });
-
     });
 </script>

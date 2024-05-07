@@ -20,16 +20,16 @@ if ($time >= 19 && $time < 04) {
 ?>
 <div class="row gy-4 mb-4">
     <!-- Gamification Card -->
-    <div class="col-md-12 col-lg-8">
-        <div class="card">
-            <div class="d-flex align-items-end row">
-                <div class="col-md-6 order-2 order-md-1">
+    <div class="col-md-12 col-xl-8">
+        <div class="card h-100">
+            <div class="d-flex align-items-end row h-100">
+                <div class="col-md-6 order-2 order-md-1 h-100">
                     <div class="card-body">
                         <h4 class="card-title pb-xl-2">Selamat <?php echo $selamat ?><strong> Admin !</strong>🎉</h4>
                         <p class="mb-0">Ada <span class="fw-semibold"><?php echo $sales_hari_ini; ?> Nota
                             </span>😎 masuk hari ini.</p>
                         <p>Cek Selengkapnya, klik tombol dibawah.</p>
-                        <a href="javascript:;" onclick="loadPage('pengiriman.php?harian=true')"
+                        <a href="javascript:;" onclick="loadPage('penjualan.php?hari_ini=true')"
                             class="btn btn-primary">Selengkapnya</a>
                     </div>
                 </div>
@@ -47,14 +47,16 @@ if ($time >= 19 && $time < 04) {
     <!--/ Gamification Card -->
 
     <!-- Sessions line chart -->
-    <div class="col-lg-2 col-sm-6">
+    <div class="col-xl-2 col-sm-6">
         <div class="card h-100">
             <div class="card-header pb-0">
                 <div class="d-flex align-items-end mb-1 flex-wrap gap-2">
-                    <h4 class="mb-0 me-2" id="data_minggu_ini">Rp 0</h4>
-                    <p class="mb-0 text-success" id="kenaikan_data_minggu_ini">0%</p>
+                    <h5 class="mb-0 me-2" id="data_minggu_ini">Rp 0</h5>
                 </div>
-                <span class=" d-block mb-2 text-muted">Minggu Ini</span>
+                <span class=" d-block mb-2 text-muted">
+                    <b class="text-success" id="kenaikan_data_minggu_ini"></b>
+                    Minggu Ini
+                </span>
             </div>
             <div class="card-body">
                 <div id="sessions"></div>
@@ -64,7 +66,7 @@ if ($time >= 19 && $time < 04) {
     <!--/ Sessions line chart -->
 
     <!-- Statistics Total Order -->
-    <div class="col-lg-2 col-sm-6">
+    <div class="col-xl-2 col-sm-6">
         <div class="card h-100">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
@@ -89,6 +91,22 @@ if ($time >= 19 && $time < 04) {
     <!--/ Statistics Total Order -->
 </div>
 <script>
+    var cardColor, headingColor, labelColor, borderColor, legendColor;
+
+    if (isDarkStyle) {
+        cardColor = config.colors_dark.cardColor;
+        headingColor = config.colors_dark.headingColor;
+        labelColor = config.colors_dark.textMuted;
+        legendColor = config.colors_dark.bodyColor;
+        borderColor = config.colors_dark.borderColor;
+    } else {
+        cardColor = config.colors.cardColor;
+        headingColor = config.colors.headingColor;
+        labelColor = config.colors.textMuted;
+        legendColor = config.colors.bodyColor;
+        borderColor = config.colors.borderColor;
+    }
+
     function formatRupiah(angkaX) {
         return new Intl.NumberFormat("id-ID", {
             style: "currency",

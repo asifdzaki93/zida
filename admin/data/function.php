@@ -71,9 +71,7 @@ function getTotalSales($mysqli)
  */
 function getTotalSalesDay($mysqli)
 {
-    $bulan1 = date('Y-m-01');
-    $bulan2 = date('Y-m-d');
-    $query = $mysqli->query( "SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date BETWEEN '$bulan2' AND '$bulan2'");
+    $query = $mysqli->query( "SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date = '".date('Y-m-d')."'");
     $count = mysqli_num_rows($query);
 
     return number_format($count, 0, ',', '.');

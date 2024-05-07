@@ -1,7 +1,8 @@
 <div class="card">
     <div class="card-body">
         <div class="card-datatable table-responsive pt-0">
-            <table id="packing" class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+            <table id="packing" class="datatables-basic table dt-table dt-responsive display table-striped table-sm"
+                style="width:100%">
                 <thead>
                     <tr>
                         <th style="width:2%" class="sort-numeric">No</th>
@@ -20,3 +21,6 @@
         </div>
     </div>
 </div>
+<script>
+    sidebarBuka("packing", "sistem");
+</script>
