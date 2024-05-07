@@ -19,7 +19,7 @@ function invoiceMaker($invoice, $amount, $raw = false)
     if ($raw) {
         return $invoice . " (" . $amount . ")";
     }
-    return "<a href='javascript:;' onclick=\"loadPage('order_detail.php?no_invoice=" . $invoice . "')\">" . $invoice . " (" . $amount . ")" . "</a>";
+    return "<a href='javascript:;' onclick=\"open_invoice('" . $invoice . "')\">" . $invoice . " (" . $amount . ")" . "</a>";
 }
 
 function getOrderData($mysqli, $raw = false)
@@ -42,7 +42,7 @@ function getOrderData($mysqli, $raw = false)
     LEFT JOIN users o ON o.phone_number = sd.operator 
     WHERE sd.$mysqli->user_master_query AND
     sd.due_date = '".$mysqli->real_escape_string($_GET["due_date"]??Date("Y-m-d"))."' 
-    AND sd.note LIKE '%".$mysqli->real_escape_string($_GET["jenis_pengiriman"]??"")."%' 
+    AND sd.note LIKE '%".$mysqli->real_escape_string($_GET["waktu"]??"")."%' 
     order by operator_name asc"; // Gunakan placeholder untuk prepared statement
 
     $result = $mysqli->query($sql);
@@ -120,7 +120,7 @@ function getOrderData($mysqli, $raw = false)
                             "name_product" => $p["name_product"],
                             "id_product" => $p["id_product"],
                             "img" => "https://zieda.id/pro/geten/images/no_image.jpg",
-                            "invoices" => invoiceMaker($orderDetail["no_invoice"], $p["amount"], $raw),
+                            "invoices" => invoiceMaker($row["no_invoice"], $p["amount"], $raw),
                             "packages" => "YES"
                         ];
                     } else {
@@ -134,7 +134,7 @@ function getOrderData($mysqli, $raw = false)
                     $products[$id_product] = [
                         "name_product" => $product["name_product"],
                         "id_product" => $product["id_product"],
-                        "invoices" => invoiceMaker($orderDetail["no_invoice"], $product["amount"], $raw),
+                        "invoices" => invoiceMaker($row["no_invoice"], $product["amount"], $raw),
                         "packages" => $product["packages"] ?? "YES"
                     ];
                     if ($product['img'] !== "" && $product['folder'] !== "") {
@@ -144,7 +144,7 @@ function getOrderData($mysqli, $raw = false)
                     }
                     $products[$id_product]['img'] = $sumber;
                 } else {
-                    $products[$id_product]["invoices"] = $products[$id_product]["invoices"] . ", " . invoiceMaker($orderDetail["no_invoice"], $product["amount"], $raw);
+                    $products[$id_product]["invoices"] = $products[$id_product]["invoices"] . ", " . invoiceMaker($row["no_invoice"], $product["amount"], $raw);
                 }
                 $products[$id_product]["amount"] = ($products[$id_product]["amount"] ?? 0) + $product["amount"];
             }
