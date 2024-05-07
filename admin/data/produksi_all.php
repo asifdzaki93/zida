@@ -1,7 +1,7 @@
 <?php
 function getChildProducts($sessionId, $jml, $mysqli)
 {
-    $query = $mysqli->query("SELECT * FROM packagesproduct WHERE sesi = '$sessionId'");
+    $query = $mysqli->query("SELECT * FROM packagesproduct WHERE sesi = $sessionId");
     $all_amount = 0;
     while ($row = $query->fetch_assoc()) {
         $childProducts[] = [
