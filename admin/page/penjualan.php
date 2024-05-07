@@ -355,7 +355,7 @@ nota_admin_render($mysqli, $base_url);
                     }
                 ],
                 dom: '<"row ms-2 me-3"' +
-                    '<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-3"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B><"invoice_aksi">>' +
+                    '<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-3"l<"dt-action-buttons invoice_aksi d-flex text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
                     '<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-3"f<"invoice_status d-flex mb-3 mb-md-0">>' +
                     '>t' +
                     '<"row mx-2"' +
@@ -369,7 +369,7 @@ nota_admin_render($mysqli, $base_url);
                 },
                 // Buttons with Dropdown
                 buttons: [{
-                    text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-md-inline-block d-none"> Transaksi</span>',
+                    text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-lg-inline-block d-none"> Transaksi</span>',
                     className: 'btn btn-primary',
                     action: function (e, dt, button, config) {
                         alert("Belum ada fitur menambahkan invoice")
@@ -454,9 +454,9 @@ nota_admin_render($mysqli, $base_url);
                             '" class="text-capitalize">' + option[i].label +
                             '</option>');
                     }
-                    $('<div></div>').attr('class', "dropdown").html(
+                    $('<div></div>').attr('class', "dropdown ms-2 d-grid").html(
                         '<button type="button" class="btn btn-primary dropdown-toggle hide-arrow" data-bs-toggle="dropdown">' +
-                        '<i class="mdi mdi-dots-vertical"></i> Aksi<b class="ms-1" id=selected_invoice_count></b>' +
+                        '<i class="mdi mdi-dots-vertical"></i> <span class="d-lg-inline-block d-none"> Aksi</span><b class="ms-1" id=selected_invoice_count></b>' +
                         '</button>' +
                         '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">' +
                         '<a class="dropdown-item" href="javascript:;" onclick="cetakResi()">Cetak Resi</a>' +
