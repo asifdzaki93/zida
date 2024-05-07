@@ -229,7 +229,7 @@
         async function fetchEvents(info, successCallback) {
             // Fetch Events from API endpoint reference
             var due_date = info.start.toISOString().split('T')[0];
-            var due_date_last = info.start.toISOString().split('T')[0];
+            var due_date_last = info.end.toISOString().split('T')[0];
             // Get requested calendars as Array
             var calendars = selectedCalendars();
             await $.ajax({
