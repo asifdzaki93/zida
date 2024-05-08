@@ -8,7 +8,7 @@ while ($row = $siftX->fetch_assoc()) {
 ?>
 
 <div class="row invoice-preview">
-    <div class="col-md-7 col-12 mb-md-0 mb-4">
+    <div class="col-md-8 col-12 mb-md-0 mb-4">
         <div class="card">
             <div class="card-header">
                 <img src="<?php echo $base_url; ?>/assets/img/branding/ZIEDA.png" width=180>
@@ -37,35 +37,31 @@ while ($row = $siftX->fetch_assoc()) {
         </div>
     </div>
 
-    <div class="col-md-5 col-12">
+    <div class="col-md-4 col-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5>Invoice</h5>
                 <button type="button" class="btn btn-sm btn-secondary" onclick="bersihkan()">Bersihkan</button>
             </div>
+            <div class="p-2" id="produkDibeli">
+
+            </div>
             <div class="table-responsive">
-                <table class="table m-0">
-                    <thead class="table-light border-top">
+                <table class="table m-0 table-striped">
+                    <tbody>
                         <tr>
-                            <th>Item</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="produkDibeli"></tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Total Order</th>
-                            <th id="totalorder" class="text-success">Rp 0</th>
+                            <td>Order</td>
+                            <td id="totalorder" class="text-success">Rp 0</td>
                         </tr>
                         <tr>
-                            <th>Total Bayar</th>
-                            <th><input class="form-control" id="totalbayar" type="number" onchange="hitungSemua()"></th>
+                            <td>Bayar</td>
+                            <td><input class="form-control" id="totalbayar" type="number" onchange="hitungSemua()"></td>
                         </tr>
                         <tr>
-                            <th>Tagihan / Sisa</th>
-                            <th id="tagihansisa" class="text-success">Rp 0</th>
+                            <td>Sisa</td>
+                            <td id="tagihansisa" class="text-success">Rp 0</td>
                         </tr>
-                    </tfoot>
+                    </tbody>
                 </table>
             </div>
             <div class="card-body">
@@ -171,6 +167,7 @@ while ($row = $siftX->fetch_assoc()) {
     }
 
     function hitungProduct(id) {
+        $("#product_" + id + "_amount_label").html($("#product_" + id + "_amount").val())
         total = $("#product_" + id + "_amount").val() * $("#product_" + id + "_selling_price").val();
 
         $("#product_" + id + "_total").val(total);
@@ -182,33 +179,43 @@ while ($row = $siftX->fetch_assoc()) {
         var amountterpilih = $("#product_" + id + "_amount").val();
         if (amountterpilih == null) {
             amountterpilih = 0;
+            var productwidget = '' +
+                '<div class="w-100 ms-2">' +
+                '<small>' + $("#dataproduct_" + id + "_name").val() + '</small>' +
+                '<p class="text-xs block" x-text="priceFormat(item.price)">' + formatRupiah($("#dataproduct_" + id +
+                    "_selling_price").val()) +
+                '</p>' +
+                '</div>';
             $("#produkDibeli").append(
-                $("<tr></tr>").attr("class", "product_dibeli").attr("id", "product_" + id).append(
-                    $("<td></td>").append(
-                        $("#dataproduct_" + id + "_name").val(),
-                        $("<div></div>").attr("class", "input-group input-group-sm").append(
-                            $.parseHTML(
-                                '<button type="button" class="btn btn-primary" ' +
-                                'onclick=\'hapusProduk("' + id + '")\'' +
-                                '><span class = "fa fa-subtract"> </span></button>'
-                            ),
-                            $("<input>").attr("class", "form-control").attr("id", "product_" + id + "_amount")
-                            .attr("type", "number").attr('disabled', true),
-                            $.parseHTML(
-                                '<button type="button" class="btn btn-primary" ' +
-                                'onclick=\'pilihProduct("' + id + '")\'' +
-                                '><span class = "fa fa-add"> </span></button>'
-                            ),
+                $("<div></div>").attr("id", "product_" + id).attr('class',
+                    "product_dibeli bg-light rounded w-100 p-2 mb-2 d-flex justify-content-between").append(
+                    $.parseHTML('<img width=64 height=64 class="rounded" src="' + $("#dataproduct_" + id + "_img")
+                        .val() + '">'),
+                    $.parseHTML(productwidget),
+                    $("<input>").attr("id", "product_" + id + "_selling_price")
+                    .attr("type", "hidden").val($("#dataproduct_" + id + "_selling_price").val()),
+                    $("<input>").attr("id", "product_" + id + "_total")
+                    .attr("type", "hidden").attr("class", "product_total"),
+                    $("<input>").attr("id",
+                        "product_" + id + "_amount")
+                    .attr("type", "hidden"),
+                    $("<div></div>").attr("class", "btn-group").append(
+                        $.parseHTML(
+                            '<button type="button" class="btn btn-sm btn-primary btn-icon" ' +
+                            'onclick=\'hapusProduk("' + id + '")\'' +
+                            '><span class = "fa fa-subtract"> </span></button>'
+                        ),
+                        $.parseHTML(
+                            '<button type="button" class="btn btn-sm btn-white btn-icon" ' +
+                            ' id="product_' + id + '_amount_label">1</button>'
+                        ),
+                        $.parseHTML(
+                            '<button type="button" class="btn btn-sm btn-primary btn-icon" ' +
+                            'onclick=\'pilihProduct("' + id + '")\'' +
+                            '><span class = "fa fa-add"> </span></button>'
+                        ),
 
-                        )
-                    ),
-                    $("<td></td>").append(
-                        $("<input>").attr("id", "product_" + id + "_selling_price")
-                        .attr("type", "hidden").val($("#dataproduct_" + id + "_selling_price").val()),
-                        $("<input>").attr("id", "product_" + id + "_total")
-                        .attr("type", "hidden").attr("class", "product_total"),
-                        $("<b></b>").attr("class", "text-primary").attr("id", "product_" + id + "_total_label")
-                    ),
+                    )
                 )
             );
         }
@@ -243,6 +250,10 @@ while ($row = $siftX->fetch_assoc()) {
                                 result[
                                     i]
                                 .id_product + "_name").attr("value", result[i].name_product),
+                            $("<input>").attr("type", "hidden").attr("id", "dataproduct_" +
+                                result[
+                                    i]
+                                .id_product + "_img").attr("value", result[i].img),
                             $("<input>").attr("type", "hidden").attr("id", "dataproduct_" +
                                 result[
                                     i]
