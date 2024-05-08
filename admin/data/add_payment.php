@@ -83,7 +83,8 @@ function proses($mysqli){
             '".$catatan."'
             )";
     $sql2 = "UPDATE `sales_data` SET `status`='$statusSD',`totalpay`='$totalpay' where `no_invoice` = '".$sales_data["no_invoice"]."'";
-    if ($mysqli->query($sql) === TRUE && $mysqli->query($sql2) === TRUE) {
+    $sql3 = "UPDATE `sales` SET `status`='$statusSD' where `no_invoice` = '".$sales_data["no_invoice"]."'";
+    if ($mysqli->query($sql) === TRUE && $mysqli->query($sql2) === TRUE && $mysqli->query($sql3) === TRUE) {
         echo "success";
         return;
     }

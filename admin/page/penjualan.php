@@ -372,7 +372,7 @@ nota_admin_render($mysqli, $base_url);
                     text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-lg-inline-block d-none"> Transaksi</span>',
                     className: 'btn btn-primary',
                     action: function (e, dt, button, config) {
-                        alert("Belum ada fitur menambahkan invoice")
+                        loadPage("create_invoice.php");
                     }
                 }],
                 // For responsive popup
