@@ -18,6 +18,7 @@ class NewMysqli extends mysqli {
 	public $tanggal_sekarang;
 }
 $mysqli = new NewMysqli($server, $username, $password, $database);
+$mysqli->set_charset("utf8");
 
 $koneksi = mysqli_connect($server, $username, $password, $database);
 
