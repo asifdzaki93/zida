@@ -13,10 +13,8 @@
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/node-waves/node-waves.css" />
 
 <!-- Core CSS -->
-<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/rtl/core.css"
-    class="template-customizer-core-css" />
-<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/rtl/theme-default.css"
-    class="template-customizer-theme-css" />
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/css/demo.css" />
 
 <!-- Vendors CSS -->
@@ -24,8 +22,7 @@
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/fullcalendar/fullcalendar.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/typeahead-js/typeahead.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
-<link rel="stylesheet"
-    href="<?php echo $base_url; ?>/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+<link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/apex-charts/apex-charts.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/swiper/swiper.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/libs/flatpickr/flatpickr.css" />
@@ -37,6 +34,50 @@
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/pages/app-chat.css" />
 <link rel="stylesheet" href="<?php echo $base_url; ?>/admin/js/history.css">
 <link rel="stylesheet" href="<?php echo $base_url; ?>/assets/vendor/css/pages/app-calendar.css" />
+<style>
+    .card-img-left {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+
+    .card-title,
+    .card-text {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .price-text {
+        color: red;
+        font-weight: bold;
+    }
+
+    .floating-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        border: none;
+    }
+</style>
+
+
+<audio id="beepSound" src="<?php echo $base_url; ?>assets/audio/beep-29.mp3" style="display: none;"></audio>
+<audio id="trash" src="<?php echo $base_url; ?>assets/audio/button-21.mp3" style="display: none;"></audio>
+
+
 
 <!-- Helpers -->
 <script src="<?php echo $base_url; ?>/assets/vendor/js/helpers.js"></script>

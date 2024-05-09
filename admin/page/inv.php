@@ -8,37 +8,68 @@ while ($row = $siftX->fetch_assoc()) {
 ?>
 
 
-
 <div class="app-chat card overflow-hidden">
     <div class="row g-0">
 
         <!-- Chat History -->
         <div class="col app-chat-history">
-            <div class="mt-4">
+            <div class="chat-history-wrapper">
                 <!-- Chat message form -->
-                <div class="chat-history-footer">
+                <div class="chat-history-header border-bottom">
                     <form class="form-send-message d-flex justify-content-between align-items-center">
-                        <input class="form-control message-input me-3 shadow-none" placeholder="Cari produk disini" />
+                        <input class="form-control message-input me-3 shadow-none" autofocus id="search_product_name" onchange="cariProduk()" placeholder="Cari Disini" />
                         <div class="message-actions d-flex align-items-center">
-                            <!-- <i class="btn btn-text-secondary btn-icon rounded-pill speech-to-text mdi mdi-microphone mdi-20px cursor-pointer"></i>
-                                <label for="attach-doc" class="form-label mb-0">
-                                    <i class="mdi mdi-paperclip mdi-20px cursor-pointer btn btn-text-secondary btn-icon rounded-pill me-2 ms-1"></i>
-                                    <input type="file" id="attach-doc" hidden />
-                                </label> -->
-                            <button class="btn btn-primary d-flex send-msg-btn">
-                                <span class="align-middle">Cari</span>
+                            <select class="form-select" id="search_product_packages" onchange="cariProduk()">
+                                <option value="">---</option>
+                                <option value="YES">Paket</option>
+                                <option value="NO">Bukan</option>
+                            </select>
+
+                            <button onclick="playTrash(); bersihkan()" class="btn btn-danger d-flex send-msg-btn ms-2">
+                                <span class="mdi mdi-delete-empty"></span>
                             </button>
                         </div>
                     </form>
                 </div>
-            </div>
-            <div class="chat-history-wrapper row mt-4">
-                <?php
-                // Loop untuk membuat 20 card
-                for ($i = 1; $i <= 20; $i++) {
-                ?>
-                    produk
-                <?php } ?>
+                <div class="chat-history-body">
+                    <div class="row " id="search_product_list"></div>
+                </div>
+                <div class="row p-4">
+                    <div class="col-2">
+
+                        <select id="select_customer" class="form-control mb-2"></select>
+
+                    </div>
+                    <div class="col-2">
+                        <input id="from-datepicker" class="form-control mb-2">
+                    </div>
+                    <div class="col-2">
+                        <select id="jenis_pengiriman" class="form-control mb-2">
+                            <?php
+                            foreach ($sift as $s) {
+                                echo "<option value='" . $s . "'>" . $s . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <input class="form-control message-input me-3 shadow-none" id="totalbayar" type="number" onchange="hitungSemua()">
+
+                    </div>
+
+                    <div class="col-1">
+
+                        <button type="button" onclick="selesaiBuat()" class="btn btn-primary">
+                            <span class="mdi mdi-file-document-outline"></span>
+                        </button>
+
+                    </div>
+                    <div class="col-1">
+                        <button type="button" onclick="playTrash(); loadPage('penjualan.php')" class="btn btn-danger ">
+                            <span class="mdi mdi-file-cancel-outline"></span>
+                        </button>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -46,108 +77,62 @@ while ($row = $siftX->fetch_assoc()) {
 
         <!-- Chat & Contacts -->
         <div class="col app-chat-contacts flex-grow-0 overflow-hidden border-end">
+            <div class="col app-chat-contacts app-sidebar flex-grow-0 overflow-hidden border-end" id="app-chat-contacts">
+                <div class="sidebar-header py-3 px-4 border-bottom">
+                    <div class="d-flex align-items-center me-3 me-lg-0">
+                        <div class="flex-shrink-0 avatar avatar-online me-3" data-bs-toggle="sidebar" data-overlay="app-overlay-ex" data-target="#app-chat-sidebar-left">
+                            <img class="user-avatar rounded-circle cursor-pointer" src="<?php echo $base_url; ?>/assets/img/avatars/1.png" alt="Avatar" />
+                        </div>
+                        <div class="flex-grow-1 input-group input-group-merge rounded-pill">
+                            <span class="input-group-text" id="basic-addon-search31"><i class="mdi mdi-magnify lh-1"></i></span>
+                            <input type="text" class="form-control chat-search-input" placeholder="Search..." aria-label="Search..." aria-describedby="basic-addon-search31" />
+                        </div>
+                    </div>
+                    <i class="mdi mdi-close mdi-20px cursor-pointer position-absolute top-0 end-0 mt-2 me-2 fs-4 d-lg-none d-block" data-overlay data-bs-toggle="sidebar" data-target="#app-chat-contacts"></i>
+                </div>
 
+                <div class="sidebar-body">
+                    <div id="baru">
+                        <div class="table-responsive">
+                            <table class="table m-0">
+                                <thead class="table-light border-top">
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="produkDibeli"></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Total Order</th>
+                                        <th class="text-success">Rp 0</th>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Tagihan / Sisa</th>
+                                        <th id="tagihansisa" class="text-success">Rp 0</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="card-footer d-flex">
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+            </div>
         </div>
         <!-- /Chat contacts -->
-
-
-
-
-
         <div class="app-overlay"></div>
     </div>
 </div>
 
 
 
-
-<div class="row invoice-preview">
-    <div class="col-md-7 col-12 mb-md-0 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <img src="<?php echo $base_url; ?>/assets/img/branding/ZIEDA.png" width=180>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="input-group">
-                            <span class="input-group-text" id="basic-addon41"><i class="fa fa-search"></i></span>
-                            <input id="search_product_name" type="text" class="form-control" placeholder="Cari Produk" onchange="cariProduk()">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <select class="form-control" id="search_product_packages" onchange="cariProduk()">
-                            <option value="">Semua Produk</option>
-                            <option value="YES">Paket</option>
-                            <option value="NO">Bukan Paket</option>
-                        </select>
-
-                    </div>
-                </div>
-                <hr />
-                <div class="row" id="search_product_list"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-5 col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5>Invoice</h5>
-                <button type="button" class="btn btn-sm btn-secondary" onclick="bersihkan()">Bersihkan</button>
-            </div>
-            <div class="table-responsive">
-                <table class="table m-0">
-                    <thead class="table-light border-top">
-                        <tr>
-                            <th>Item</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="produkDibeli"></tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Total Order</th>
-                            <th id="totalorder" class="text-success">Rp 0</th>
-                        </tr>
-                        <tr>
-                            <th>Total Bayar</th>
-                            <th><input class="form-control" id="totalbayar" type="number" onchange="hitungSemua()"></th>
-                        </tr>
-                        <tr>
-                            <th>Tagihan / Sisa</th>
-                            <th id="tagihansisa" class="text-success">Rp 0</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="card-body">
-                <small class="text-small text-muted text-uppercase align-middle">Customer</small>
-                <select id="select_customer" class="form-control mb-2"></select>
-                <small class="text-small text-muted text-uppercase align-middle">Operator</small>
-                <select id="select_operator" class="form-control mb-2"></select>
-                <small class="text-small text-muted text-uppercase align-middle">Jatuh Tempo</small>
-                <input id="from-datepicker" class="form-control mb-2">
-                <small class="text-small text-muted text-uppercase align-middle">Jenis Pengiriman</small>
-                <select id="jenis_pengiriman" class="form-control mb-2">
-                    <?php
-                    foreach ($sift as $s) {
-                        echo "<option value='" . $s . "'>" . $s . "</option>";
-                    }
-                    ?>
-                </select>
-                <small class="text-small text-muted text-uppercase align-middle">Jam Acara</small>
-                <input class="form-control mb-2" id=jam_acara type="time" value="">
-                <small class="text-small text-muted text-uppercase align-middle">Catatan</small>
-                <textarea id="catatan" class="form-control"></textarea>
-            </div>
-            <div class="card-footer d-flex">
-                <button type="button" onclick="selesaiBuat()" class="btn btn-primary">Buat</button>
-                <button type="button" onclick="loadPage('penjualan.php')" class="btn btn-danger ms-2">Batal</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal -->
 <div class="modal fade" id="selesai_buat" tabindex="-1" aria-labelledby="selesai_buat_label" aria-hidden="true">
@@ -241,14 +226,14 @@ while ($row = $siftX->fetch_assoc()) {
                         $("<div></div>").attr("class", "input-group input-group-sm").append(
                             $.parseHTML(
                                 '<button type="button" class="btn btn-primary" ' +
-                                'onclick=\'hapusProduk("' + id + '")\'' +
+                                'onclick=\'playSound(); hapusProduk("' + id + '")\'' +
                                 '><span class = "fa fa-subtract"> </span></button>'
                             ),
                             $("<input>").attr("class", "form-control").attr("id", "product_" + id + "_amount")
                             .attr("type", "number").attr('disabled', true),
                             $.parseHTML(
                                 '<button type="button" class="btn btn-primary" ' +
-                                'onclick=\'pilihProduct("' + id + '")\'' +
+                                'onclick=\'playSound(); pilihProduct("' + id + '")\'' +
                                 '><span class = "fa fa-add"> </span></button>'
                             ),
 
@@ -278,6 +263,26 @@ while ($row = $siftX->fetch_assoc()) {
         }
     }
 
+
+
+    function trimText(text, limit) {
+        var words = text.split(' ');
+        if (words.length > limit) {
+            return words.slice(0, limit).join(' ') + '...';
+        } else {
+            return text;
+        }
+    }
+
+
+    function formatRupiah(number) {
+        // Fungsi untuk format rupiah
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR'
+        }).format(number);
+    }
+
     async function cariProduk() {
         $("#search_product_list").html("<tr><td colspan=5>Tidak Ada Produk</td></tr>");
         var name_product = $("#search_product_name").val();
@@ -290,45 +295,22 @@ while ($row = $siftX->fetch_assoc()) {
                 $("#search_product_list").html("");
                 for (var i = 0; i < result.length; i++) {
                     $("#search_product_list").append(
-                        $("<div></div>").attr("class", "col-md-6 mb-2").append(
-                            $("<input>").attr("type", "hidden").attr("id", "dataproduct_" +
-                                result[
-                                    i]
-                                .id_product + "_name").attr("value", result[i].name_product),
-                            $("<input>").attr("type", "hidden").attr("id", "dataproduct_" +
-                                result[
-                                    i]
-                                .id_product + "_selling_price").attr("value", result[i]
-                                .selling_price),
-                            $("<div></div>").attr("class", "card h-100").append(
-                                $("<div></div>").attr("class", "card-body d-flex h-100").append(
-                                    $("<div></div>").attr("class", "avatar avatar-xl")
-                                    .html(
-                                        $("<img>").attr("class", "rounded").attr("src",
-                                            result[i]
-                                            .img),
-                                    ), $("<div></div>").attr("class", "ms-2").append(
-                                        $("<b></b>").attr("class", "text-success").html(
-                                            formatRupiah(
-                                                result[
-                                                    i].selling_price)),
-                                        $("<h5></h5>").attr("class", "text-primary").html(
-                                            result[i]
-                                            .name_product),
-                                        $("<small></small>").html("Package : " +
-                                            result[i]
-                                            .packages),
+                        $("<div></div>").attr("class", "col-md-6 mb-3").append(
+                            $("<div></div>").attr("class", "card position-relative").append(
+                                $("<div></div>").attr("class", "row g-0").append(
+                                    $("<div></div>").attr("class", "col-md-4").append(
+                                        $("<img>").attr("class", "card-img card-img-left").attr("src", result[i].img).attr("alt", "Card image")
                                     ),
+                                    $("<div></div>").attr("class", "col-md-8").append(
+                                        $("<div></div>").attr("class", "card-body").append(
+                                            $("<h5></h5>").attr("class", "card-title").html(trimText(result[i].name_product, 4)),
+                                            $("<p></p>").attr("class", "card-text").html(trimText(result[i].description, 7)),
+                                            $("<p></p>").attr("class", "card-text price-text").html(formatRupiah(result[i].selling_price))
+                                        )
+                                    )
                                 ),
-                                $("<div></div>").attr("class", "card-footer").append(
-                                    $("<button></button>").attr("class",
-                                        "btn btn-primary")
-                                    .attr(
-                                        "onclick", "pilihProduct('" + result[i].id_product +
-                                        "')")
-                                    .html(
-                                        "Tambahkan")
-                                )
+                                $("<button></button>").attr("class", "btn btn-primary btn-sm floating-btn").attr("onclick", "playSound(); pilihProduct('" + result[i].id_product + "')").html("<i class='fas fa-plus'></i>")
+                                //$("<button></button>").attr("class", "btn btn-primary btn-sm floating-btn").html("<i class='fas fa-plus'></i>").attr("onclick", " playSound(); pilihProduct('" + result[i].id_product + "')")
                             )
                         )
                     );
@@ -336,6 +318,36 @@ while ($row = $siftX->fetch_assoc()) {
             }
         });
     }
+
+    function playSound() {
+        var audio = document.getElementById('beepSound');
+        audio.play();
+    }
+
+    function playTrash() {
+        var audio = document.getElementById('trash');
+        audio.play();
+    }
+
+    function trimText(text, limit) {
+        // Memisahkan teks berdasarkan spasi, titik, atau koma
+        var words = text.split(/[\s,\.]+/);
+        if (words.length > limit) {
+            return words.slice(0, limit).join(' ') + '...';
+        } else {
+            return text;
+        }
+    }
+
+
+    function formatRupiah(number) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR'
+        }).format(number);
+    }
+
+
     cariProduk();
 
     async function hapusProdukKonfirmasi() {
@@ -398,5 +410,216 @@ while ($row = $siftX->fetch_assoc()) {
                 }
             }
         });
+    }
+
+
+
+
+    const chatContactsBody = document.querySelector('.app-chat-contacts .sidebar-body'),
+        chatContactListItems = [].slice.call(
+            document.querySelectorAll('.chat-contact-list-item:not(.chat-contact-list-item-title)')
+        ),
+        baru = document.querySelector('#inv'),
+        chatHistoryBody = document.querySelector('.chat-history-body'),
+        chatSidebarLeftBody = document.querySelector('.app-chat-sidebar-left .sidebar-body'),
+        chatSidebarRightBody = document.querySelector('.app-chat-sidebar-right .sidebar-body'),
+        chatUserStatus = [].slice.call(document.querySelectorAll(".form-check-input[name='chat-user-status']")),
+        chatSidebarLeftUserAbout = $('.chat-sidebar-left-user-about'),
+        formSendMessage = document.querySelector('.form-send-message'),
+        messageInput = document.querySelector('.message-input'),
+        searchInput = document.querySelector('.chat-search-input'),
+        speechToText = $('.speech-to-text'), // ! jQuery dependency for speech to text
+        userStatusObj = {
+            active: 'avatar-online',
+            offline: 'avatar-offline',
+            away: 'avatar-away',
+            busy: 'avatar-busy'
+        };
+
+    // Initialize PerfectScrollbar
+    // ------------------------------
+
+    // Chat contacts scrollbar
+    if (chatContactsBody) {
+        new PerfectScrollbar(chatContactsBody, {
+            wheelPropagation: false,
+            suppressScrollX: true
+        });
+    }
+
+    // Chat contacts scrollbar
+    if (baru) {
+        new PerfectScrollbar(baru, {
+            wheelPropagation: false,
+            suppressScrollX: true
+        });
+    }
+
+    // Chat history scrollbar
+    if (chatHistoryBody) {
+        new PerfectScrollbar(chatHistoryBody, {
+            wheelPropagation: false,
+            suppressScrollX: true
+        });
+    }
+
+    // Sidebar left scrollbar
+    if (chatSidebarLeftBody) {
+        new PerfectScrollbar(chatSidebarLeftBody, {
+            wheelPropagation: false,
+            suppressScrollX: true
+        });
+    }
+
+    // Sidebar right scrollbar
+    if (chatSidebarRightBody) {
+        new PerfectScrollbar(chatSidebarRightBody, {
+            wheelPropagation: false,
+            suppressScrollX: true
+        });
+    }
+
+    // Scroll to bottom function
+    function scrollToBottom() {
+        chatHistoryBody.scrollTo(0, chatHistoryBody.scrollHeight);
+    }
+    scrollToBottom();
+
+    // User About Maxlength Init
+    if (chatSidebarLeftUserAbout.length) {
+        chatSidebarLeftUserAbout.maxlength({
+            alwaysShow: true,
+            warningClass: 'label label-success bg-success text-white',
+            limitReachedClass: 'label label-danger',
+            separator: '/',
+            validate: true,
+            threshold: 120
+        });
+    }
+
+    // Update user status
+    chatUserStatus.forEach(el => {
+        el.addEventListener('click', e => {
+            let chatLeftSidebarUserAvatar = document.querySelector('.chat-sidebar-left-user .avatar'),
+                value = e.currentTarget.value;
+            //Update status in left sidebar user avatar
+            chatLeftSidebarUserAvatar.removeAttribute('class');
+            Helpers._addClass('avatar avatar-xl w-px-75 h-px-75 ' + userStatusObj[value] + '', chatLeftSidebarUserAvatar);
+            //Update status in contacts sidebar user avatar
+            let chatContactsUserAvatar = document.querySelector('.app-chat-contacts .avatar');
+            chatContactsUserAvatar.removeAttribute('class');
+            Helpers._addClass('flex-shrink-0 avatar ' + userStatusObj[value] + ' me-3', chatContactsUserAvatar);
+        });
+    });
+
+    // Select chat or contact
+    chatContactListItems.forEach(chatContactListItem => {
+        // Bind click event to each chat contact list item
+        chatContactListItem.addEventListener('click', e => {
+            // Remove active class from chat contact list item
+            chatContactListItems.forEach(chatContactListItem => {
+                chatContactListItem.classList.remove('active');
+            });
+            // Add active class to current chat contact list item
+            e.currentTarget.classList.add('active');
+        });
+    });
+
+    // Filter Chats
+    if (searchInput) {
+        searchInput.addEventListener('keyup', e => {
+            let searchValue = e.currentTarget.value.toLowerCase(),
+                searchChatListItemsCount = 0,
+                searchContactListItemsCount = 0,
+                chatListItem0 = document.querySelector('.chat-list-item-0'),
+                contactListItem0 = document.querySelector('.contact-list-item-0'),
+                searchChatListItems = [].slice.call(
+                    document.querySelectorAll('#chat-list li:not(.chat-contact-list-item-title)')
+                ),
+                searchContactListItems = [].slice.call(
+                    document.querySelectorAll('#contact-list li:not(.chat-contact-list-item-title)')
+                );
+
+            // Search in chats
+            searchChatContacts(searchChatListItems, searchChatListItemsCount, searchValue, chatListItem0);
+            // Search in contacts
+            searchChatContacts(searchContactListItems, searchContactListItemsCount, searchValue, contactListItem0);
+        });
+    }
+
+    // Search chat and contacts function
+    function searchChatContacts(searchListItems, searchListItemsCount, searchValue, listItem0) {
+        searchListItems.forEach(searchListItem => {
+            let searchListItemText = searchListItem.textContent.toLowerCase();
+            if (searchValue) {
+                if (-1 < searchListItemText.indexOf(searchValue)) {
+                    searchListItem.classList.add('d-flex');
+                    searchListItem.classList.remove('d-none');
+                    searchListItemsCount++;
+                } else {
+                    searchListItem.classList.add('d-none');
+                }
+            } else {
+                searchListItem.classList.add('d-flex');
+                searchListItem.classList.remove('d-none');
+                searchListItemsCount++;
+            }
+        });
+        // Display no search fount if searchListItemsCount == 0
+        if (searchListItemsCount == 0) {
+            listItem0.classList.remove('d-none');
+        } else {
+            listItem0.classList.add('d-none');
+        }
+    }
+
+    // Send Message
+    formSendMessage.addEventListener('submit', e => {
+        e.preventDefault();
+        if (messageInput.value) {
+            // Create a div and add a class
+            let renderMsg = document.createElement('div');
+            renderMsg.className = 'chat-message-text mt-3';
+            renderMsg.innerHTML = '<p class="mb-0">' + messageInput.value + '</p>';
+            document.querySelector('li:last-child .chat-message-wrapper').appendChild(renderMsg);
+            messageInput.value = '';
+            scrollToBottom();
+        }
+    });
+
+    // on click of chatHistoryHeaderMenu, Remove data-overlay attribute from chatSidebarLeftClose to resolve overlay overlapping issue for two sidebar
+    let chatHistoryHeaderMenu = document.querySelector(".chat-history-header [data-target='#app-chat-contacts']"),
+        chatSidebarLeftClose = document.querySelector('.app-chat-sidebar-left .close-sidebar');
+    chatHistoryHeaderMenu.addEventListener('click', e => {
+        chatSidebarLeftClose.removeAttribute('data-overlay');
+    });
+    // }
+
+    // Speech To Text
+    if (speechToText.length) {
+        var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+        if (SpeechRecognition !== undefined && SpeechRecognition !== null) {
+            var recognition = new SpeechRecognition(),
+                listening = false;
+            speechToText.on('click', function() {
+                const $this = $(this);
+                recognition.onspeechstart = function() {
+                    listening = true;
+                };
+                if (listening === false) {
+                    recognition.start();
+                }
+                recognition.onerror = function(event) {
+                    listening = false;
+                };
+                recognition.onresult = function(event) {
+                    $this.closest('.form-send-message').find('.message-input').val(event.results[0][0].transcript);
+                };
+                recognition.onspeechend = function(event) {
+                    listening = false;
+                    recognition.stop();
+                };
+            });
+        }
     }
 </script>

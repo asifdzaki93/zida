@@ -10,12 +10,10 @@
             <div id=buka_invoice_content></div>
             <div class="modal-footer">
                 <button class="btn btn-primary" onclick="bukaInvoice()">Buka</button>
-                <a class="btn btn-secondary" onclick="$('#buka_invoice').modal('hide');" target=_blank
-                    id="buka_invoice_cetak">
+                <a class="btn btn-secondary" onclick="$('#buka_invoice').modal('hide');" target=_blank id="buka_invoice_cetak">
                     Cetak
                 </a>
-                <a class="btn btn-success" onclick="$('#buka_invoice').modal('hide');" target=_blank
-                    id="buka_invoice_resi">
+                <a class="btn btn-success" onclick="$('#buka_invoice').modal('hide');" target=_blank id="buka_invoice_resi">
                     Resi
                 </a>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
@@ -69,7 +67,7 @@
             tambah_history_index++;
         }
     }
-    window.onpopstate = function (event) {
+    window.onpopstate = function(event) {
         var pageURL = window.location.href;
         var lastURLSegment = pageURL.substr(pageURL.lastIndexOf('/') + 1);
         loadPage(lastURLSegment);
@@ -78,7 +76,7 @@
         $(".tooltip").remove();
         await $.ajax({
             url: "jquery_page.php?page=" + page.replace("?", "&"),
-            success: function (result) {
+            success: function(result) {
                 $("#jquery_page").html(result);
             }
         });
@@ -122,16 +120,16 @@
     async function open_invoice(no_invoice) {
         invoice_terpilih = no_invoice;
         $("#buka_invoice").modal("show");
-        $("#buka_invoice_resi").attr("href", "<?php echo $base_url?>/admin/cetak_resi.php?no_invoice=" +
+        $("#buka_invoice_resi").attr("href", "<?php echo $base_url ?>/admin/cetak_resi.php?no_invoice=" +
             no_invoice)
         $("#buka_invoice_cetak").attr("href",
-            "<?php echo $base_url?>/admin/cetak_invoice.php?no_invoice=" +
+            "<?php echo $base_url ?>/admin/cetak_invoice.php?no_invoice=" +
             no_invoice)
         await $.ajax({
-            url: "<?php echo $base_url;?>/admin/jquery_page.php?page=order_detail.php&no_invoice=" +
+            url: "<?php echo $base_url; ?>/admin/jquery_page.php?page=order_detail.php&no_invoice=" +
                 no_invoice +
                 "&is_modal_request=true",
-            success: function (resultX) {
+            success: function(resultX) {
                 $("#buka_invoice_content").html(resultX);
             }
         });
@@ -149,7 +147,7 @@
 <!-- Page Produksi pojok kanan atas -->
 <script>
     // Ensure that the document is fully loaded before initializing the chart
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const sessionsChartEl = document.querySelector('#sessions');
         if (sessionsChartEl) {
             const sessionsChartConfig = {
@@ -274,7 +272,7 @@
 </script>
 <!-- Page Produksi daftar penjualan -->
 <script>
-    $(function () {
+    $(function() {
         $('#packing').DataTable({
             "order": [
                 [0, 'desc']
@@ -351,4 +349,6 @@
             "buttons": ['pdf', 'excel']
         });
     });
+
+    $('.form-select').selectpicker();
 </script>
