@@ -295,7 +295,20 @@ while ($row = $siftX->fetch_assoc()) {
                 $("#search_product_list").html("");
                 for (var i = 0; i < result.length; i++) {
                     $("#search_product_list").append(
-                        $("<div></div>").attr("class", "col-md-6 mb-3").append(
+                        $("<div></div>").attr("class", "col-md-4 mb-3").append(
+                            $("<input>").attr("type", "hidden").attr("id", "dataproduct_" +
+                                result[
+                                    i]
+                                .id_product + "_name").attr("value", result[i].name_product),
+                            $("<input>").attr("type", "hidden").attr("id", "dataproduct_" +
+                                result[
+                                    i]
+                                .id_product + "_img").attr("value", result[i].img),
+                            $("<input>").attr("type", "hidden").attr("id", "dataproduct_" +
+                                result[
+                                    i]
+                                .id_product + "_selling_price").attr("value", result[i]
+                                .selling_price),
                             $("<div></div>").attr("class", "card position-relative").append(
                                 $("<div></div>").attr("class", "row g-0").append(
                                     $("<div></div>").attr("class", "col-md-4").append(

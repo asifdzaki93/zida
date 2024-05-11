@@ -15,7 +15,7 @@ function getOmset($mysqli)
 {
     $bulan1 = date('Y-m-01');
     $bulan2 = date('Y-m-d');
-    $query = $mysqli->query( "SELECT SUM(totalorder) as total FROM sales_data WHERE user='$mysqli->user_master' AND date BETWEEN '$bulan1' AND '$bulan2'");
+    $query = $mysqli->query("SELECT SUM(totalorder) as total FROM sales_data WHERE user='$mysqli->user_master' AND date BETWEEN '$bulan1' AND '$bulan2'");
     $data = mysqli_fetch_array($query);
 
     if (empty($data['total'])) {
@@ -41,7 +41,7 @@ function getSalesCount($mysqli, $isPreOrder = false)
     $bulan1 = date('Y-m-01');
     $bulan2 = date('Y-m-d');
     $dueDateCondition = $isPreOrder ? "!= ''" : "= ''";
-    $query = $mysqli->query( "SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND due_date $dueDateCondition AND date BETWEEN '$bulan1' AND '$bulan2'");
+    $query = $mysqli->query("SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND due_date $dueDateCondition AND date BETWEEN '$bulan1' AND '$bulan2'");
     $count = mysqli_num_rows($query);
 
     return number_format($count, 0, ',', '.');
@@ -57,7 +57,7 @@ function getTotalSales($mysqli)
 {
     $bulan1 = date('Y-m-01');
     $bulan2 = date('Y-m-d');
-    $query = $mysqli->query( "SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date BETWEEN '$bulan1' AND '$bulan2'");
+    $query = $mysqli->query("SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date BETWEEN '$bulan1' AND '$bulan2'");
     $count = mysqli_num_rows($query);
 
     return number_format($count, 0, ',', '.');
@@ -71,7 +71,7 @@ function getTotalSales($mysqli)
  */
 function getTotalSalesDay($mysqli)
 {
-    $query = $mysqli->query( "SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date = '".date('Y-m-d')."'");
+    $query = $mysqli->query("SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date = '" . date('Y-m-d') . "'");
     $count = mysqli_num_rows($query);
 
     return number_format($count, 0, ',', '.');
@@ -84,11 +84,11 @@ function getPercentageChange($mysqli)
     $yesterday = date('Y-m-d', strtotime('-1 day'));
 
     // Mendapatkan jumlah transaksi hari ini
-    $query_today = $mysqli->query( "SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date = '$today'");
+    $query_today = $mysqli->query("SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date = '$today'");
     $count_today = mysqli_num_rows($query_today);
 
     // Mendapatkan jumlah transaksi kemarin
-    $query_yesterday = $mysqli->query( "SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date = '$yesterday'");
+    $query_yesterday = $mysqli->query("SELECT * FROM sales_data WHERE user='$mysqli->user_master' AND date = '$yesterday'");
     $count_yesterday = mysqli_num_rows($query_yesterday);
 
     // Menghitung persentase kenaikan atau penurunan
@@ -102,10 +102,11 @@ function getPercentageChange($mysqli)
 }
 
 // Mendapatkan icon persentase kenaikan atau penurunan
-function getPercentageChangeIcon($percentageChange){
+function getPercentageChangeIcon($percentageChange)
+{
     $arrowIcon = ($percentageChange < 0) ? 'mdi mdi-chevron-down' : 'mdi mdi-chevron-up';
-    $color = ($percentageChange < 0) ? 'danger' : 'success';    
-    return ["arrowIcon"=>$arrowIcon,"color"=>$color];
+    $color = ($percentageChange < 0) ? 'danger' : 'success';
+    return ["arrowIcon" => $arrowIcon, "color" => $color];
 }
 
 
@@ -120,14 +121,14 @@ function compareMonthlyOmset($mysqli)
     // Fetch data for the current month
     $currentMonthStart = date('Y-m-01');
     $currentMonthEnd = date('Y-m-d');
-    $currentQuery = $mysqli->query( "SELECT SUM(totalorder) AS total FROM sales_data WHERE user='$mysqli->user_master' AND date BETWEEN '$currentMonthStart' AND '$currentMonthEnd'");
+    $currentQuery = $mysqli->query("SELECT SUM(totalorder) AS total FROM sales_data WHERE user='$mysqli->user_master' AND date BETWEEN '$currentMonthStart' AND '$currentMonthEnd'");
     $currentData = mysqli_fetch_array($currentQuery);
     $currentOmset = $currentData['total'] ? $currentData['total'] : 0;
 
     // Fetch data for the previous month
     $previousMonthStart = date('Y-m-01', strtotime('-1 month'));
     $previousMonthEnd = date('Y-m-t', strtotime('-1 month'));
-    $previousQuery = $mysqli->query( "SELECT SUM(totalorder) AS total FROM sales_data WHERE user='$mysqli->user_master' AND date BETWEEN '$previousMonthStart' AND '$previousMonthEnd'");
+    $previousQuery = $mysqli->query("SELECT SUM(totalorder) AS total FROM sales_data WHERE user='$mysqli->user_master' AND date BETWEEN '$previousMonthStart' AND '$previousMonthEnd'");
     $previousData = mysqli_fetch_array($previousQuery);
     $previousOmset = $previousData['total'] ? $previousData['total'] : 0;
 
@@ -169,7 +170,7 @@ function getCurrentPackages($mysqli)
  */
 function getCurrentProducts($mysqli)
 {
-    $query = $mysqli->query( "SELECT * FROM product WHERE user='$mysqli->user_master' AND packages='NO'");
+    $query = $mysqli->query("SELECT * FROM product WHERE user='$mysqli->user_master' AND packages='NO'");
     $count = mysqli_num_rows($query);
     return number_format($count, 0, ',', '.');
 }
@@ -182,7 +183,7 @@ function getCurrentProducts($mysqli)
  */
 function getCurrentCustomers($mysqli)
 {
-    $query = $mysqli->query( "SELECT * FROM customer WHERE user='$mysqli->user_master'");
+    $query = $mysqli->query("SELECT * FROM customer WHERE user='$mysqli->user_master'");
     $count = mysqli_num_rows($query);
     return number_format($count, 0, ',', '.');
 }
@@ -195,7 +196,7 @@ function getCurrentCustomers($mysqli)
  */
 function getCurrentStaff($mysqli)
 {
-    $query = $mysqli->query( "SELECT * FROM users WHERE master='$mysqli->user_master'");
+    $query = $mysqli->query("SELECT * FROM users WHERE master='$mysqli->user_master'");
     $count = mysqli_num_rows($query);
     return number_format($count, 0, ',', '.');
 }
@@ -207,15 +208,42 @@ $bulan2 = date('Y-m-d');
 function getTotalBayar($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
-    $payorders = $mysqli->query( "SELECT SUM(totalpay) as totalpy FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
+    $payorders = $mysqli->query("SELECT SUM(totalpay) as totalpy FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
     $pay = mysqli_fetch_array($payorders);
     return $pay['totalpy']; // Mengembalikan jumlah total yang sudah dibayar
 }
+function getUangMasuk($mysqli, $bulan1, $bulan2)
+{
+    // Memastikan bahwa 'user_master' ada dan mengambil nilainya
+    $namauser = isset($mysqli->user_master) ? $mysqli->user_master : '';
+
+    // Melakukan query ke database
+    $query = "SELECT ((SUM(IFNULL(totalpay, 0)) - SUM(IFNULL(changepay, 0)))) AS totalpy FROM sales_data WHERE user='$namauser' AND `date` BETWEEN '$bulan1' AND '$bulan2' AND status != 'cancel'";
+    $payorders = $mysqli->query($query);
+
+    // Memeriksa apakah query berhasil
+    if (!$payorders) {
+        // Jika query gagal, tampilkan pesan error dari MySQL
+        die("Query failed: " . $mysqli->error);
+    }
+
+    // Mengambil hasil query
+    $pay = mysqli_fetch_array($payorders);
+
+    // Memastikan bahwa hasilnya bukan false sebelum mengakses index
+    if ($pay) {
+        return $pay['totalpy']; // Mengembalikan jumlah total yang sudah dibayar
+    } else {
+        // Jika tidak ada data, atau query tidak mengembalikan baris apa pun
+        return 0;
+    }
+}
+
 
 function getTotalPreOrderPengiriman($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
-    $preorders = $mysqli->query( "SELECT SUM(totalorder) as totalpo FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
+    $preorders = $mysqli->query("SELECT SUM(totalorder) as totalpo FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
     $po = mysqli_fetch_array($preorders);
     return $po['totalpo']; // Mengembalikan jumlah total pre order
 }
@@ -223,7 +251,7 @@ function getTotalPreOrderPengiriman($mysqli, $bulan1, $bulan2)
 function getTotalTransPengiriman($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
-    $orders = $mysqli->query( "SELECT SUM(totalorder) as totalpo FROM sales_data WHERE user='$namauser' AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
+    $orders = $mysqli->query("SELECT SUM(totalorder) as totalpo FROM sales_data WHERE user='$namauser' AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
     $po = mysqli_fetch_array($orders);
     return $po['totalpo']; // Mengembalikan jumlah total pre order
 }
@@ -232,7 +260,7 @@ function getTotalTransMinus($mysqli, $bulan1, $bulan2)
 {
     $namauser = mysqli_real_escape_string($mysqli, $mysqli->user_master); // Sanitize input untuk mencegah SQL Injection
     $query = "SELECT SUM(totalorder - totalpay) as totalDeficit FROM sales_data WHERE user='$namauser' AND totalpay < totalorder AND status NOT IN ('cancel') AND `date` BETWEEN '$bulan1' AND '$bulan2'";
-    $orders = $mysqli->query( $query);
+    $orders = $mysqli->query($query);
     if (!$orders) {
         die('Error: ' . mysqli_error($mysqli)); // Menangani error jika query gagal
     }
@@ -244,7 +272,7 @@ function getTotalTransMinus($mysqli, $bulan1, $bulan2)
 function getTotalPreOrderMasuk($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
-    $preorders = $mysqli->query( "SELECT SUM(totalorder) as totalpo FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `date` BETWEEN '$bulan1' AND '$bulan2'");
+    $preorders = $mysqli->query("SELECT SUM(totalorder) as totalpo FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `date` BETWEEN '$bulan1' AND '$bulan2'");
     $po = mysqli_fetch_array($preorders);
     return $po['totalpo']; // Mengembalikan jumlah total pre order
 }
@@ -252,7 +280,7 @@ function getTotalPreOrderMasuk($mysqli, $bulan1, $bulan2)
 function getTotalTransMasuk($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
-    $orders = $mysqli->query( "SELECT SUM(totalorder) as totalpo FROM sales_data WHERE user='$namauser' AND `date` BETWEEN '$bulan1' AND '$bulan2'");
+    $orders = $mysqli->query("SELECT SUM(totalorder) as totalpo FROM sales_data WHERE user='$namauser' AND `date` BETWEEN '$bulan1' AND '$bulan2'");
     $po = mysqli_fetch_array($orders);
     return $po['totalpo']; // Mengembalikan jumlah total pre order
 }
@@ -266,7 +294,7 @@ function getCountCash($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
     // Query untuk menghitung jumlah transaksi
-    $transactions = $mysqli->query( "SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date = '0000-00-00' AND `date` BETWEEN '$bulan1' AND '$bulan2'");
+    $transactions = $mysqli->query("SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date = '0000-00-00' AND `date` BETWEEN '$bulan1' AND '$bulan2'");
     $result = mysqli_fetch_array($transactions);
     return $result['transactionCount']; // Mengembalikan jumlah transaksi
 }
@@ -275,7 +303,7 @@ function getCountTransPengiriman($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
     // Query untuk menghitung jumlah transaksi
-    $transactions = $mysqli->query( "SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date = '0000-00-00' AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
+    $transactions = $mysqli->query("SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date = '0000-00-00' AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
     $result = mysqli_fetch_array($transactions);
     return $result['transactionCount']; // Mengembalikan jumlah transaksi
 }
@@ -284,7 +312,7 @@ function getCountPrePengiriman($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
     // Query untuk menghitung jumlah transaksi
-    $transactions = $mysqli->query( "SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
+    $transactions = $mysqli->query("SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `due_date` BETWEEN '$bulan1' AND '$bulan2'");
     $result = mysqli_fetch_array($transactions);
     return $result['transactionCount']; // Mengembalikan jumlah transaksi
 }
@@ -293,7 +321,7 @@ function getCountTransMasuk($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
     // Query untuk menghitung jumlah transaksi
-    $transactions = $mysqli->query( "SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date = '0000-00-00' AND `date` BETWEEN '$bulan1' AND '$bulan2'");
+    $transactions = $mysqli->query("SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date = '0000-00-00' AND `date` BETWEEN '$bulan1' AND '$bulan2'");
     $result = mysqli_fetch_array($transactions);
     return $result['transactionCount']; // Mengembalikan jumlah transaksi
 }
@@ -302,7 +330,7 @@ function getCountPreMasuk($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
     // Query untuk menghitung jumlah transaksi
-    $transactions = $mysqli->query( "SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `date` BETWEEN '$bulan1' AND '$bulan2'");
+    $transactions = $mysqli->query("SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND `date` BETWEEN '$bulan1' AND '$bulan2'");
     $result = mysqli_fetch_array($transactions);
     return $result['transactionCount']; // Mengembalikan jumlah transaksi
 }
@@ -311,7 +339,7 @@ function getCountAllMasuk($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
     // Query untuk menghitung jumlah transaksi
-    $transactions = $mysqli->query( "SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND status NOT IN ('cancel') AND `date` BETWEEN '$bulan1' AND '$bulan2'");
+    $transactions = $mysqli->query("SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND status NOT IN ('cancel') AND `date` BETWEEN '$bulan1' AND '$bulan2'");
     $result = mysqli_fetch_array($transactions);
     return $result['transactionCount']; // Mengembalikan jumlah transaksi
 }
@@ -320,7 +348,7 @@ function getCountMinus($mysqli, $bulan1, $bulan2)
 {
     $namauser = $mysqli->user_master;
     // Query untuk menghitung jumlah transaksi dimana total pembayaran kurang dari total pesanan
-    $transactions = $mysqli->query( "SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND totalpay < totalorder AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND due_date BETWEEN '$bulan1' AND '$bulan2'");
+    $transactions = $mysqli->query("SELECT COUNT(*) as transactionCount FROM sales_data WHERE user='$namauser' AND totalpay < totalorder AND due_date != '0000-00-00' AND status IN ('pre order', 'finish') AND due_date BETWEEN '$bulan1' AND '$bulan2'");
     $result = mysqli_fetch_array($transactions);
     return $result['transactionCount']; // Mengembalikan jumlah transaksi
 }
@@ -339,7 +367,3 @@ function getCountMinus($mysqli, $bulan1, $bulan2)
 //echo getSalesCount($mysqli, true);
 //echo getTotalSales($mysqli);
 //echo compareMonthlyOmset($mysqli);
-
-
-
-?>

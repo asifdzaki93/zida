@@ -13,6 +13,7 @@ $countTransM    = getCountTransMasuk($mysqli, $bulan1, $bulan2);
 $countPreOrderM = getCountPreMasuk($mysqli, $bulan1, $bulan2);
 $countAllM      = getCountAllMasuk($mysqli, $bulan1, $bulan2);
 $countMinus     = getCountMinus($mysqli, $bulan1, $bulan2);
+$uangMasuk      = getUangMasuk($mysqli, $bulan1, $bulan2);
 
 $selisih = $totalPreOrderP - $totalBayar;
 
@@ -121,15 +122,13 @@ $icon = getPercentageChangeIcon($percentageChange);
                             <h6 class="mb-0 me-2 text-primary">
                                 <strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong>
                             </h6>
-                            <small class="">Diterima: <?= number_format($lunas2, 0, ',', '.'); ?>%</small><small
-                                class="text-success"><?= '(Rp.' . number_format($totalBayar, 0, ',', '.') . ')' ?></small>
+                            <small class="">Diterima: <?= number_format($lunas2, 0, ',', '.'); ?>%</small><small class="text-success"><?= '(Rp.' . number_format($totalBayar, 0, ',', '.') . ')' ?></small>
                         </div>
                     </div>
                 </div>
                 <div class="col-6 text-end d-flex align-items-end justify-content-center">
                     <div class="card-body pb-0 pt-3 position-absolute bottom-0">
-                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-ratings-illustration.png"
-                            alt="Ratings" width="95" />
+                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-ratings-illustration.png" alt="Ratings" width="95" />
                     </div>
                 </div>
             </div>
@@ -153,15 +152,13 @@ $icon = getPercentageChangeIcon($percentageChange);
                                 <strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong>
                             </h6>
                             <small class="">Piutang: <?= number_format($lunas1, 0, ',', '.'); ?>%</small>
-                            <small
-                                class="text-danger"><?= '(Rp.' . number_format($selisih, 0, ',', '.') . ')' ?></small>
+                            <small class="text-danger"><?= '(Rp.' . number_format($selisih, 0, ',', '.') . ')' ?></small>
                         </div>
                     </div>
                 </div>
                 <div class="col-6 text-end d-flex align-items-end justify-content-center">
                     <div class="card-body pb-0 pt-3 position-absolute bottom-0">
-                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-session-illustration.png"
-                            alt="Ratings" width="81" />
+                        <img src="<?php echo $base_url; ?>/assets/img/illustrations/card-session-illustration.png" alt="Ratings" width="81" />
                     </div>
                 </div>
             </div>
@@ -178,8 +175,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                 <div class="d-flex justify-content-between">
                     <h5 class="mb-1">Grafik Transaksi</h5>
                     <div class="dropdown">
-                        <button class="btn p-0" type="button" id="weeklyOverviewDropdown" data-bs-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
+                        <button class="btn p-0" type="button" id="weeklyOverviewDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical mdi-24px"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="weeklyOverviewDropdown">
@@ -221,7 +217,7 @@ $icon = getPercentageChangeIcon($percentageChange);
 
                         </div>
                     </div>
-                    <h5 class="mb-1">Rp.0</h5>
+                    <h5 class="mb-1"><?= "Rp " . number_format($totalTransM, 0, ',', '.'); ?></h5>
                 </div>
                 <div class="card-body">
                     <div class="row mt-3">
@@ -259,10 +255,8 @@ $icon = getPercentageChangeIcon($percentageChange);
                     </div>
                     <div class="d-flex align-items-center mt-2 pt-1">
                         <div class="progress w-100 rounded" style="height: 10px">
-                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar"
-                                aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%"
-                                aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -276,7 +270,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                                 <small class="mb-0 text-muted">Diterima</small>
                             </div>
                             <h4 class="mb-0 pt-1 text-nowrap">0%</h4>
-                            <small class="text-muted text-nowrap">0</small>
+                            <small class="text-muted text-nowrap"><?= "Rp " . number_format($uangMasuk, 0, ',', '.'); ?></small>
                         </div>
                         <div class="col-4">
                             <div class="divider divider-vertical">
@@ -300,10 +294,8 @@ $icon = getPercentageChangeIcon($percentageChange);
                     </div>
                     <div class="d-flex align-items-center mt-2 pt-1">
                         <div class="progress w-100 rounded" style="height: 10px">
-                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar"
-                                aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%"
-                                aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -348,8 +340,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                         </div>
                         <div class="d-flex align-items-center mt-2 pt-1">
                             <div class="progress w-100 rounded" style="height: 10px">
-                                <div class="progress-bar bg-warning" style="width: 0%" role="progressbar"
-                                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar bg-warning" style="width: 0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                     </div>
@@ -475,7 +466,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                     },
                     yaxis: {
                         labels: {
-                            formatter: function (val) {
+                            formatter: function(val) {
                                 if (val >= 1000000) {
                                     return Math.floor(val / 1000000) + ' Jt';
                                 } else if (val >= 1000) {
@@ -615,7 +606,7 @@ $icon = getPercentageChangeIcon($percentageChange);
             $("#estimasiUangMasukTable").html("");
             var i = 0;
             var total = 0;
-            data.data.forEach(function (element) {
+            data.data.forEach(function(element) {
                 i++;
                 total += element.jml * 1;
                 $("#estimasiUangMasukTable").append(
@@ -656,7 +647,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                             },
                             tooltip: {
                                 callbacks: {
-                                    label: function (tooltipItem) {
+                                    label: function(tooltipItem) {
                                         var label = tooltipItem.chart.data.labels[tooltipItem
                                             .dataIndex];
                                         var value = formatRupiah(tooltipItem.raw);
@@ -675,7 +666,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                 });
 
                 // Handle button click to show total amount
-                detailButton.addEventListener('click', function () {
+                detailButton.addEventListener('click', function() {
                     alert(`Total Estimasi Uang Masuk: Rp ${totalAmount.toLocaleString()}`);
                 });
             }
