@@ -59,7 +59,7 @@ nota_admin_render($mysqli, $base_url);
                 data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home"
                 aria-selected="true">
                 <i class="tf-icons mdi mdi-cart-arrow-right me-1"></i> Nota
-                <span id="jumlah_nota" class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1">0</span>
+                <span id="jumlah_nota" class="badge rounded-pill bg-danger ms-1">0</span>
             </button>
         </li>
         <li class="nav-item">
@@ -67,7 +67,7 @@ nota_admin_render($mysqli, $base_url);
                 data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile"
                 aria-selected="false">
                 <i class="tf-icons mdi mdi-cookie-settings me-1"></i> Produk
-                <span id="jumlah_produk" class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1">0</span>
+                <span id="jumlah_produk" class="badge rounded-pill bg-danger ms-1">0</span>
             </button>
         </li>
     </ul>

@@ -4,6 +4,14 @@ header('Content-Type: application/json');
 require_once 'koneksi.php'; // Pastikan file koneksi.php tersedia dan terhubung ke database
 include 'fungsi_indotgl.php'; // Jika diperlukan
 
+$searchProductQuery = "";
+$searchPelangganQuery = "";
+if(!empty($_POST["cari"])){
+    $like = "LIKE '%".$mysqli->real_escape_string($_POST["cari"])."%'";
+    $searchProductQuery = " AND p.name_product $like";
+    $searchPelangganQuery = " AND (telephone $like or name_customer $like or email $like)";
+}
+
 if (isset($_POST['action']) && $_POST['action'] == "produk_data") {
     $usernya = $mysqli->user_master;
 
@@ -45,7 +53,7 @@ if (isset($_POST['action']) && $_POST['action'] == "produk_data") {
     $sql = "SELECT p.*, c.name_category
             FROM product p
             LEFT JOIN category c ON p.id_category = c.id_category
-            WHERE p.user = '$usernya' AND p.packages = 'NO'
+            WHERE p.user = '$usernya' AND p.packages = 'NO' $searchProductQuery
             ORDER BY $orderColumn $orderDirection
             LIMIT $start, $limit";
 
@@ -95,7 +103,7 @@ if (isset($_POST['action']) && $_POST['action'] == "produk_data") {
     }
 
     // Hitung total data yang tersedia dalam tabel
-    $totalRecordsQuery = $mysqli->query("SELECT COUNT(id_product) as total FROM product WHERE user = '$usernya' AND packages = 'NO'");
+    $totalRecordsQuery = $mysqli->query("SELECT COUNT(id_product) as total FROM product p WHERE user = '$usernya' AND packages = 'NO' $searchProductQuery");
     $totalRecords = $totalRecordsQuery->fetch_assoc()['total'] ?? 0;
 
     // Format data yang akan dikirimkan sebagai JSON
@@ -145,7 +153,7 @@ if (isset($_POST['action']) && $_POST['action'] == "produk_data") {
     // Query utama untuk mengambil data pelanggan
     $sql = "SELECT *
             FROM customer
-            WHERE user = '$usernya'
+            WHERE user = '$usernya' $searchPelangganQuery
             ORDER BY $orderColumn $orderDirection
             LIMIT $start, $limit";
 
@@ -197,7 +205,7 @@ if (isset($_POST['action']) && $_POST['action'] == "produk_data") {
     }
 
     // Hitung total data yang tersedia dalam tabel
-    $totalRecordsQuery = $mysqli->query("SELECT COUNT(id_customer) as total FROM customer WHERE user = '$usernya'");
+    $totalRecordsQuery = $mysqli->query("SELECT COUNT(id_customer) as total FROM customer WHERE user = '$usernya' $searchPelangganQuery");
     $totalRecords = $totalRecordsQuery->fetch_assoc()['total'] ?? 0;
 
     // Format data yang akan dikirimkan sebagai JSON
@@ -276,7 +284,7 @@ if (isset($_POST['action']) && $_POST['action'] == "produk_data") {
     $sql = "SELECT p.*, c.name_category
             FROM product p
             LEFT JOIN category c ON p.id_category = c.id_category
-            WHERE p.user = '$usernya' AND p.packages = 'YES'
+            WHERE p.user = '$usernya' AND p.packages = 'YES' $searchProductQuery
             ORDER BY $orderColumn $orderDirection
             LIMIT $start, $limit";
 
@@ -348,7 +356,7 @@ if (isset($_POST['action']) && $_POST['action'] == "produk_data") {
     }
 
     // Hitung total data yang tersedia dalam tabel
-    $totalRecordsQuery = $mysqli->query("SELECT COUNT(id_product) as total FROM product WHERE user = '$usernya' AND packages = 'YES'");
+    $totalRecordsQuery = $mysqli->query("SELECT COUNT(id_product) as total FROM product p WHERE user = '$usernya' AND packages = 'YES' $searchProductQuery");
     $totalRecords = $totalRecordsQuery->fetch_assoc()['total'] ?? 0;
 
     // Format data yang akan dikirimkan sebagai JSON
