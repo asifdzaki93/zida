@@ -12,6 +12,19 @@ if(!empty($_POST["cari"])){
     $searchPelangganQuery = " AND (telephone $like or name_customer $like or email $like)";
 }
 
+//default tipe adalah "hanya yang belum dihapus"
+if(!empty($_POST["tipe"])){
+    if($_POST["tipe"]=="semua"){
+
+    }else{
+        $searchProductQuery .= " AND p.showing = '1'";
+        $searchPelangganQuery .= " AND active = '0'";    
+    }
+}else{
+    $searchProductQuery .= " AND p.showing = '0'";
+    $searchPelangganQuery .= " AND active = '1'";
+}
+
 if (isset($_POST['action']) && $_POST['action'] == "produk_data") {
     $usernya = $mysqli->user_master;
 

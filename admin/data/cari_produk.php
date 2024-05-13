@@ -10,7 +10,7 @@ packages,
 folder,
 img
 FROM product 
-WHERE $mysqli->user_master_query AND name_product LIKE '%" . $mysqli->real_escape_string($_GET["name_product"] ?? "") . "%' ";
+WHERE $mysqli->user_master_query AND showing = '0' AND name_product LIKE '%" . $mysqli->real_escape_string($_GET["name_product"] ?? "") . "%' ";
 $packages = $_GET["packages"] ?? "NO";
 if ($packages != "") {
     $q .= "AND packages = '" . $mysqli->real_escape_string($packages) . "' ";

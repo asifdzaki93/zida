@@ -1,9 +1,34 @@
 <div class="card mb-4">
     <div class="card-body">
         <div class="input-group input-group-merge">
-            <span class="input-group-text" id="basic-addon-search31"><i class="ri-search-line"></i></span>
+            <span class="input-group-text" id="basic-addon-search31"><i class="fa fa-search"></i></span>
             <input type="text" class="form-control" placeholder="Cari..." aria-label="Cari..."
                 aria-describedby="basic-addon-search31" id="cari_master_data" onchange="cariMasterData()" />
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false"><i class="fa fa-cog"></i></button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <label class="dropdown-item">
+                        <input type=radio value="" name="tipe" checked=checked onclick="cariMasterData()">
+                        Aktif
+                    </label>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <label class="dropdown-item">
+                        <input type=radio value="semua" name="tipe" onclick="cariMasterData()">
+                        Semua
+                    </label>
+                </li>
+                <li>
+                    <label class="dropdown-item">
+                        <input type=radio value="dihapus" name="tipe" onclick="cariMasterData()">
+                        Dihapus
+                    </label>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
@@ -133,6 +158,14 @@
         return result;
     }
 
+    function inputTipe() {
+        var result = $('input[name="tipe"]:checked').val();
+        if (result == null || result == "") {
+            return "";
+        }
+        return result;
+    }
+
     function tambahProduk() {
 
     }
@@ -166,6 +199,7 @@
             "data": function (d) {
                 d.action = "produk_data";
                 d.cari = inputPencarian();
+                d.tipe = inputTipe();
             },
             "type": "POST"
         },
@@ -218,6 +252,7 @@
             "data": function (d) {
                 d.action = "paket_data";
                 d.cari = inputPencarian();
+                d.tipe = inputTipe();
             },
             "type": "POST"
         },
@@ -270,6 +305,7 @@
             "data": function (d) {
                 d.action = "pelanggan_data";
                 d.cari = inputPencarian();
+                d.tipe = inputTipe();
             },
             "type": "POST"
         },
