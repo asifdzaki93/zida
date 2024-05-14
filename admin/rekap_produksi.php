@@ -62,6 +62,39 @@ class Pdf extends FPDF
         $this->Image($gambar, 69.2, 261.5, 30, 30);
         //menggeser posisi sekarang
     }
+
+    // Fungsi untuk menambahkan gambar berurutan dari kiri ke kanan, dan ke bawah setelah 5 gambar
+    function addImageList($images)
+    {
+        $this->SetFont('Arial', 'B', 12);
+        $this->Cell(0, 10, 'List of Images', 0, 1, 'C');
+        $this->Ln(5);
+        $this->SetFont('Arial', '', 10);
+
+        $x_start = 10;
+        $y_start = $this->GetY();
+        $width = 25;
+        $height = 25;
+        $space_horizontal = 10;
+        $space_vertical = 10;
+        $counter = 0;
+
+        foreach ($images as $image) {
+            if (file_exists($image['path'])) {
+                $x = $x_start + ($counter % 5) * ($width + $space_horizontal);
+                $y = $y_start + (int)($counter / 5) * $space_vertical;
+
+                $this->Image($image['path'], $x, $y, $width, $height);
+                $this->SetXY($x, $y + $height + 2);
+                $this->Cell($width, 10, $image['description'], 0, 0, 'C');
+                $counter++;
+                if ($counter % 5 == 0) {
+                    $x_start = 10;
+                    $y_start = $this->GetY() + $height + 12;
+                }
+            }
+        }
+    }
 }
 
 
@@ -182,6 +215,34 @@ foreach ($products as $k => $rc) {
     $pdf->Cell(20, 5, $rc['amount'], 'B', 0, 'R');
     $pdf->Cell(20, 5, '', 'B', 0, 'R');
 }
+
+
+// Daftar gambar yang akan ditambahkan
+$images = [
+    ['path' => '../images/burger.png', 'description' => 'This is image 1 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 2 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 3 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 4 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 5 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 1 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 2 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 3 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 4 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 5 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 1 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 2 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 3 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 4 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 5 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 1 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 2 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 3 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 4 description'],
+    ['path' => '../images/burger.png', 'description' => 'This is image 5 description'],
+];
+$pdf->AddPage();
+// Menambahkan daftar gambar ke PDF
+$pdf->addImageList($images);
 
 
 //$pdf->AddPage();
