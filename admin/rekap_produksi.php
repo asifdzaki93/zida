@@ -10,93 +10,104 @@ if (isset($_GET['tglkirim'])) {
 }
 $due_date = $_GET["due_date"] ?? date("Y-m-d");
 $waktu = $_GET["waktu"] ?? "Pagi";
-//fpdf setting
+
+// FPDF setting
 class Pdf extends FPDF
 {
-    //Page header
+    // Page header
     function Header()
     {
         $due_date = $_GET["due_date"] ?? date("Y-m-d");
-        // Insert a picture in the top-left corner at 300 dpi
         $this->Image('../img/pdf.png', 0, 0, 210, 297);
-        // setting jenis font yang akan digunakan
         $this->SetFont('Arial', 'B', 10);
-        // Memberikan space kebawah agar tidak terlalu rapat
         $this->Cell(10, 5, '', 0, 1);
         $this->SetFont('Arial', 'B', 10);
-        // Memberikan space kebawah agar tidak terlalu rapat
         $this->Cell(10, 5, '', 0, 1);
         $this->SetFont('Arial', 'B', 10);
-        // Memberikan space kebawah agar tidak terlalu rapat
         $this->Cell(10, 5, '', 0, 1);
         $this->SetFont('Arial', 'B', 10);
-        //tittle
         $hrn = date('d M Y', strtotime($due_date));
         $this->Cell(10, 5, '', 0, 1);
         $this->SetFillColor(255, 198, 13);
         $this->SetFont('Arial', 'B', 20);
         $this->Cell(190, 0, '-- Tugas Produksi ' . $hrn . ' --', 0, 0, 'C');
-        // Memberikan space kebawah agar tidak terlalu rapat
         $this->Cell(10, 5, '', 0, 1);
         $this->SetFont('Arial', 'B', 10);
     }
 
-
-    //Page footer
+    // Page footer
     function Footer()
     {
-        //Arial italic 9
         $this->SetFont('Arial', 'I', 9);
-        //nomor halaman
-        //$this->Cell(0, 20, 'Halaman ' . $this->PageNo() . ' dari {nb}', 0, 0, 'C');
-    }
-    function garis()
-    {
-        $this->SetLineWidth(0);
-        $this->Line(10, 37, 138, 37);
-    }
-    function letak($gambar)
-    {
-        //memasukkan gambar untuk header
-        //$this->Image($gambar, 10, 10, 20, 25);
-        $this->Image($gambar, 69.2, 261.5, 30, 30);
-        //menggeser posisi sekarang
     }
 
     // Fungsi untuk menambahkan gambar berurutan dari kiri ke kanan, dan ke bawah setelah 5 gambar
-    function addImageList($images)
+    function AddImages($images, $names, $amounts, $perRow)
     {
-        $this->SetFont('Arial', 'B', 12);
-        $this->Cell(0, 10, 'List of Images', 0, 1, 'C');
-        $this->Ln(5);
-        $this->SetFont('Arial', '', 10);
+        $xPos = 10;
+        $yPos = $this->GetY();
+        $imageWidth = 30;
+        $imageHeight = 30;
+        $spacing = 10;
+        $defaultImage = 'https://zieda.id/pro/geten/images/no_image.jpg'; // URL gambar default
+        $bottomMargin = 10; // Margin bawah
 
-        $x_start = 10;
-        $y_start = $this->GetY();
-        $width = 25;
-        $height = 25;
-        $space_horizontal = 10;
-        $space_vertical = 10;
-        $counter = 0;
+        foreach ($images as $index => $image) {
+            $image = $this->encodeUrl($image); // Encode URL
 
-        foreach ($images as $image) {
-            if (file_exists($image['path'])) {
-                $x = $x_start + ($counter % 5) * ($width + $space_horizontal);
-                $y = $y_start + (int)($counter / 5) * $space_vertical;
-
-                $this->Image($image['path'], $x, $y, $width, $height);
-                $this->SetXY($x, $y + $height + 2);
-                $this->Cell($width, 10, $image['description'], 0, 0, 'C');
-                $counter++;
-                if ($counter % 5 == 0) {
-                    $x_start = 10;
-                    $y_start = $this->GetY() + $height + 12;
-                }
+            if ($index > 0 && $index % $perRow == 0) {
+                $xPos = 10;
+                $yPos += $imageHeight + 20; // Jarak tambahan untuk teks
             }
+
+            // Jika posisi Y melebihi batas halaman, buat halaman baru dan reset posisi
+            if ($yPos + $imageHeight + 20 > $this->h - $bottomMargin) {
+                $this->AddPage();
+                $xPos = 10;
+                $yPos = $this->GetY(); // Reset posisi yPos setelah header
+            }
+
+            if (!$this->isValidImage($image)) {
+                $image = $defaultImage; // Ganti dengan gambar default jika tidak valid
+            }
+
+            $this->Image($image, $xPos, $yPos, $imageWidth, $imageHeight);
+
+            $name = $names[$index];
+            if (strlen($name) > 20) {
+                $name = substr($name, 0, 17) . '...';
+            }
+
+            $this->SetXY($xPos, $yPos + $imageHeight);
+            $this->Cell($imageWidth, 5, $name, 0, 0, 'C');
+            $this->SetXY($xPos, $yPos + $imageHeight + 5);
+            $this->Cell($imageWidth, 5, 'Jumlah: ' . $amounts[$index], 0, 0, 'C');
+            $xPos += $imageWidth + $spacing;
         }
     }
-}
 
+    function isValidImage($url)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_NOBODY, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+        curl_close($ch);
+
+        if ($httpCode == 200 && strpos($contentType, 'image/') !== false) {
+            return true;
+        }
+        return false;
+    }
+
+    function encodeUrl($url)
+    {
+        return str_replace(' ', '%20', $url);
+    }
+}
 
 // intance object dan memberikan pengaturan halaman PDF
 $pdf = new Pdf('P', 'mm', 'A4');
@@ -217,32 +228,21 @@ foreach ($products as $k => $rc) {
 }
 
 
-// Daftar gambar yang akan ditambahkan
-$images = [
-    ['path' => '../images/burger.png', 'description' => 'This is image 1 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 2 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 3 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 4 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 5 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 1 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 2 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 3 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 4 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 5 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 1 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 2 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 3 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 4 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 5 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 1 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 2 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 3 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 4 description'],
-    ['path' => '../images/burger.png', 'description' => 'This is image 5 description'],
-];
 $pdf->AddPage();
 // Menambahkan daftar gambar ke PDF
-$pdf->addImageList($images);
+// Persiapkan data gambar, nama produk, dan jumlah
+$products = $output["products"];
+$hostedImages = [];
+$productNames = [];
+$productAmounts = [];
+foreach ($products as $rc) {
+    $hostedImages[] = $rc['img'];
+    $productNames[] = ucwords(strtolower($rc['name_product']));
+    $productAmounts[] = $rc['amount'];
+}
+
+// Menambahkan daftar gambar ke PDF dengan nama produk dan jumlahnya
+$pdf->AddImages($hostedImages, $productNames, $productAmounts, 5);
 
 
 //$pdf->AddPage();
