@@ -4,7 +4,11 @@
     data-assets-path="../assets/" data-template="vertical-menu-template">
 
 <?php
-include "data/base_sistem.php";
+include 'data/base_sistem.php';
+include 'data/koneksi.php';
+$user_name = $mysqli->data_user['full_name'] ?? 'Admin';
+$user_avatar = $mysqli->data_user_avatar;
+$user_level = ucwords($mysqli->data_user['level'] ?? 'admin');
 ?>
 
 <head>
@@ -12,13 +16,11 @@ include "data/base_sistem.php";
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title><?= $nameapp; ?></title>
+    <title><?= $nameapp ?></title>
 
     <meta name="description" content="" />
 
-    <?php
-    include 'head.php';
-    ?>
+    <?php include 'head.php'; ?>
 
 </head>
 
@@ -27,15 +29,11 @@ include "data/base_sistem.php";
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-            <?php
-            include 'sidebar.php';
-            ?>
+            <?php include 'sidebar.php'; ?>
 
             <!-- Layout container -->
             <div class="layout-page">
-                <?php
-                include 'navbar.php';
-                ?>
+                <?php include 'navbar.php'; ?>
 
 
                 <!-- Content wrapper -->

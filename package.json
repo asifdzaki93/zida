@@ -128,7 +128,6 @@
     "terser-webpack-plugin": "5.3.6",
     "webpack": "5.74.0",
     "@prettier/plugin-php": "0.14.3",
-    "prettier": "2.0.5",
     "yarn": "1.22.19"
   },
   "overrides": {

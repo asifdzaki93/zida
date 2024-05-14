@@ -21,37 +21,6 @@
                         <!-- /Search -->
 
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
-                            <!-- Language -->
-                            <li class="nav-item dropdown-language dropdown me-1 me-xl-0">
-                                <a class="nav-link btn btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow"
-                                    href="javascript:void(0);" data-bs-toggle="dropdown">
-                                    <i class="mdi mdi-translate mdi-24px"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-language="en">
-                                            <span class="align-middle">English</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-language="fr">
-                                            <span class="align-middle">French</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-language="de">
-                                            <span class="align-middle">German</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-language="pt">
-                                            <span class="align-middle">Portuguese</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <!--/ Language -->
-
                             <!-- Style Switcher -->
                             <li class="nav-item me-1 me-xl-0">
                                 <a class="nav-link btn btn-text-secondary rounded-pill btn-icon style-switcher-toggle hide-arrow"
@@ -378,8 +347,8 @@
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                     data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="../assets/img/avatars/1.png" alt
-                                            class="w-px-40 h-auto rounded-circle" />
+                                        <img src="<?php echo $user_avatar; ?>" alt
+                                            class="w-px-40 h-px-40 rounded-circle" />
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -388,13 +357,13 @@
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
                                                     <div class="avatar avatar-online">
-                                                        <img src="../assets/img/avatars/1.png" alt
-                                                            class="w-px-40 h-auto rounded-circle" />
+                                                        <img src="<?php echo $user_avatar; ?>" alt
+                                                            class="w-px-40 h-px-40 rounded-circle" />
                                                     </div>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <span class="fw-semibold d-block">John Doe</span>
-                                                    <small class="text-muted">Admin</small>
+                                                    <span class="fw-semibold d-block"><?php echo $user_name; ?></span>
+                                                    <small class="text-muted"><?php echo $user_level; ?></small>
                                                 </div>
                                             </div>
                                         </a>
@@ -422,27 +391,6 @@
                                                 <span
                                                     class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
                                             </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <div class="dropdown-divider"></div>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="pages-help-center-landing.html">
-                                            <i class="mdi mdi-lifebuoy me-2"></i>
-                                            <span class="align-middle">Help</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="pages-faq.html">
-                                            <i class="mdi mdi-help-circle-outline me-2"></i>
-                                            <span class="align-middle">FAQ</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="pages-pricing.html">
-                                            <i class="mdi mdi-currency-usd me-2"></i>
-                                            <span class="align-middle">Pricing</span>
                                         </a>
                                     </li>
                                     <li>

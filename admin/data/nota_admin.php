@@ -1,27 +1,26 @@
 <?php
 function nota_admin_render($mysqli, $base_url)
 {
-    $time = date("H");
-    $selamat = "Pagi";
-    if ($time >= 12 && $time < 15) {
-        $selamat = "Siang";
-    } else
-if ($time >= 15 && $time < 19) {
-        $selamat = "Sore";
-    } else
-if ($time >= 19 && $time < 04) {
-        $selamat = "Malam";
-    }
-    include("data/function.php");
-    $percentageChange = getPercentageChange($mysqli);
-    $icon = getPercentageChangeIcon($percentageChange);
+  $user_name = $mysqli->data_user['full_name'] ?? 'Admin';
 
-    $sales_hari_ini = getTotalSalesDay($mysqli);
-    $bulan1 = date('Y-m-d');
-    $bulan2 = date('Y-m-d');
-    $rp_hr_ini = getTotalTransMasuk($mysqli, $bulan1, $bulan2);
+  $time = date('H');
+  $selamat = 'Pagi';
+  if ($time >= 12 && $time < 15) {
+    $selamat = 'Siang';
+  } elseif ($time >= 15 && $time < 19) {
+    $selamat = 'Sore';
+  } elseif ($time >= 19 && $time < 04) {
+    $selamat = 'Malam';
+  }
+  include 'data/function.php';
+  $percentageChange = getPercentageChange($mysqli);
+  $icon = getPercentageChangeIcon($percentageChange);
 
-?>
+  $sales_hari_ini = getTotalSalesDay($mysqli);
+  $bulan1 = date('Y-m-d');
+  $bulan2 = date('Y-m-d');
+  $rp_hr_ini = getTotalTransMasuk($mysqli, $bulan1, $bulan2);
+  ?>
     <div class="row gy-4 mb-4">
         <!-- Gamification Card -->
         <div class="col-md-12 col-xl-8">
@@ -29,7 +28,7 @@ if ($time >= 19 && $time < 04) {
                 <div class="d-flex align-items-end row h-100">
                     <div class="col-md-6 order-2 order-md-1 h-100">
                         <div class="card-body">
-                            <h4 class="card-title pb-xl-2">Selamat <?php echo $selamat ?><strong> Admin !</strong>🎉</h4>
+                            <h4 class="card-title pb-xl-2">Selamat <?php echo $selamat; ?><strong> <?php echo $user_name; ?> !</strong>🎉</h4>
                             <p class="mb-0">Ada <span class="fw-semibold"><?php echo $sales_hari_ini; ?> Nota
                                 </span>😎 masuk hari ini.</p>
                             <p>Cek Selengkapnya, klik tombol dibawah.</p>
@@ -76,12 +75,14 @@ if ($time >= 19 && $time < 04) {
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
-                            <p class="mb-0 text-<?php echo $icon["color"]; ?> me-1"><?php echo $percentageChange; ?>%</p>
+                            <p class="mb-0 text-<?php echo $icon[
+                              'color'
+                            ]; ?> me-1"><?php echo $percentageChange; ?>%</p>
                             <i class="mdi mdi-chevron-up text-success"></i>
                         </div>
                     </div>
                     <div class="card-info mt-4 pt-1 mt-lg-1 mt-xl-4">
-                        <h6 class="mb-2"><?php echo "Rp. " . number_format($rp_hr_ini, 0, ',', '.'); ?></h6>
+                        <h6 class="mb-2"><?php echo 'Rp. ' . number_format($rp_hr_ini, 0, ',', '.'); ?></h6>
                         <p class="text-muted mb-lg-2 mb-xl-3">Total Penjualan</p>
                         <div class="badge bg-label-secondary rounded-pill">Hari Ini</div>
                     </div>
