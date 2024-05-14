@@ -1,0 +1,106 @@
+{
+    "pemasukan": [
+        {
+            "penerimaan dari penjualan tunai": [
+                {
+                    "no_invoice": "DS-0001",
+                    "jumlah": "12000",
+                    "keterangan": ""
+                },
+                {
+                    "no_invoice": "DS-1083448",
+                    "jumlah": "12000",
+                    "keterangan": "Credit Card 6790"
+                }
+            ],
+            "penerimaan dari penjualan tempo / dp": [
+                {
+                    "no_invoice": "DS-0001",
+                    "jumlah": "12000",
+                    "keterangan": ""
+                },
+                {
+                    "no_invoice": "DS-1083448",
+                    "jumlah": "12000",
+                    "keterangan": "Credit Card 6790"
+                }
+            ],
+            "penerimaan dari pembayaran cicilan/ pelunasan": [
+                {
+                    "no_invoice": "DS-0001",
+                    "jumlah": "12000",
+                    "keterangan": ""
+                },
+                {
+                    "no_invoice": "DS-1083448",
+                    "jumlah": "12000",
+                    "keterangan": "Credit Card 6790"
+                }
+            ],
+            "penerimaan lainnya": [
+                {
+                    "no_invoice": "DS-0001",
+                    "jumlah": "12000",
+                    "keterangan": ""
+                },
+                {
+                    "no_invoice": "DS-1083448",
+                    "jumlah": "12000",
+                    "keterangan": "Credit Card 6790"
+                }
+            ]
+        }
+    ],
+    "Pengeluaran": [
+        {
+            "kategori 1": [
+                {
+                    "no_invoice": "DS-0001",
+                    "jumlah": "12000",
+                    "keterangan": ""
+                },
+                {
+                    "no_invoice": "DS-1083448",
+                    "jumlah": "12000",
+                    "keterangan": "Credit Card 6790"
+                }
+            ],
+            "kategori2": [
+                {
+                    "no_invoice": "DS-0001",
+                    "jumlah": "12000",
+                    "keterangan": ""
+                },
+                {
+                    "no_invoice": "DS-1083448",
+                    "jumlah": "12000",
+                    "keterangan": "Credit Card 6790"
+                }
+            ],
+            "kategori3": [
+                {
+                    "no_invoice": "DS-0001",
+                    "jumlah": "12000",
+                    "keterangan": ""
+                },
+                {
+                    "no_invoice": "DS-1083448",
+                    "jumlah": "12000",
+                    "keterangan": "Credit Card 6790"
+                }
+            ],
+            "kategori lainnya": [
+                {
+                    "no_invoice": "DS-0001",
+                    "jumlah": "12000",
+                    "keterangan": ""
+                },
+                {
+                    "no_invoice": "DS-1083448",
+                    "jumlah": "12000",
+                    "keterangan": "Credit Card 6790"
+                }
+            ]
+        }
+    ]
+}
