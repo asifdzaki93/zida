@@ -5,18 +5,19 @@
  * Date: 20/08/2019
  * Time: 11:48 AM
  */
+header('Content-Type: application/json');
 
 require_once 'koneksi.php';
-include '../fungsi_thumb.php';
+include 'fungsi_thumb.php';
 $tanggal = gmdate('Y-m-d');
 
 $u = $mysqli->data_user;
 $m = $mysqli->data_master;
-$tipe = $_POST['tipe'] ?? 'produk';
+$tipe = $_REQUEST['tipe'] ?? 'produk_read';
 
 $json = [
   'result' => 'error',
-  'title' => 'Tidak ada fitur',
+  'title' => 'Tidak tersedia fitur',
 ];
 
 if (!$mysqli->is_auth) {
@@ -24,7 +25,7 @@ if (!$mysqli->is_auth) {
     'result' => 'error',
     'title' => 'Tidak diizinkan',
   ];
-} elseif ($tipe == 'produk') {
+} elseif ($tipe == 'produk_create') {
   $hargabeli = $mysqli->real_escape_string($_POST['purchase_price'] ?? '');
   $hargajual = $mysqli->real_escape_string($_POST['selling_price'] ?? '');
   $stok = $mysqli->real_escape_string($_POST['stock'] ?? '0');
@@ -207,6 +208,72 @@ if (!$mysqli->is_auth) {
   ];
 
   echo json_encode($json);
-} else {
+} elseif ($tipe == 'produk_read') {
+  $id = $mysqli->real_escape_string($_REQUEST['id_product'] ?? '');
+  $query = $mysqli->query("SELECT * FROM product WHERE user='$u[master]' AND id_product = '$id'");
+  $data = $query->fetch_assoc();
+  if ($data != null) {
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+      'data' => $data,
+    ];
+  }
+} elseif ($tipe == 'produk_update') {
+  $hargabelis = $mysqli->real_escape_string($_POST['purchase_price'] ?? '');
+  $hargajuals = $mysqli->real_escape_string($_POST['selling_price'] ?? '');
+  $nama_barang = $mysqli->real_escape_string($_POST['name_product'] ?? '');
+  $id_kategori = $mysqli->real_escape_string($_POST['id_category'] ?? '');
+  $kodebarang = $mysqli->real_escape_string($_POST['codeproduct'] ?? '');
+  $deskripsi = $mysqli->real_escape_string($_POST['description'] ?? '');
+  $id_product = $mysqli->real_escape_string($_POST['id_product'] ?? '');
+
+  $hargabeli = preg_replace('/[^0-9]/', '', $hargabelis);
+  $hargajual = preg_replace('/[^0-9]/', '', $hargajuals);
+
+  $folder = date('m-d-y-H');
+
+  $lokasi_file = $_FILES['img']['tmp_name'];
+  $tipe_file = $_FILES['img']['type'];
+  $nama_file = $_FILES['img']['name'];
+  $acak = rand(1, 99);
+  $nama_file_unik = $acak . $nama_file;
+
+  if (empty($lokasi_file)) {
+    mysqli_query(
+      $connect,
+      "UPDATE product SET name_product    = '$nama_barang',
+  id_category = '$id_kategori',
+  purchase_price= '$hargabeli',
+  codeproduct = '$kodebarang',
+  selling_price = '$hargajual',
+  description = '$deskripsi'
+                            WHERE id_product  = '$id_product'"
+    );
+  } else {
+    UploadImage($nama_file_unik);
+    mysqli_query(
+      $connect,
+      "UPDATE product SET name_product    = '$nama_barang',
+  id_category = '$id_kategori',
+  purchase_price= '$hargabeli',
+  codeproduct = '$kodebarang',
+  selling_price = '$hargajual',
+  description = '$deskripsi',
+  folder = '$folder',
+  img  = '$nama_file_unik'
+                            WHERE id_product  = '$id_product'"
+    );
+  }
+} elseif ($tipe == 'produk_delete') {
+  $id = $mysqli->real_escape_string($_REQUEST['id_product'] ?? '');
+  $mysqli->query("UPDATE product SET showing='1' where user='$u[master]' AND id_product = '$id'");
+  if ($data != null) {
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+      'data' => $data,
+    ];
+  }
 }
 echo json_encode($json);

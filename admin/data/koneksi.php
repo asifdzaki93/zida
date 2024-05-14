@@ -5,8 +5,8 @@ $username = 'root';
 $password = '';
 $database = 'db_zieda';
 $user_master = '082322345757';
-// $id_session = $_SESSION['id_session'] ?? '';
-$id_session = 'abb265f97030e0417a67ee49d877f6cd';
+$id_session = $_SESSION['id_session'] ?? '';
+// $id_session = 'abb265f97030e0417a67ee49d877f6cd';
 
 // Koneksi dan memilih database di server
 $connect = mysqli_connect($server, $username, $password, $database);

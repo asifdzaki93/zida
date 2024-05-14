@@ -24,17 +24,7 @@
 
 <!-- Core JS -->
 <!-- build:js assets/vendor/js/core.js -->
-<script src="<?php echo $base_url; ?>/assets/vendor/libs/jquery/jquery.js"></script>
-<script src="<?php echo $base_url; ?>/assets/vendor/libs/popper/popper.js"></script>
-<script src="<?php echo $base_url; ?>/assets/vendor/js/bootstrap.js"></script>
-<script src="<?php echo $base_url; ?>/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-<script src="<?php echo $base_url; ?>/assets/vendor/libs/node-waves/node-waves.js"></script>
-
-<script src="<?php echo $base_url; ?>/assets/vendor/libs/hammer/hammer.js"></script>
-<script src="<?php echo $base_url; ?>/assets/vendor/libs/i18n/i18n.js"></script>
-<script src="<?php echo $base_url; ?>/assets/vendor/libs/typeahead-js/typeahead.js"></script>
-
-<script src="<?php echo $base_url; ?>/assets/vendor/js/menu.js"></script>
+<?php include 'layout/basic_script.php'; ?>
 <!-- endbuild -->
 
 <!-- Vendors JS -->
@@ -120,10 +110,10 @@
     async function open_invoice(no_invoice) {
         invoice_terpilih = no_invoice;
         $("#buka_invoice").modal("show");
-        $("#buka_invoice_resi").attr("href", "<?php echo $base_url ?>/admin/cetak_resi.php?no_invoice=" +
+        $("#buka_invoice_resi").attr("href", "<?php echo $base_url; ?>/admin/cetak_resi.php?no_invoice=" +
             no_invoice)
         $("#buka_invoice_cetak").attr("href",
-            "<?php echo $base_url ?>/admin/cetak_invoice.php?no_invoice=" +
+            "<?php echo $base_url; ?>/admin/cetak_invoice.php?no_invoice=" +
             no_invoice)
         await $.ajax({
             url: "<?php echo $base_url; ?>/admin/jquery_page.php?page=order_detail.php&no_invoice=" +

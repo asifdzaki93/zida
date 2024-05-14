@@ -6,6 +6,9 @@
 <?php
 include 'data/base_sistem.php';
 include 'data/koneksi.php';
+if (!$mysqli->is_auth) {
+  header('Location: login.php');
+}
 $user_name = $mysqli->data_user['full_name'] ?? 'Admin';
 $user_avatar = $mysqli->data_user_avatar;
 $user_level = ucwords($mysqli->data_user['level'] ?? 'admin');

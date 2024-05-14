@@ -124,8 +124,23 @@
 
 <!-- Tabs -->
 
-
-
+<!-- Modal -->
+<div class="modal fade" id="crud_master_data" tabindex="-1" aria-labelledby="crud_master_data_title" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crud_master_data_title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div id=crud_master_data_content class="modal-content"></div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="crud_master_data_process()" id="crud_master_data_button">Buka</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     sidebarBuka("master-data");
@@ -167,7 +182,7 @@
     }
 
     function tambahProduk() {
-
+        crud_master_data_open();
     }
 
     function tambahPaket() {
@@ -177,6 +192,35 @@
     function tambahCustomer() {
 
     }
+
+    function crud_master_data_open(input_form_array = [],title="Tambah Produk",button="Tambah"){
+        $("#crud_master_data").modal("show");
+        $("#crud_master_data_title").html(title);
+        $("#crud_master_data_button").html(button);
+        $("#crud_master_data_content").html("");
+        for(var i;i<input_form_array.length;i++){
+            var input_form = input_form;
+            if(input_form.label!=null){                
+                $("#crud_master_data_content").append(
+                    $.parseHTML('<small class="text-small text-muted text-uppercase align-middle">'+input_form.label+'</small>')
+                ),
+            }
+            if(input_form.tipe=="select"){
+            }else{
+                $("#crud_master_data_content").append(
+                    $("<input>")
+                        .attr("class",input_form.tipe=="hidden"?"":"form-control")
+                        .attr("name",input_form.name)
+                        .attr("placeholder",input_form.placeholder??"")
+                        .attr("value",input_form.value??"")
+                ),
+            }
+        }
+    }
+    function crud_master_data_process(){
+        $("#crud_master_data").modal("hide");
+    }
+
     var produk_list = $('#produk-list-table').DataTable({
         order: [
             [0, 'desc']
