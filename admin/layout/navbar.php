@@ -223,7 +223,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="logout.php" target="_blank">
+                                        <a class="dropdown-item" href="logout.php">
                                             <i class="mdi mdi-logout me-2"></i>
                                             <span class="align-middle">Log Out</span>
                                         </a>

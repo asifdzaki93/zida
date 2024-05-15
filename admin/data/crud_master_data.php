@@ -318,8 +318,17 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
       'title' => 'Success',
     ];
   } elseif ($tipe == 'packages_read') {
-    $id = $mysqli->real_escape_string($_REQUEST['id_product'] ?? '');
-    $query = $mysqli->query("SELECT * from packagesproduct where id_product = '$id'");
+    $id_product_parent = $mysqli->real_escape_string($_REQUEST['id_product_parent'] ?? '');
+    $check = $mysqli->query("SELECT session FROM product WHERE id_product = '$id_product_parent'");
+    $product_parent = $check->fetch_array();
+    if (!$product_parent) {
+      return [
+        'result' => 'error',
+        'title' => 'Produk tidak ada',
+      ];
+    }
+    $sesi = $product_parent['session'];
+    $query = $mysqli->query("SELECT * from packagesproduct where sesi = '$sesi'");
     $data = [];
     while ($row = $query->fetch_assoc()) {
       $data[] = $row;
@@ -330,10 +339,18 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
       'data' => $data,
     ];
   } elseif ($tipe == 'packages_create' || $tipe == 'packages_update') {
+    $id_product_parent = $mysqli->real_escape_string($_REQUEST['id_product_parent'] ?? '');
     $id_product = $mysqli->real_escape_string($_POST['id_product'] ?? '');
+    $check = $mysqli->query("SELECT selling_price,name_product FROM product WHERE id_product = '$id_product'");
+    $product = $check->fetch_array();
+    if (!$product) {
+      return [
+        'result' => 'error',
+        'title' => 'Produk tidak ada',
+      ];
+    }
     $id_packagesproduct = $mysqli->real_escape_string($_POST['id_packagesproduct'] ?? '');
     $sesi = '';
-    $check = $mysqli->query("SELECT session FROM product WHERE id_product = '$id_product'");
     if ($tipe == 'packages_update') {
       $check = $mysqli->query(
         "SELECT id_packagesproduct FROM packagesproduct WHERE id_packagesproduct = '$id_packagesproduct'"
@@ -346,17 +363,18 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
         ];
       }
     } else {
-      $product = $check->fetch_array();
-      if (!$product) {
+      $check = $mysqli->query("SELECT session FROM product WHERE id_product = '$id_product_parent'");
+      $product_parent = $check->fetch_array();
+      if (!$product_parent) {
         return [
           'result' => 'error',
           'title' => 'Produk tidak ada',
         ];
       }
-      $sesi = $product['session'];
+      $sesi = $product_parent['session'];
     }
-    $price = $mysqli->real_escape_string($_POST['price']);
-    $name_product = $mysqli->real_escape_string($_POST['name_product']);
+    $price = $product['selling_price'];
+    $name_product = $product['name_product'];
     $amount = $mysqli->real_escape_string($_POST['amount']);
 
     if ($tipe == 'packages_update') {

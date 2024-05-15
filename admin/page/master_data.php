@@ -554,7 +554,7 @@ $optionKategori = json_encode($kategori);
     async function load_packages(){
         $("#packages_product_content").html("");
         await $.ajax({
-            url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=packages_read&id_product="+id_product_selected,
+            url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=packages_read&id_product_parent="+id_product_selected,
             success: function (d){
                 if(d.result=="success"){
                     var data = d.data;
@@ -563,8 +563,8 @@ $optionKategori = json_encode($kategori);
                             $("<tr></tr>").attr("id","packages_"+element.id_packagesproduct).append(
                                 $("<input>")
                                 .attr("type","hidden")
-                                .attr("id","name_product_"+element.id_packagesproduct)
-                                .attr("value",element.name_product),
+                                .attr("id","id_product_"+element.id_packagesproduct)
+                                .attr("value",element.id_product),
                                 $("<input>")
                                 .attr("type","hidden")
                                 .attr("id","amount_"+element.id_packagesproduct)
@@ -598,40 +598,43 @@ $optionKategori = json_encode($kategori);
     function product_packages_tutup(){
         $("#product_packages").attr("style","display:none")
     }
-    async function tambah_packages(id_product,id_packagesproduct=''){
+    async function tambah_packages(id_product_parent,id_packagesproduct=''){
         var amount=0;
         var name_product='';
         var price=0;
         var tipe = 'packages_create';
         var button = 'Tambah';
+        var id_product = '';
+        var selectProduct = {
+                        label:"Produk",
+                        name:"id_product",
+                        type:"select",
+                        option:[],
+                    };
         if(id_packagesproduct!=''){
             amount = $("#amount_"+id_packagesproduct).val();
             name_product = $("#name_product_"+id_packagesproduct).val();
             price = $("#price_"+id_packagesproduct).val();
             tipe = 'packages_update';
             button = 'Edit';
+            id_product = $("#id_product_"+id_packagesproduct).val();
+            var selectProduct = {
+                        name:"id_product",
+                        type:"hidden",
+                        value:id_product
+            };
         }
         var title = button+' Paket '+$("#product_packages_title").html();
         var input_form_group = [
             {
                 class:"col-md-12",
                 array:[
-                    {
-                        label:"Nama Produk",
-                        name:"name_product",
-                        value:name_product
-                    },
+                    selectProduct,
                     {
                         type:"number",
                         name:"amount",
                         label:"Jumlah",
                         value:amount
-                    },
-                    {
-                        type:"number",
-                        name:"price",
-                        label:"Harga",
-                        value:price
                     },
                 ]
             },
@@ -645,8 +648,8 @@ $optionKategori = json_encode($kategori);
                     },
                     {
                         type:"hidden",
-                        name:"id_product",
-                        value:id_product
+                        name:"id_product_parent",
+                        value:id_product_parent
                     },
                     {
                         type:"hidden",
@@ -657,8 +660,20 @@ $optionKategori = json_encode($kategori);
             },
         ]
         crud_master_data_open(input_form_group,title,button);
+        $("#form_data_id_product").select2({
+            ajax: {
+                url: "<?php echo $base_url;?>/admin/data/cari_produk_no_paket.php",
+                type: "GET",
+                data: function (params) {
 
-        crudCustomer(id,false,"Edit Pelanggan","customer_update","Edit");
+                    var queryParameters = {
+                        search: params.term
+                    }
+                    return queryParameters;
+                },
+            },
+            dropdownParent: $("#crud_master_data")
+        });
     }
     async function hapus_packages(id){
         await $.ajax({
