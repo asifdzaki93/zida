@@ -44,6 +44,33 @@ $optionKategori = json_encode($kategori);
         </div>
     </div>
 </div>
+
+<div class="card mb-4" id="product_packages" style="display:none">
+    <div class="card-header">
+        <h5>Isi Paket "<b id="product_packages_title"></b>"</h5>
+        <button type="button" id="product_packages_add" class="btn btn-primary" onclick="">
+            <i class="fa fa-add mx-2"></i> Tambah Isi Paket
+        </button>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nama Produk</th>
+                    <th>Jumlah</th>
+                    <th>Harga</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="packages_product_content"></tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <button type="button" class="btn btn-danger" onclick="product_packages_tutup()">Tutup</button>
+    </div>
+</div>
+<!-- Tabs -->
+
 <div class="nav-align-top mb-4 h-100">
     <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
         <li class="nav-item">
@@ -155,6 +182,7 @@ $optionKategori = json_encode($kategori);
         </div>
     </div>
 </div>
+
 <script>
     sidebarBuka("master-data");
     var dom = '<"row ms-2 me-3"' +
@@ -166,6 +194,7 @@ $optionKategori = json_encode($kategori);
         '>';
     var optionKategori = JSON.parse('<?php echo $optionKategori; ?>');
 
+    var id_product_selected = "";
     function cariMasterData() {
         if (produk_list != null) {
             produk_list.ajax.reload();
@@ -175,6 +204,9 @@ $optionKategori = json_encode($kategori);
         }
         if (pelanggan_data != null) {
             pelanggan_data.ajax.reload();
+        }
+        if(id_product_selected != ""){
+            load_packages();
         }
     }
 
@@ -194,9 +226,28 @@ $optionKategori = json_encode($kategori);
         }
         return result;
     }
-
+    function showGenerateDeskripsi(){
+        if($("#form_data_online").val()==1){
+            $("#generate_deskripsi").removeClass("d-none");
+        }else{
+            $("#generate_deskripsi").addClass("d-none");
+        }
+    }
+    async function generateDeskripsi(id){
+        $("#generate_deskripsi").html("Memuat...");
+        await $.ajax({
+            url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=produk_generate_deskripsi&id_product="+id,
+            success: function (d){
+                if(d.result=="success"){
+                    $("#form_data_description").val(d.data);
+                }
+            }
+        });
+        $("#generate_deskripsi").html("Generate Ulang Dengan AI");
+    }
     async function crudProduk(id,read_only,packages,title,tipe,button){
         var data = {};
+        var generator = '';
         if(id!=""){
             await $.ajax({
                 url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=produk_read&id_product="+id,
@@ -206,6 +257,8 @@ $optionKategori = json_encode($kategori);
                     }
                 }
             });
+            generator = "<a id='generate_deskripsi' class='btn btn-sm btn-secondary' onclick=\"generateDeskripsi('"+
+            id+"')\" href='javascript:;'>Generate Dengan AI</a>";
         }
         var input_form_group = [
             {
@@ -288,6 +341,7 @@ $optionKategori = json_encode($kategori);
                     {
                         label:"Online",
                         type:"select",
+                        onchange: "showGenerateDeskripsi()",
                         option:[
                             {
                                 label:"Online",
@@ -361,6 +415,7 @@ $optionKategori = json_encode($kategori);
                     {
                         label:"Deskripsi",
                         type:"textarea",
+                        generator: generator,
                         value:data.description??"",
                         name:"description"
                     },
@@ -368,13 +423,14 @@ $optionKategori = json_encode($kategori);
             },
         ]
         crud_master_data_open(input_form_group,title,button);
+        showGenerateDeskripsi();
     }
     function tambahProduk() {
         crudProduk("",false,"NO","Tambah Produk","produk_create","Tambah");
     }
 
     async function lihat_produk(id){
-        crudProduk(id,true,"NO","Tambah Paket","produk_read","");
+        crudProduk(id,true,"NO","Lihat Paket","produk_read","");
     }
 
     async function edit_produk(id){
@@ -385,24 +441,234 @@ $optionKategori = json_encode($kategori);
         crudProduk(id,true,"NO","Hapus Produk","produk_delete","Hapus");
     }
 
+    async function restore_produk(id){
+        crudProduk(id,true,"NO","Pulihkan Produk","produk_restore","Pulihkan");
+    }
+
     function tambahPaket() {
         crudProduk("",false,"YES","Tambah Paket","produk_create","Tambah");
     }
 
     async function lihat_paket(id){
-        crudProduk(id,true,"YES","Tambah Paket","produk_read","");
+        crudProduk(id,true,"YES","Lihat Paket","produk_read","");
     }
 
     async function edit_paket(id){
-        crudProduk(id,false,"YES","Edit Produk","produk_update","Edit");
+        crudProduk(id,false,"YES","Edit Paket","produk_update","Edit");
     }
 
     async function hapus_paket(id){
-        crudProduk(id,true,"YES","Hapus Produk","produk_delete","Hapus");
+        crudProduk(id,true,"YES","Hapus Paket","produk_delete","Hapus");
+    }
+
+    async function restore_paket(id){
+        crudProduk(id,true,"YES","Pulihkan Paket","produk_restore","Pulihkan");
+    }
+
+    async function crudCustomer(id,read_only,title,tipe,button){
+        var data = {};
+        if(id!=""){
+            await $.ajax({
+                url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=customer_read&id_customer="+id,
+                success: function (d){
+                    if(d.result=="success"){
+                        data = d.data;
+                    }
+                }
+            });
+        }
+        var input_form_group = [
+            {
+                class:"col-md-12",
+                read_only:read_only,
+                array:[
+                    {
+                        label:"Nama Pelanggan",
+                        name:"name_customer",
+                        value:data.name_customer??""
+                    },
+                    {
+                        type:"email",
+                        name:"email",
+                        label:"Email",
+                        value:data.email??""
+                    },
+                    {
+                        label:"Nomor HP",
+                        name:"telephone",
+                        value:data.telephone??""
+                    },
+                    {
+                        type:"textarea",
+                        label:"Alamat",
+                        name:"address",
+                        value:data.address??""
+                    },
+                ]
+            },
+            {
+                class:"col-md-12",
+                array:[
+                    {
+                        type:"hidden",
+                        name:"id_customer",
+                        value:data.id_customer??""
+                    },
+                    {
+                        type:"hidden",
+                        name:"tipe",
+                        value:tipe
+                    },
+                ]
+            },
+        ]
+        crud_master_data_open(input_form_group,title,button);
     }
 
     function tambahCustomer() {
+        crudCustomer("",false,"Tambah Pelanggan","customer_create","Tambah");
+    }
+    async function lihat_customer(id){
+        crudCustomer(id,true,"Lihat Pelanggan","customer_read","");
+    }
 
+    async function edit_customer(id){
+        crudCustomer(id,false,"Edit Pelanggan","customer_update","Edit");
+    }
+
+    async function hapus_customer(id){
+        crudCustomer(id,true,"Hapus Pelanggan","customer_delete","Hapus");
+    }
+
+    async function restore_customer(id){
+        crudCustomer(id,true,"Pulihkan Pelanggan","customer_restore","Pulihkan");
+    }
+
+    async function lihat_packages(id_product,name_product) {
+        $("#product_packages").attr("style","");
+        $("#product_packages_title").html(name_product);
+        $("#product_packages_add").attr("onclick","tambah_packages('"+id_product+"')");
+        id_product_selected =id_product;
+        load_packages();
+    }
+    async function load_packages(){
+        $("#packages_product_content").html("");
+        await $.ajax({
+            url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=packages_read&id_product="+id_product_selected,
+            success: function (d){
+                if(d.result=="success"){
+                    var data = d.data;
+                    data.forEach(element => {
+                        $("#packages_product_content").append(
+                            $("<tr></tr>").attr("id","packages_"+element.id_packagesproduct).append(
+                                $("<input>")
+                                .attr("type","hidden")
+                                .attr("id","name_product_"+element.id_packagesproduct)
+                                .attr("value",element.name_product),
+                                $("<input>")
+                                .attr("type","hidden")
+                                .attr("id","amount_"+element.id_packagesproduct)
+                                .attr("value",element.amount),
+                                $("<input>")
+                                .attr("type","hidden")
+                                .attr("id","price_"+element.id_packagesproduct)
+                                .attr("value",element.price),
+                                $("<td></td>").html(element.name_product),
+                                $("<td></td>").html(element.amount),
+                                $("<td></td>").html(element.price),
+                                $("<td></td>").append(
+                                    $("<div></div>").attr("class","d-flex align-items-center").append(
+                                        $("<a></a>").attr("href","javascript:;")
+                                        .attr("onclick","tambah_packages('','"+element.id_packagesproduct+"')").html(
+                                            '<i class="fa fa-edit mx-1"></i>'
+                                        ),
+                                        $("<a></a>").attr("href","javascript:;")
+                                        .attr("onclick","hapus_packages('"+element.id_packagesproduct+"')").html(
+                                            '<i class="mdi mdi-delete-outline mdi-20px mx-1"></i>'
+                                        )
+                                    )
+                                )
+                            )
+                        );                        
+                    });
+                }
+            }
+        });
+    }
+    function product_packages_tutup(){
+        $("#product_packages").attr("style","display:none")
+    }
+    async function tambah_packages(id_product,id_packagesproduct=''){
+        var amount=0;
+        var name_product='';
+        var price=0;
+        var tipe = 'packages_create';
+        var button = 'Tambah';
+        if(id_packagesproduct!=''){
+            amount = $("#amount_"+id_packagesproduct).val();
+            name_product = $("#name_product_"+id_packagesproduct).val();
+            price = $("#price_"+id_packagesproduct).val();
+            tipe = 'packages_update';
+            button = 'Edit';
+        }
+        var title = button+' Paket '+$("#product_packages_title").html();
+        var input_form_group = [
+            {
+                class:"col-md-12",
+                array:[
+                    {
+                        label:"Nama Produk",
+                        name:"name_product",
+                        value:name_product
+                    },
+                    {
+                        type:"number",
+                        name:"amount",
+                        label:"Jumlah",
+                        value:amount
+                    },
+                    {
+                        type:"number",
+                        name:"price",
+                        label:"Harga",
+                        value:price
+                    },
+                ]
+            },
+            {
+                class:"col-md-12",
+                array:[
+                    {
+                        type:"hidden",
+                        name:"id_packagesproduct",
+                        value:id_packagesproduct??""
+                    },
+                    {
+                        type:"hidden",
+                        name:"id_product",
+                        value:id_product
+                    },
+                    {
+                        type:"hidden",
+                        name:"tipe",
+                        value:tipe
+                    },
+                ]
+            },
+        ]
+        crud_master_data_open(input_form_group,title,button);
+
+        crudCustomer(id,false,"Edit Pelanggan","customer_update","Edit");
+    }
+    async function hapus_packages(id){
+        await $.ajax({
+            url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=packages_delete&id_packagesproduct="+id,
+            success: function (d){
+                if(d.result=="success"){
+                    $('#packages_'+id).remove();
+                }
+            }
+        });
     }
 
     function crud_master_data_open(input_form_group = [],title="Tambah Produk",button="Tambah"){
@@ -464,14 +730,18 @@ $optionKategori = json_encode($kategori);
                         $("#crud_master_data_content_"+x).append(
                             $("<select></select>")
                                 .attr("class","form-control mb-2")
+                                .attr("id","form_data_"+input_form.name)
+                                .attr("onchange",input_form.onchange??'')
                                 .attr("name",input_form.name)
                                 .html(options)
                         );
                     }else if(input_form.type=="textarea"){
                         $("#crud_master_data_content_"+x).append(
+                            $.parseHTML(input_form.generator??""),
                             $("<textarea></textarea>")
                                 .attr("class","form-control mb-2")
                                 .attr("name",input_form.name)
+                                .attr("id","form_data_"+input_form.name)
                                 .attr("placeholder",input_form.placeholder??"")
                                 .html(input_form.value??"")
                         )

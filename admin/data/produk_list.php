@@ -12,17 +12,53 @@ if (!empty($_POST['cari'])) {
   $searchPelangganQuery = " AND (telephone $like or name_customer $like or email $like)";
 }
 
-$tombol = '<div class="d-flex align-items-center">
-    <a href="javascript:;" onclick=[onclick_delete] data-bs-toggle="tooltip" class="text-body delete-record" data-bs-placement="top" title="Hapus">
-        <i class="mdi mdi-delete-outline mdi-20px mx-1"></i>
-    </a>
-    <a href="javascript:;" onclick=[onclick_view] data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Preview Invoice">
-        <i class="mdi mdi-eye-outline mdi-20px mx-1"></i>
-    </a>
-    <a href="javascript:;" onclick=[onclick_edit] data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Preview Invoice">
-        <i class="fa fa-edit"></i>
-    </a>
+function generateTombol($ada, $onclick, $id, $additional = '')
+{
+  $hapus_restore = $ada ? 'hapus' : 'restore';
+  $hapus_restore_tooltip = ucwords($hapus_restore);
+  $hapus_restore_icon = $ada ? 'mdi-delete-outline' : 'mdi-backup-restore';
+  return '<div class="d-flex align-items-center">
+      <a href="javascript:;" 
+      onclick="' .
+    $hapus_restore .
+    '_' .
+    $onclick .
+    '(\'' .
+    $id .
+    '\')" 
+      data-bs-toggle="tooltip" 
+      class="text-body delete-record" 
+      data-bs-placement="top" 
+      title="' .
+    $hapus_restore_tooltip .
+    '">
+      <i class="mdi ' .
+    $hapus_restore_icon .
+    ' mdi-20px mx-1"></i>
+  </a>
+  <a href="javascript:;" 
+  onclick="lihat_' .
+    $onclick .
+    '(\'' .
+    $id .
+    '\')" 
+data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Lihat">
+      <i class="mdi mdi-eye-outline mdi-20px mx-1"></i>
+  </a>
+  <a href="javascript:;" 
+  onclick="edit_' .
+    $onclick .
+    '(\'' .
+    $id .
+    '\')" 
+    data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Edit">
+      <i class="fa fa-edit mx-1"></i>
+  </a>
+  ' .
+    $additional .
+    '
 </div>';
+}
 
 //default tipe adalah "hanya yang belum dihapus"
 if (!empty($_POST['tipe'])) {
@@ -121,16 +157,13 @@ if (!$mysqli->is_auth) {
                     </div>';
 
       // Data produk yang akan dimasukkan ke dalam DataTable
-      $aksi = str_replace('[onclick_delete]', "\"hapus_produk('" . $row['id_product'] . "')\"", $tombol);
-      $aksi = str_replace('[onclick_edit]', "\"edit_produk('" . $row['id_product'] . "')\"", $aksi);
-      $aksi = str_replace('[onclick_view]', "\"lihat_produk('" . $row['id_product'] . "')\"", $aksi);
       $rowData = [
         'id_product' => $no++,
         'id_category' => ucwords(strtolower($row['name_category'] ?? 'Uncategorized')),
         'name_product' => $produk,
         'selling_price' => rupiah($row['selling_price']),
         'stock' => $row['stock'],
-        'aksi' => $aksi,
+        'aksi' => generateTombol($row['showing'] == '0', 'produk', $row['id_product']),
         // Jika Anda memiliki kolom aksi, Anda dapat menambahkannya di sini
       ];
 
@@ -200,30 +233,6 @@ if (!$mysqli->is_auth) {
   if ($query) {
     $no = $start + 1;
     while ($row = $query->fetch_assoc()) {
-      // Tombol aksi
-      $tombol =
-        '<div class="d-flex align-items-center">
-                <a href="javascript:;" data-bs-toggle="tooltip" class="text-body delete-record" data-bs-placement="top" title="Delete Invoice">
-                    <i class="mdi mdi-delete-outline mdi-20px mx-1"></i>
-                </a>
-                <a href="javascript:;" onclick=\'loadPage("order_detail.php?no_invoice=' .
-        '")\' data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Preview Invoice">
-                    <i class="mdi mdi-eye-outline mdi-20px mx-1"></i>
-                </a>
-                <div class="dropdown">
-                    <a href="javascript:;" class="btn dropdown-toggle hide-arrow text-body p-0" data-bs-toggle="dropdown">
-                        <i class="mdi mdi-dots-vertical mdi-20px"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <a target=_blank href="cetak_invoice.php?no_invoice=' .
-        '" class="dropdown-item">Download</a>
-                        <a href="javascript:;" onclick=\'loadPage("order_detail.php?no_invoice=' .
-        '&editing=true")\' class="dropdown-item">Edit</a>
-                        <a href="javascript:;" class="dropdown-item">Duplicate</a>
-                    </div>
-                </div>
-            </div>';
-
       // Data pelanggan yang akan dimasukkan ke dalam DataTable
       $rowData = [
         'id_customer' => $no++,
@@ -231,7 +240,7 @@ if (!$mysqli->is_auth) {
         'telephone' => $row['telephone'],
         'email' => $row['email'],
         'address' => $row['address'],
-        'aksi' => $tombol,
+        'aksi' => generateTombol($row['active'] == '1', 'customer', $row['id_customer']),
       ];
 
       // Tambahkan data pelanggan ke dalam array data
@@ -354,16 +363,26 @@ if (!$mysqli->is_auth) {
                     </div>';
 
       // Data produk yang akan dimasukkan ke dalam DataTable
-      $aksi = str_replace('[onclick_delete]', "\"hapus_produk('" . $row['id_product'] . "')\"", $tombol);
-      $aksi = str_replace('[onclick_edit]', "\"edit_produk('" . $row['id_product'] . "')\"", $aksi);
-      $aksi = str_replace('[onclick_view]', "\"lihat_produk('" . $row['id_product'] . "')\"", $aksi);
       $rowData = [
         'id_product' => $no++,
         'id_category' => ucwords(strtolower($row['name_category'] ?? 'Uncategorized')),
         'name_product' => $produk,
         'selling_price' => rupiah($row['selling_price']),
         'stock' => $row['stock'],
-        'aksi' => $aksi,
+        'aksi' => generateTombol(
+          $row['showing'] == '0',
+          'produk',
+          $row['id_product'],
+          '<a href="javascript:;" 
+        onclick="lihat_packages(\'' .
+            $row['id_product'] .
+            '\',\'' .
+            $row['name_product'] .
+            '\')" 
+          data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Isi Paket">
+            <i class="mdi mdi-package-variant mdi-20px mx-1"></i>
+        </a>'
+        ),
         // Jika Anda memiliki kolom aksi, Anda dapat menambahkannya di sini
       ];
 

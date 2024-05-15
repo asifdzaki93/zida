@@ -8,9 +8,21 @@
 header('Content-Type: application/json');
 
 require_once 'koneksi.php';
+require_once 'base_sistem.php';
 include 'fungsi_thumb.php';
+include 'generate_deskripsi.php';
 
-function proses($mysqli)
+function getSumber($img, $folder)
+{
+  $sumber = '';
+  if ($img !== '' && $folder !== '') {
+    $sumber = 'https://zieda.id/pro/geten/images/' . $folder . '/' . $img;
+  } else {
+    $sumber = 'https://zieda.id/pro/geten/images/no_image.jpg';
+  }
+  return $sumber;
+}
+function proses($mysqli, $chatgpt_url, $chatgpt_key)
 {
   $tanggal = gmdate('Y-m-d');
 
@@ -211,10 +223,26 @@ function proses($mysqli)
     $query = $mysqli->query("SELECT * FROM product WHERE user='$u[master]' AND id_product = '$id'");
     $data = $query->fetch_assoc();
     if ($data != null) {
+      $data['img'] = getSumber($data['img'], $data['folder']);
       $json = [
         'result' => 'success',
         'title' => 'Success',
         'data' => $data,
+      ];
+    }
+  } elseif ($tipe == 'produk_generate_deskripsi') {
+    $id = $mysqli->real_escape_string($_REQUEST['id_product'] ?? '');
+    $query = $mysqli->query(
+      "SELECT name_product,img,folder FROM product WHERE user='$u[master]' AND id_product = '$id'"
+    );
+    $data = $query->fetch_assoc();
+    if ($data != null) {
+      $data['img'] = getSumber($data['img'], $data['folder']);
+      $deskripsiProduk = getDeskripsiProduk($chatgpt_url, $chatgpt_key, $data['name_product'], $data['img']);
+      $json = [
+        'result' => 'success',
+        'title' => 'Success',
+        'data' => $deskripsiProduk,
       ];
     }
   } elseif ($tipe == 'produk_delete') {
@@ -224,7 +252,142 @@ function proses($mysqli)
       'result' => 'success',
       'title' => 'Success',
     ];
+  } elseif ($tipe == 'produk_restore') {
+    $id = $mysqli->real_escape_string($_REQUEST['id_product'] ?? '');
+    $mysqli->query("UPDATE product SET showing='0' where user='$u[master]' AND id_product = '$id'");
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+    ];
+  } elseif ($tipe == 'customer_update' || $tipe == 'customer_create') {
+    $id_customer = $mysqli->real_escape_string($_POST['id_customer'] ?? '');
+    if ($tipe == 'customer_update') {
+      $check = $mysqli->query("SELECT id_customer FROM customer WHERE id_customer = '$id_customer'");
+      $checked = $check->fetch_array();
+      if (!$checked) {
+        return [
+          'result' => 'error',
+          'title' => 'Produk tidak ada',
+        ];
+      }
+    }
+
+    $email = $mysqli->real_escape_string($_POST['email']);
+    $telephone = $mysqli->real_escape_string($_POST['telephone']);
+    $name_customer = $mysqli->real_escape_string($_POST['name_customer']);
+    $address = $mysqli->real_escape_string($_POST['address']);
+    $user = $mysqli->user_master;
+    if ($tipe == 'customer_create') {
+      $mysqli->query("INSERT INTO customer(active,name_customer,email,telephone,address,img,user) 
+      VALUES('1','$name_customer','$email','$telephone','$address','avatar.png','$user')");
+    } else {
+      $mysqli->query("UPDATE customer SET 
+        name_customer = '$name_customer',
+        address   = '$address',
+        email   = '$email',
+        telephone   = '$telephone'
+        WHERE id_customer = '$id_customer' and user = '$user'");
+    }
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+    ];
+  } elseif ($tipe == 'customer_read') {
+    $id = $mysqli->real_escape_string($_REQUEST['id_customer'] ?? '');
+    $query = $mysqli->query("SELECT * FROM customer WHERE user='$u[master]' AND id_customer = '$id'");
+    $data = $query->fetch_assoc();
+    if ($data != null) {
+      $json = [
+        'result' => 'success',
+        'title' => 'Success',
+        'data' => $data,
+      ];
+    }
+  } elseif ($tipe == 'customer_delete') {
+    $id = $mysqli->real_escape_string($_REQUEST['id_customer'] ?? '');
+    $mysqli->query("UPDATE customer SET active='0' where user='$u[master]' AND id_customer = '$id'");
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+    ];
+  } elseif ($tipe == 'customer_restore') {
+    $id = $mysqli->real_escape_string($_REQUEST['id_customer'] ?? '');
+    $mysqli->query("UPDATE customer SET active='1' where user='$u[master]' AND id_customer = '$id'");
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+    ];
+  } elseif ($tipe == 'packages_read') {
+    $id = $mysqli->real_escape_string($_REQUEST['id_product'] ?? '');
+    $query = $mysqli->query("SELECT * from packagesproduct where id_product = '$id'");
+    $data = [];
+    while ($row = $query->fetch_assoc()) {
+      $data[] = $row;
+    }
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+      'data' => $data,
+    ];
+  } elseif ($tipe == 'packages_create' || $tipe == 'packages_update') {
+    $id_product = $mysqli->real_escape_string($_POST['id_product'] ?? '');
+    $id_packagesproduct = $mysqli->real_escape_string($_POST['id_packagesproduct'] ?? '');
+    $sesi = '';
+    $check = $mysqli->query("SELECT session FROM product WHERE id_product = '$id_product'");
+    if ($tipe == 'packages_update') {
+      $check = $mysqli->query(
+        "SELECT id_packagesproduct FROM packagesproduct WHERE id_packagesproduct = '$id_packagesproduct'"
+      );
+      $checked = $check->fetch_array();
+      if (!$checked) {
+        return [
+          'result' => 'error',
+          'title' => 'Produk tidak ada',
+        ];
+      }
+    } else {
+      $product = $check->fetch_array();
+      if (!$product) {
+        return [
+          'result' => 'error',
+          'title' => 'Produk tidak ada',
+        ];
+      }
+      $sesi = $product['session'];
+    }
+    $price = $mysqli->real_escape_string($_POST['price']);
+    $name_product = $mysqli->real_escape_string($_POST['name_product']);
+    $amount = $mysqli->real_escape_string($_POST['amount']);
+
+    if ($tipe == 'packages_update') {
+      $mysqli->query(
+        "UPDATE packagesproduct set 
+        name_product = '$name_product', 
+        amount = '$amount', 
+        price = '$price'
+        where user = '$m[phone_number]' and id_packagesproduct = '$id_packagesproduct'"
+      );
+    } else {
+      $mysqli->query(
+        "INSERT INTO packagesproduct(id_product, name_product, amount, id_store, user, sesi, price, date) 
+                              VALUES('$id_product', '$name_product', '$amount', '$m[id_store]', '$m[phone_number]', '$sesi', '$price', '$tanggal')"
+      );
+    }
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+    ];
+  } elseif ($tipe == 'packages_delete') {
+    $id_packagesproduct = $mysqli->real_escape_string($_REQUEST['id_packagesproduct'] ?? '');
+    $mysqli->query(
+      "DELETE from packagesproduct 
+      where user = '$m[phone_number]' and id_packagesproduct = '$id_packagesproduct'"
+    );
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+    ];
   }
   return $json;
 }
-echo json_encode(proses($mysqli));
+echo json_encode(proses($mysqli, $chatgpt_url, $chatgpt_key));

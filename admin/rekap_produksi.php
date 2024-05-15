@@ -73,7 +73,7 @@ class Pdf extends FPDF
 
             $this->Image($image, $xPos, $yPos, $imageWidth, $imageHeight);
 
-            $name = ucwords(strtolower($names[$index]));
+            $name = $names[$index];
             if (strlen($name) > 20) {
                 $name = substr($name, 0, 17) . '...';
             }
