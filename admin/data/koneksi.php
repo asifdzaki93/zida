@@ -58,7 +58,7 @@ class NewMysqli extends mysqli
         $this->is_auth = true;
         $this->user_master = $this->data_user['master'];
         if (!(empty($this->data_user['img']) || $this->data_user['img'] == 'avatar.png')) {
-          $this->data_user_avatar = 'https://zieda.id/pro/geten/images/' . $this->data_user['img'];
+          $this->data_user_avatar = 'https://zieda.id/pro/geten/images/foto/' . $this->data_user['img'];
         }
         $this->user_master_query = "user = '" . $this->user_master . "'";
         $masterakun = $this->query("SELECT * FROM users WHERE phone_number='" . $this->data_user['master'] . "'");

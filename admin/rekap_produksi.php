@@ -237,7 +237,7 @@ $productNames = [];
 $productAmounts = [];
 foreach ($products as $rc) {
     $hostedImages[] = $rc['img'];
-    $productNames[] = ucwords(strtolower($rc['name_product']));
+    $productNames[] = $rc['name_product'];
     $productAmounts[] = $rc['amount'];
 }
 
