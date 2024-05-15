@@ -177,7 +177,7 @@ $optionKategori = json_encode($kategori);
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" onclick="crud_master_data_process()" id="crud_master_data_button">Buka</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Kembali</button>
             </div>
         </div>
     </div>
@@ -696,6 +696,11 @@ $optionKategori = json_encode($kategori);
         $("#crud_master_data").modal("show");
         $("#crud_master_data_title").html(title);
         $("#crud_master_data_button").attr("disabled",false);
+        if(button==""){
+            $("#crud_master_data_button").attr("style","display:none !important;");
+        }else{
+            $("#crud_master_data_button").attr("style","");
+        }
         $("#crud_master_data_button").html(button);
         $("#crud_master_data_content").html("");
         for(var x=0;x<input_form_group.length;x++){
