@@ -18,7 +18,7 @@ if (mysqli_connect_errno()) {
 class NewMysqli extends mysqli
 {
   public $data_user;
-  public $data_user_avatar = 'https://zieda.id/pro/geten/images/avatar.png';
+  public $data_user_avatar = 'https://zieda.id/pro/geten/images/foto/avatar.png';
   public $data_master;
   public $user_master = 'nothing';
   public $user_master_query = "user = 'nothing'";
@@ -57,9 +57,9 @@ class NewMysqli extends mysqli
       if ($this->data_user != null) {
         $this->is_auth = true;
         $this->user_master = $this->data_user['master'];
-        $this->data_user_avatar =
-          'https://zieda.id/pro/geten/images/' .
-          (empty($this->data_user['img']) ? 'avatar.png' : $this->data_user['img']);
+        if (!(empty($this->data_user['img']) || $this->data_user['img'] == 'avatar.png')) {
+          $this->data_user_avatar = 'https://zieda.id/pro/geten/images/' . $this->data_user['img'];
+        }
         $this->user_master_query = "user = '" . $this->user_master . "'";
         $masterakun = $this->query("SELECT * FROM users WHERE phone_number='" . $this->data_user['master'] . "'");
         $this->data_master = $masterakun->fetch_assoc();

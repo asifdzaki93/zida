@@ -1,16 +1,5 @@
 <?php
-$protocol = !empty($_SERVER['HTTP_X_FORWARDED_PROTO'])
-  ? $_SERVER['HTTP_X_FORWARDED_PROTO']
-  : (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'
-    ? 'https'
-    : 'http');
-define('BASE_URL', $protocol . "://$_SERVER[HTTP_HOST]/zida");
-
-// Definisikan BASE_URL secara statis
-$base_url = BASE_URL;
-
-$nameapp = 'Zieda Bakery';
-
+include 'data/base_sistem.php';
 $url = $_GET['page'] ?? 'home.php';
 
 $allowed = [
