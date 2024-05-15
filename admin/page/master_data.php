@@ -567,6 +567,10 @@ $optionKategori = json_encode($kategori);
                                 .attr("value",element.id_product),
                                 $("<input>")
                                 .attr("type","hidden")
+                                .attr("id","name_product_"+element.id_packagesproduct)
+                                .attr("value",element.name_product),
+                                $("<input>")
+                                .attr("type","hidden")
                                 .attr("id","amount_"+element.id_packagesproduct)
                                 .attr("value",element.amount),
                                 $("<input>")
@@ -633,7 +637,7 @@ $optionKategori = json_encode($kategori);
                     {
                         type:"number",
                         name:"amount",
-                        label:"Jumlah",
+                        label:"Jumlah "+name_product,
                         value:amount
                     },
                 ]
@@ -660,20 +664,22 @@ $optionKategori = json_encode($kategori);
             },
         ]
         crud_master_data_open(input_form_group,title,button);
-        $("#form_data_id_product").select2({
-            ajax: {
-                url: "<?php echo $base_url;?>/admin/data/cari_produk_no_paket.php",
-                type: "GET",
-                data: function (params) {
+        if(id_packagesproduct==""){
+            $("#form_data_id_product").select2({
+                ajax: {
+                    url: "<?php echo $base_url;?>/admin/data/cari_produk_no_paket.php",
+                    type: "GET",
+                    data: function (params) {
 
-                    var queryParameters = {
-                        search: params.term
-                    }
-                    return queryParameters;
+                        var queryParameters = {
+                            search: params.term
+                        }
+                        return queryParameters;
+                    },
                 },
-            },
-            dropdownParent: $("#crud_master_data")
-        });
+                dropdownParent: $("#crud_master_data")
+            });
+        }
     }
     async function hapus_packages(id){
         await $.ajax({
