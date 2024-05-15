@@ -1,19 +1,19 @@
 <?php
-include "data/koneksi.php";
-include("data/function.php");
-$totalBayar     = getTotalBayar($mysqli, $bulan1, $bulan2);
+include 'data/koneksi.php';
+include 'data/function.php';
+$totalBayar = getTotalBayar($mysqli, $bulan1, $bulan2);
 $totalPreOrderP = getTotalPreOrderPengiriman($mysqli, $bulan1, $bulan2);
 $totalPreOrderM = getTotalPreOrderMasuk($mysqli, $bulan1, $bulan2);
-$totalTransP    = getTotalTransPengiriman($mysqli, $bulan1, $bulan2);
-$totalTransM    = getTotalTransMasuk($mysqli, $bulan1, $bulan2);
-$totalTransMin  = getTotalTransMinus($mysqli, $bulan1, $bulan2);
-$countTransP    = getCountTransPengiriman($mysqli, $bulan1, $bulan2);
+$totalTransP = getTotalTransPengiriman($mysqli, $bulan1, $bulan2);
+$totalTransM = getTotalTransMasuk($mysqli, $bulan1, $bulan2);
+$totalTransMin = getTotalTransMinus($mysqli, $bulan1, $bulan2);
+$countTransP = getCountTransPengiriman($mysqli, $bulan1, $bulan2);
 $countPreOrderP = getCountPrePengiriman($mysqli, $bulan1, $bulan2);
-$countTransM    = getCountTransMasuk($mysqli, $bulan1, $bulan2);
+$countTransM = getCountTransMasuk($mysqli, $bulan1, $bulan2);
 $countPreOrderM = getCountPreMasuk($mysqli, $bulan1, $bulan2);
-$countAllM      = getCountAllMasuk($mysqli, $bulan1, $bulan2);
-$countMinus     = getCountMinus($mysqli, $bulan1, $bulan2);
-$uangMasuk      = getUangMasuk($mysqli, $bulan1, $bulan2);
+$countAllM = getCountAllMasuk($mysqli, $bulan1, $bulan2);
+$countMinus = getCountMinus($mysqli, $bulan1, $bulan2);
+$uangMasuk = getUangMasuk($mysqli, $bulan1, $bulan2);
 
 $selisih = $totalPreOrderP - $totalBayar;
 
@@ -23,8 +23,8 @@ if ($totalPreOrderP != 0) {
     $lunas2 = ($totalBayar / $totalPreOrderP) * 100;
 } else {
     // Menetapkan nilai default atau menangani kasus pembagi nol
-    $lunas1 = 0;  // Bisa juga diset ke nilai lain yang masuk akal dalam konteks aplikasi Anda
-    $lunas2 = 0;  // Bisa juga diset ke nilai lain yang masuk akal dalam konteks aplikasi Anda
+    $lunas1 = 0; // Bisa juga diset ke nilai lain yang masuk akal dalam konteks aplikasi Anda
+    $lunas2 = 0; // Bisa juga diset ke nilai lain yang masuk akal dalam konteks aplikasi Anda
 }
 
 $percentageChange = getPercentageChange($mysqli);
@@ -49,10 +49,10 @@ $icon = getPercentageChangeIcon($percentageChange);
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <small class="me-2"><?= getTotalSalesDay($mysqli); ?> Transaksi Hari Ini</small>
-                    <div class="d-flex align-items-center text-<?= $icon['color']; ?>">
+                    <small class="me-2"><?= getTotalSalesDay($mysqli) ?> Transaksi Hari Ini</small>
+                    <div class="d-flex align-items-center text-<?= $icon['color'] ?>">
                         <p class="mb-0"><?= $percentageChange ?>%</p>
-                        <?= '<i class="' . $icon['arrowIcon'] . '"></i>'; ?>
+                        <?= '<i class="' . $icon['arrowIcon'] . '"></i>' ?>
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                         </div>
                     </div>
                     <div class="card-info">
-                        <h5 class="mb-0"><?= getCurrentCustomers($mysqli); ?></h5>
+                        <h5 class="mb-0"><?= getCurrentCustomers($mysqli) ?></h5>
                         <small class="text-muted">Pelangan</small>
                     </div>
                 </div>
@@ -75,7 +75,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                         </div>
                     </div>
                     <div class="card-info">
-                        <h5 class="mb-0"><?= getCurrentStaff($mysqli); ?></h5>
+                        <h5 class="mb-0"><?= getCurrentStaff($mysqli) ?></h5>
                         <small class="text-muted">Petugas</small>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                         </div>
                     </div>
                     <div class="card-info">
-                        <h5 class="mb-0"><?= getCurrentPackages($mysqli); ?></h5>
+                        <h5 class="mb-0"><?= getCurrentPackages($mysqli) ?></h5>
                         <small class="text-muted">Paket</small>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ $icon = getPercentageChangeIcon($percentageChange);
                         </div>
                     </div>
                     <div class="card-info">
-                        <h5 class="mb-0"><?= getCurrentProducts($mysqli); ?></h5>
+                        <h5 class="mb-0"><?= getCurrentProducts($mysqli) ?></h5>
                         <small class="text-muted">Produk</small>
                     </div>
                 </div>
@@ -122,7 +122,14 @@ $icon = getPercentageChangeIcon($percentageChange);
                             <h6 class="mb-0 me-2 text-primary">
                                 <strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong>
                             </h6>
-                            <small class="">Diterima: <?= number_format($lunas2, 0, ',', '.'); ?>%</small><small class="text-success"><?= '(Rp.' . number_format($totalBayar, 0, ',', '.') . ')' ?></small>
+                            <small class="">Diterima: <?= number_format(
+                                                            $lunas2,
+                                                            0,
+                                                            ',',
+                                                            '.'
+                                                        ) ?>%</small><small class="text-success"><?= '(Rp.' .
+                                                                            number_format($totalBayar, 0, ',', '.') .
+                                                                            ')' ?></small>
                         </div>
                     </div>
                 </div>
@@ -151,8 +158,10 @@ $icon = getPercentageChangeIcon($percentageChange);
                             <h6 class="mb-0 me-2 text-primary">
                                 <strong><?= 'Rp.' . number_format($totalPreOrderP, 0, ',', '.') ?></strong>
                             </h6>
-                            <small class="">Piutang: <?= number_format($lunas1, 0, ',', '.'); ?>%</small>
-                            <small class="text-danger"><?= '(Rp.' . number_format($selisih, 0, ',', '.') . ')' ?></small>
+                            <small class="">Piutang: <?= number_format($lunas1, 0, ',', '.') ?>%</small>
+                            <small class="text-danger"><?= '(Rp.' .
+                                                            number_format($selisih, 0, ',', '.') .
+                                                            ')' ?></small>
                         </div>
                     </div>
                 </div>
@@ -213,11 +222,11 @@ $icon = getPercentageChangeIcon($percentageChange);
                     <div class="d-flex justify-content-between flex-wrap gap-2">
                         <p class="d-block mb-2 text-muted">Penjualan</p>
                         <div class="d-flex text-success">
-                            <p class="me-1">0 Transaksi</p>
+                            <p class="me-1"><?= number_format($countAllM, 0, ',', '.') ?> Transaksi</p>
 
                         </div>
                     </div>
-                    <h5 class="mb-1"><?= "Rp " . number_format($totalTransM, 0, ',', '.'); ?></h5>
+                    <h5 class="mb-1"><?= 'Rp.' . number_format($totalTransM, 0, ',', '.') ?></h5>
                 </div>
                 <div class="card-body">
                     <div class="row mt-3">
@@ -230,8 +239,14 @@ $icon = getPercentageChangeIcon($percentageChange);
                                 </div>
                                 <small class="mb-0 text-muted">PreOrder</small>
                             </div>
-                            <h4 class="mb-0 pt-1 text-nowrap">0%</h4>
-                            <small class="text-muted text-nowrap">0</small>
+                            <h4 class="mb-0 pt-1 text-nowrap">
+                                <?= $totalPreOrderM == 0
+                                    ? 0
+                                    : number_format(($totalPreOrderM / $totalTransM) * 100, 0, ',', '.') ?>%
+                            </h4>
+                            <small class="text-muted text-nowrap">
+                                <?= number_format($totalPreOrderM, 0, ',', '.') ?>
+                            </small>
                         </div>
                         <div class="col-4">
                             <div class="divider divider-vertical">
@@ -249,14 +264,41 @@ $icon = getPercentageChangeIcon($percentageChange);
                                     </div>
                                 </div>
                             </div>
-                            <h4 class="mb-0 pt-1 text-nowrap">0%</h4>
-                            <small class="text-muted text-nowrap">0</small>
+                            <h4 class="mb-0 pt-1 text-nowrap">
+                                <?= $totalPreOrderM == 0
+                                    ? 0
+                                    : number_format(
+                                        (($totalTransM - $totalPreOrderM) / $totalTransM) * 100,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) ?>%
+                            </h4>
+                            <small class="text-muted text-nowrap">
+                                <?= number_format($totalTransM - $totalPreOrderM, 0, ',', '.') ?>
+                            </small>
                         </div>
                     </div>
                     <div class="d-flex align-items-center mt-2 pt-1">
                         <div class="progress w-100 rounded" style="height: 10px">
-                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <?php $persen =
+                                $totalPreOrderM == 0
+                                ? 0
+                                : number_format(($totalPreOrderM / $totalTransM) * 100, 0, ',', '.'); ?>
+                            <div class="progress-bar bg-warning" style="width: <?= $persen ?>%" role="progressbar" aria-valuenow="
+                              <?= $persen ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <?php $persen =
+                                $totalPreOrderM == 0
+                                ? 0
+                                : number_format(
+                                    (($totalTransM - $totalPreOrderM) / $totalTransM) * 100,
+                                    0,
+                                    ',',
+                                    '.'
+                                ); ?>
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 
+                            <?= $persen ?>%" aria-valuenow="
+                              <?= $persen ?>" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -269,8 +311,18 @@ $icon = getPercentageChangeIcon($percentageChange);
                                 </div>
                                 <small class="mb-0 text-muted">Diterima</small>
                             </div>
-                            <h4 class="mb-0 pt-1 text-nowrap">0%</h4>
-                            <small class="text-muted text-nowrap"><?= "Rp " . number_format($uangMasuk, 0, ',', '.'); ?></small>
+                            <h4 class="mb-0 pt-1 text-nowrap">
+                                <?= $totalPreOrderM == 0
+                                    ? 0
+                                    : number_format(
+                                        (($totalTransM - $totalTransMin) / $totalTransM) * 100,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) ?>%</h4>
+                            <small class="text-muted text-nowrap">
+                                <?= number_format($totalTransM - $totalTransMin, 0, ',', '.') ?>
+                            </small>
                         </div>
                         <div class="col-4">
                             <div class="divider divider-vertical">
@@ -288,14 +340,30 @@ $icon = getPercentageChangeIcon($percentageChange);
                                     </div>
                                 </div>
                             </div>
-                            <h4 class="mb-0 pt-1 text-nowrap">0%</h4>
-                            <small class="text-muted text-nowrap">0</small>
+                            <h4 class="mb-0 pt-1 text-nowrap"><?= $totalPreOrderM == 0
+                                                                    ? 0
+                                                                    : number_format(($totalTransMin / $totalTransM) * 100, 0, ',', '.') ?>%</h4>
+                            <small class="text-muted text-nowrap"><?= number_format(
+                                                                        $totalTransMin,
+                                                                        0,
+                                                                        ',',
+                                                                        '.'
+                                                                    ) ?></small>
                         </div>
                     </div>
                     <div class="d-flex align-items-center mt-2 pt-1">
                         <div class="progress w-100 rounded" style="height: 10px">
-                            <div class="progress-bar bg-warning" style="width: 0%" role="progressbar" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="nan" aria-valuemin="0" aria-valuemax="100"></div>
+                            <?php $persen =
+                                $totalPreOrderM == 0
+                                ? 0
+                                : number_format((($totalTransM - $totalTransMin) / $totalTransM) * 100, 0, ',', '.'); ?>
+
+                            <div class="progress-bar bg-warning" style="width: <?= $persen ?>%" role="progressbar" aria-valuenow="<?= $persen ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                            <?php $persen =
+                                $totalPreOrderM == 0
+                                ? 0
+                                : number_format(($totalTransMin / $totalTransM) * 100, 0, ',', '.'); ?>
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: <?= $persen ?>%" aria-valuenow="<?= $persen ?>" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -303,7 +371,8 @@ $icon = getPercentageChangeIcon($percentageChange);
                     <div class="d-flex justify-content-between flex-wrap gap-2">
                         <p class="d-block mb-2 text-muted">Estimasi Uang Masuk</p>
                     </div>
-                    <h5 class="mb-1">Rp.27.448.000</h5>
+                    <h5 class="mb-1"><?= 'Rp.' .
+                                            number_format($totalTransM - $totalTransMin + $selisih, 0, ',', '.') ?></h5>
                     <div>
                         <div class="row mt-3">
                             <div class="col-4">
@@ -315,8 +384,21 @@ $icon = getPercentageChangeIcon($percentageChange);
                                     </div>
                                     <small class="mb-0 text-muted">Penerimaan</small>
                                 </div>
-                                <h4 class="mb-0 pt-1 text-nowrap">0%</h4>
-                                <small class="text-muted text-nowrap">0</small>
+                                <h4 class="mb-0 pt-1 text-nowrap"><?= $totalPreOrderM == 0
+                                                                        ? 0
+                                                                        : number_format(
+                                                                            (($totalTransM - $totalTransMin) / ($totalTransM - $totalTransMin + $selisih)) *
+                                                                                100,
+                                                                            0,
+                                                                            ',',
+                                                                            '.'
+                                                                        ) ?>%</h4>
+                                <small class="text-muted text-nowrap"><?= number_format(
+                                                                            $totalTransM - $totalTransMin,
+                                                                            0,
+                                                                            ',',
+                                                                            '.'
+                                                                        ) ?></small>
                             </div>
                             <div class="col-4">
                                 <div class="divider divider-vertical">
@@ -334,21 +416,55 @@ $icon = getPercentageChangeIcon($percentageChange);
                                         </div>
                                     </div>
                                 </div>
-                                <h4 class="mb-0 pt-1 text-nowrap">0%</h4>
-                                <small class="text-muted text-nowrap">27.448.000</small>
+                                <h4 class="mb-0 pt-1 text-nowrap"><?= $totalPreOrderM == 0
+                                                                        ? 0
+                                                                        : number_format(
+                                                                            ($selisih / ($totalTransM - $totalTransMin + $selisih)) * 100,
+                                                                            0,
+                                                                            ',',
+                                                                            '.'
+                                                                        ) ?>%</h4>
+                                <small class="text-muted text-nowrap"><?= number_format(
+                                                                            $selisih,
+                                                                            0,
+                                                                            ',',
+                                                                            '.'
+                                                                        ) ?></small>
                             </div>
                         </div>
                         <div class="d-flex align-items-center mt-2 pt-1">
                             <div class="progress w-100 rounded" style="height: 10px">
-                                <div class="progress-bar bg-warning" style="width: 0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                <?php $persen =
+                                    $totalPreOrderM == 0
+                                    ? 0
+                                    : number_format(
+                                        (($totalTransM - $totalTransMin) / ($totalTransM - $totalTransMin + $selisih)) *
+                                            100,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ); ?>
+                                <div class="progress-bar bg-warning" style="width: <?= $persen ?>%" role="progressbar" aria-valuenow="<?= $persen ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                <?php $persen = number_format($totalPreOrderM == 0)
+                                    ? 0
+                                    : number_format(
+                                        ($selisih / ($totalTransM - $totalTransMin + $selisih)) * 100,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ); ?>
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: <?= $persen ?>%" aria-valuenow="<?= $persen ?>" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <!--/ Total Visits -->
 
+
+
+    </div>
 </div>
 <!-- 
 <div class="col-12">
