@@ -355,10 +355,10 @@ if (!$mysqli->is_auth) {
                     </div>
                     <div class="d-flex flex-column gap-1"><a href="pages-profile-user.html" class="text-truncate">
                             <h6 class="mb-0">' .
-        (ucwords(strtolower($row['name_product'])) ?? '-') .
+        truncateDescription(ucwords(strtolower(($row['name_product']))) ?? '-', 40) .
         '</h6>
                         </a><small class="text-truncate text-muted">' .
-        truncateDescription(ucwords(strtolower($row['description'] ?? '-'))) .
+        truncateDescription(ucwords(strtolower($row['description'] ?? '-')), 40) .
         '</small></div>
                     </div>';
 

@@ -1,11 +1,11 @@
 <?php
 include 'data/koneksi.php';
 $q = $mysqli->query(
-  'SELECT id_category as value, name_category as label from category where status = "0" order by name_category asc'
+    'SELECT id_category as value, name_category as label from category where status = "0" order by name_category asc'
 );
 $kategori = [];
 while ($row = $q->fetch_assoc()) {
-  array_push($kategori, $row);
+    array_push($kategori, $row);
 }
 $optionKategori = json_encode($kategori);
 ?>
@@ -14,10 +14,8 @@ $optionKategori = json_encode($kategori);
     <div class="card-body">
         <div class="input-group input-group-merge">
             <span class="input-group-text" id="basic-addon-search31"><i class="fa fa-search"></i></span>
-            <input type="text" class="form-control" placeholder="Cari..." aria-label="Cari..."
-                aria-describedby="basic-addon-search31" id="cari_master_data" onchange="cariMasterData()" />
-            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false"><i class="fa fa-cog"></i></button>
+            <input type="text" class="form-control" placeholder="Cari..." aria-label="Cari..." aria-describedby="basic-addon-search31" id="cari_master_data" onchange="cariMasterData()" />
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i></button>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li>
                     <label class="dropdown-item">
@@ -74,25 +72,19 @@ $optionKategori = json_encode($kategori);
 <div class="nav-align-top mb-4 h-100">
     <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
         <li class="nav-item">
-            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
-                data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home"
-                aria-selected="true">
+            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home" aria-selected="true">
                 <i class="tf-icons mdi  mdi-baguette me-1"></i> Produk
                 <span class="badge rounded-pill bg-danger ms-1" id="produk_list_count">0</span>
             </button>
         </li>
         <li class="nav-item">
-            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile"
-                aria-selected="false">
+            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile" aria-selected="false">
                 <i class="tf-icons mdi mdi-package-variant-closed-check me-1"></i> Paket
                 <span class="badge rounded-pill bg-danger ms-1" id="paket_list_count">0</span>
             </button>
         </li>
         <li class="nav-item">
-            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                data-bs-target="#navs-pills-justified-messages" aria-controls="navs-pills-justified-messages"
-                aria-selected="false">
+            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-messages" aria-controls="navs-pills-justified-messages" aria-selected="false">
                 <i class="tf-icons mdi mdi-account-outline me-1"></i> Pelanggan
                 <span class="badge rounded-pill bg-danger ms-1" id="pelanggan_data_count">0</span>
             </button>
@@ -100,8 +92,7 @@ $optionKategori = json_encode($kategori);
     </ul>
     <div class="tab-content p-0">
         <div class="tab-pane fade show active" id="navs-pills-justified-home" role="tabpanel">
-            <table id="produk-list-table"
-                class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+            <table id="produk-list-table" class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -119,8 +110,7 @@ $optionKategori = json_encode($kategori);
             </table>
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-profile" role="tabpanel">
-            <table id="paket-list-table"
-                class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+            <table id="paket-list-table" class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -139,9 +129,7 @@ $optionKategori = json_encode($kategori);
         </div>
         <div class="tab-pane fade" id="navs-pills-justified-messages" role="tabpanel">
             <div class="">
-                <table id="pelanggan-list-table"
-                    class="datatables-basic table dt-table dt-responsive display table-striped table-sm"
-                    style="width:100%">
+                <table id="pelanggan-list-table" class="invoice-list-table datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -195,6 +183,7 @@ $optionKategori = json_encode($kategori);
     var optionKategori = JSON.parse('<?php echo $optionKategori; ?>');
 
     var id_product_selected = "";
+
     function cariMasterData() {
         if (produk_list != null) {
             produk_list.ajax.reload();
@@ -205,7 +194,7 @@ $optionKategori = json_encode($kategori);
         if (pelanggan_data != null) {
             pelanggan_data.ajax.reload();
         }
-        if(id_product_selected != ""){
+        if (id_product_selected != "") {
             load_packages();
         }
     }
@@ -226,450 +215,440 @@ $optionKategori = json_encode($kategori);
         }
         return result;
     }
-    function showGenerateDeskripsi(){
-        if($("#form_data_online").val()==1){
+
+    function showGenerateDeskripsi() {
+        if ($("#form_data_online").val() == 1) {
             $("#generate_deskripsi").removeClass("d-none");
-        }else{
+        } else {
             $("#generate_deskripsi").addClass("d-none");
         }
     }
-    async function generateDeskripsi(id){
+    async function generateDeskripsi(id) {
         $("#generate_deskripsi").html("Memuat...");
         await $.ajax({
-            url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=produk_generate_deskripsi&id_product="+id,
-            success: function (d){
-                if(d.result=="success"){
+            url: "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=produk_generate_deskripsi&id_product=" + id,
+            success: function(d) {
+                if (d.result == "success") {
                     $("#form_data_description").val(d.data);
                 }
             }
         });
         $("#generate_deskripsi").html("Generate Ulang Dengan AI");
     }
-    async function crudProduk(id,read_only,packages,title,tipe,button){
+    async function crudProduk(id, read_only, packages, title, tipe, button) {
         var data = {};
         var generator = '';
-        if(id!=""){
+        if (id != "") {
             await $.ajax({
-                url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=produk_read&id_product="+id,
-                success: function (d){
-                    if(d.result=="success"){
+                url: "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=produk_read&id_product=" + id,
+                success: function(d) {
+                    if (d.result == "success") {
                         data = d.data;
                     }
                 }
             });
-            generator = "<a id='generate_deskripsi' class='btn btn-sm btn-secondary' onclick=\"generateDeskripsi('"+
-            id+"')\" href='javascript:;'>Generate Dengan AI</a>";
+            generator = "<a id='generate_deskripsi' class='btn btn-sm btn-secondary' onclick=\"generateDeskripsi('" +
+                id + "')\" href='javascript:;'>Generate Dengan AI</a>";
         }
-        var input_form_group = [
-            {
-                class:"col-md-12",
-                array:[
-                    {
-                        type:"hidden",
-                        name:"id_product",
-                        value:data.id_product??""
+        var input_form_group = [{
+                class: "col-md-12",
+                array: [{
+                        type: "hidden",
+                        name: "id_product",
+                        value: data.id_product ?? ""
                     },
                     {
-                        type:"hidden",
-                        name:"tipe",
-                        value:tipe
+                        type: "hidden",
+                        name: "tipe",
+                        value: tipe
                     },
                 ]
             },
             {
-                class:"col-md-12",
-                read_only:read_only,
-                array:[
-                    {
-                        type:"hidden",
-                        name:"packages",
-                        value:packages
+                class: "col-md-12",
+                read_only: read_only,
+                array: [{
+                        type: "hidden",
+                        name: "packages",
+                        value: packages
                     },
                     {
-                        label:"Nama Barang",
-                        value:data.name_product??"",
-                        name:"name_product"
+                        label: "Nama Barang",
+                        value: data.name_product ?? "",
+                        name: "name_product"
                     },
                     {
-                        label:"Gambar",
-                        type:"file",
-                        value:data.img??"",
-                        name:"img"
+                        label: "Gambar",
+                        type: "file",
+                        value: data.img ?? "",
+                        name: "img"
                     },
                     {
-                        label:"Kategori",
-                        type:"select",
+                        label: "Kategori",
+                        type: "select",
                         option: optionKategori,
-                        value:data.id_category??"",
-                        name:"id_category"
+                        value: data.id_category ?? "",
+                        name: "id_category"
                     },
                     {
-                        label:"Kode Barang",
-                        value:data.codeproduct??"",
-                        name:"codeproduct"
+                        label: "Kode Barang",
+                        value: data.codeproduct ?? "",
+                        name: "codeproduct"
                     },
                 ]
             },
             {
-                class:"col-md-6",
-                read_only:read_only,
-                array:[
-                    {
-                        label:"Harga Beli",
-                        type:"number",
-                        value:data.purchase_price??"",
-                        name:"purchase_price"
+                class: "col-md-6",
+                read_only: read_only,
+                array: [{
+                        label: "Harga Beli",
+                        type: "number",
+                        value: data.purchase_price ?? "",
+                        name: "purchase_price"
                     },
                     {
-                        label:"Harga Jual",
-                        type:"number",
-                        value:data.selling_price??"",
-                        name:"selling_price"
+                        label: "Harga Jual",
+                        type: "number",
+                        value: data.selling_price ?? "",
+                        name: "selling_price"
                     },
                     {
-                        label:"Harga Grosir",
-                        type:"number",
-                        value:data.wholesale_price??"",
-                        name:"wholesale_price"
+                        label: "Harga Grosir",
+                        type: "number",
+                        value: data.wholesale_price ?? "",
+                        name: "wholesale_price"
                     },
                     {
-                        label:"Pajak",
-                        type:"number",
-                        value:data.tax??"",
-                        name:"tax"
+                        label: "Pajak",
+                        type: "number",
+                        value: data.tax ?? "",
+                        name: "tax"
                     },
                     {
-                        label:"Online",
-                        type:"select",
+                        label: "Online",
+                        type: "select",
                         onchange: "showGenerateDeskripsi()",
-                        option:[
-                            {
-                                label:"Online",
-                                value:"1",
+                        option: [{
+                                label: "Online",
+                                value: "1",
                             },
                             {
-                                label:"Offline",
-                                value:"0",
+                                label: "Offline",
+                                value: "0",
                             },
                         ],
-                        value:data.online??"",
-                        name:"online"
+                        value: data.online ?? "",
+                        name: "online"
                     },
                 ],
             },
             {
-                class:"col-md-6",
-                read_only:read_only,
-                array:[
-                    {
-                        label:"Stok",
-                        type:"number",
-                        value:data.stock??"",
-                        name:"stock"
+                class: "col-md-6",
+                read_only: read_only,
+                array: [{
+                        label: "Stok",
+                        type: "number",
+                        value: data.stock ?? "",
+                        name: "stock"
                     },
                     {
-                        label:"Unit",
-                        value:data.unit??"",
-                        name:"unit"
+                        label: "Unit",
+                        value: data.unit ?? "",
+                        name: "unit"
                     },
                     {
-                        label:"Minimal Stok",
-                        type:"number",
-                        value:data.minimalstock??"",
-                        name:"minimalstock"
+                        label: "Minimal Stok",
+                        type: "number",
+                        value: data.minimalstock ?? "",
+                        name: "minimalstock"
                     },
                     {
-                        label:"Alert Stok",
-                        type:"number",
-                        value:data.alertstock??"",
-                        name:"alertstock"
+                        label: "Alert Stok",
+                        type: "number",
+                        value: data.alertstock ?? "",
+                        name: "alertstock"
                     },
                     {
-                        label:"Minimal Pembelian",
-                        type:"number",
-                        value:data.minimum_purchase??"",
-                        name:"minimum_purchase"
+                        label: "Minimal Pembelian",
+                        type: "number",
+                        value: data.minimum_purchase ?? "",
+                        name: "minimum_purchase"
                     },
                 ]
             },
             {
-                class:"col-md-12",
-                read_only:read_only,
-                array:[
-                    {
-                        label:"Ada Stok",
-                        type:"select",
-                        option:[
-                            {
-                                label:"Ada",
-                                value:"1",
+                class: "col-md-12",
+                read_only: read_only,
+                array: [{
+                        label: "Ada Stok",
+                        type: "select",
+                        option: [{
+                                label: "Ada",
+                                value: "1",
                             },
                             {
-                                label:"Tidak",
-                                value:"0",
+                                label: "Tidak",
+                                value: "0",
                             },
                         ],
-                        value:data.have_stock??"",
-                        name:"have_stock"
+                        value: data.have_stock ?? "",
+                        name: "have_stock"
                     },
                     {
-                        label:"Deskripsi",
-                        type:"textarea",
+                        label: "Deskripsi",
+                        type: "textarea",
                         generator: generator,
-                        value:data.description??"",
-                        name:"description"
+                        value: data.description ?? "",
+                        name: "description"
                     },
                 ]
             },
         ]
-        crud_master_data_open(input_form_group,title,button);
+        crud_master_data_open(input_form_group, title, button);
         showGenerateDeskripsi();
     }
+
     function tambahProduk() {
-        crudProduk("",false,"NO","Tambah Produk","produk_create","Tambah");
+        crudProduk("", false, "NO", "Tambah Produk", "produk_create", "Tambah");
     }
 
-    async function lihat_produk(id){
-        crudProduk(id,true,"NO","Lihat Paket","produk_read","");
+    async function lihat_produk(id) {
+        crudProduk(id, true, "NO", "Lihat Paket", "produk_read", "");
     }
 
-    async function edit_produk(id){
-        crudProduk(id,false,"NO","Edit Produk","produk_update","Edit");
+    async function edit_produk(id) {
+        crudProduk(id, false, "NO", "Edit Produk", "produk_update", "Edit");
     }
 
-    async function hapus_produk(id){
-        crudProduk(id,true,"NO","Hapus Produk","produk_delete","Hapus");
+    async function hapus_produk(id) {
+        crudProduk(id, true, "NO", "Hapus Produk", "produk_delete", "Hapus");
     }
 
-    async function restore_produk(id){
-        crudProduk(id,true,"NO","Pulihkan Produk","produk_restore","Pulihkan");
+    async function restore_produk(id) {
+        crudProduk(id, true, "NO", "Pulihkan Produk", "produk_restore", "Pulihkan");
     }
 
     function tambahPaket() {
-        crudProduk("",false,"YES","Tambah Paket","produk_create","Tambah");
+        crudProduk("", false, "YES", "Tambah Paket", "produk_create", "Tambah");
     }
 
-    async function lihat_paket(id){
-        crudProduk(id,true,"YES","Lihat Paket","produk_read","");
+    async function lihat_paket(id) {
+        crudProduk(id, true, "YES", "Lihat Paket", "produk_read", "");
     }
 
-    async function edit_paket(id){
-        crudProduk(id,false,"YES","Edit Paket","produk_update","Edit");
+    async function edit_paket(id) {
+        crudProduk(id, false, "YES", "Edit Paket", "produk_update", "Edit");
     }
 
-    async function hapus_paket(id){
-        crudProduk(id,true,"YES","Hapus Paket","produk_delete","Hapus");
+    async function hapus_paket(id) {
+        crudProduk(id, true, "YES", "Hapus Paket", "produk_delete", "Hapus");
     }
 
-    async function restore_paket(id){
-        crudProduk(id,true,"YES","Pulihkan Paket","produk_restore","Pulihkan");
+    async function restore_paket(id) {
+        crudProduk(id, true, "YES", "Pulihkan Paket", "produk_restore", "Pulihkan");
     }
 
-    async function crudCustomer(id,read_only,title,tipe,button){
+    async function crudCustomer(id, read_only, title, tipe, button) {
         var data = {};
-        if(id!=""){
+        if (id != "") {
             await $.ajax({
-                url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=customer_read&id_customer="+id,
-                success: function (d){
-                    if(d.result=="success"){
+                url: "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=customer_read&id_customer=" + id,
+                success: function(d) {
+                    if (d.result == "success") {
                         data = d.data;
                     }
                 }
             });
         }
-        var input_form_group = [
-            {
-                class:"col-md-12",
-                read_only:read_only,
-                array:[
-                    {
-                        label:"Nama Pelanggan",
-                        name:"name_customer",
-                        value:data.name_customer??""
+        var input_form_group = [{
+                class: "col-md-12",
+                read_only: read_only,
+                array: [{
+                        label: "Nama Pelanggan",
+                        name: "name_customer",
+                        value: data.name_customer ?? ""
                     },
                     {
-                        type:"email",
-                        name:"email",
-                        label:"Email",
-                        value:data.email??""
+                        type: "email",
+                        name: "email",
+                        label: "Email",
+                        value: data.email ?? ""
                     },
                     {
-                        label:"Nomor HP",
-                        name:"telephone",
-                        value:data.telephone??""
+                        label: "Nomor HP",
+                        name: "telephone",
+                        value: data.telephone ?? ""
                     },
                     {
-                        type:"textarea",
-                        label:"Alamat",
-                        name:"address",
-                        value:data.address??""
+                        type: "textarea",
+                        label: "Alamat",
+                        name: "address",
+                        value: data.address ?? ""
                     },
                 ]
             },
             {
-                class:"col-md-12",
-                array:[
-                    {
-                        type:"hidden",
-                        name:"id_customer",
-                        value:data.id_customer??""
+                class: "col-md-12",
+                array: [{
+                        type: "hidden",
+                        name: "id_customer",
+                        value: data.id_customer ?? ""
                     },
                     {
-                        type:"hidden",
-                        name:"tipe",
-                        value:tipe
+                        type: "hidden",
+                        name: "tipe",
+                        value: tipe
                     },
                 ]
             },
         ]
-        crud_master_data_open(input_form_group,title,button);
+        crud_master_data_open(input_form_group, title, button);
     }
 
     function tambahCustomer() {
-        crudCustomer("",false,"Tambah Pelanggan","customer_create","Tambah");
+        crudCustomer("", false, "Tambah Pelanggan", "customer_create", "Tambah");
     }
-    async function lihat_customer(id){
-        crudCustomer(id,true,"Lihat Pelanggan","customer_read","");
-    }
-
-    async function edit_customer(id){
-        crudCustomer(id,false,"Edit Pelanggan","customer_update","Edit");
+    async function lihat_customer(id) {
+        crudCustomer(id, true, "Lihat Pelanggan", "customer_read", "");
     }
 
-    async function hapus_customer(id){
-        crudCustomer(id,true,"Hapus Pelanggan","customer_delete","Hapus");
+    async function edit_customer(id) {
+        crudCustomer(id, false, "Edit Pelanggan", "customer_update", "Edit");
     }
 
-    async function restore_customer(id){
-        crudCustomer(id,true,"Pulihkan Pelanggan","customer_restore","Pulihkan");
+    async function hapus_customer(id) {
+        crudCustomer(id, true, "Hapus Pelanggan", "customer_delete", "Hapus");
     }
 
-    async function lihat_packages(id_product,name_product) {
-        $("#product_packages").attr("style","");
+    async function restore_customer(id) {
+        crudCustomer(id, true, "Pulihkan Pelanggan", "customer_restore", "Pulihkan");
+    }
+
+    async function lihat_packages(id_product, name_product) {
+        $("#product_packages").attr("style", "");
         $("#product_packages_title").html(name_product);
-        $("#product_packages_add").attr("onclick","tambah_packages('"+id_product+"')");
-        id_product_selected =id_product;
+        $("#product_packages_add").attr("onclick", "tambah_packages('" + id_product + "')");
+        id_product_selected = id_product;
         load_packages();
     }
-    async function load_packages(){
+    async function load_packages() {
         $("#packages_product_content").html("");
         await $.ajax({
-            url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=packages_read&id_product_parent="+id_product_selected,
-            success: function (d){
-                if(d.result=="success"){
+            url: "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=packages_read&id_product_parent=" + id_product_selected,
+            success: function(d) {
+                if (d.result == "success") {
                     var data = d.data;
                     data.forEach(element => {
                         $("#packages_product_content").append(
-                            $("<tr></tr>").attr("id","packages_"+element.id_packagesproduct).append(
+                            $("<tr></tr>").attr("id", "packages_" + element.id_packagesproduct).append(
                                 $("<input>")
-                                .attr("type","hidden")
-                                .attr("id","id_product_"+element.id_packagesproduct)
-                                .attr("value",element.id_product),
+                                .attr("type", "hidden")
+                                .attr("id", "id_product_" + element.id_packagesproduct)
+                                .attr("value", element.id_product),
                                 $("<input>")
-                                .attr("type","hidden")
-                                .attr("id","name_product_"+element.id_packagesproduct)
-                                .attr("value",element.name_product),
+                                .attr("type", "hidden")
+                                .attr("id", "name_product_" + element.id_packagesproduct)
+                                .attr("value", element.name_product),
                                 $("<input>")
-                                .attr("type","hidden")
-                                .attr("id","amount_"+element.id_packagesproduct)
-                                .attr("value",element.amount),
+                                .attr("type", "hidden")
+                                .attr("id", "amount_" + element.id_packagesproduct)
+                                .attr("value", element.amount),
                                 $("<input>")
-                                .attr("type","hidden")
-                                .attr("id","price_"+element.id_packagesproduct)
-                                .attr("value",element.price),
+                                .attr("type", "hidden")
+                                .attr("id", "price_" + element.id_packagesproduct)
+                                .attr("value", element.price),
                                 $("<td></td>").html(element.name_product),
                                 $("<td></td>").html(element.amount),
                                 $("<td></td>").html(element.price),
                                 $("<td></td>").append(
-                                    $("<div></div>").attr("class","d-flex align-items-center").append(
-                                        $("<a></a>").attr("href","javascript:;")
-                                        .attr("onclick","tambah_packages('','"+element.id_packagesproduct+"')").html(
+                                    $("<div></div>").attr("class", "d-flex align-items-center").append(
+                                        $("<a></a>").attr("href", "javascript:;")
+                                        .attr("onclick", "tambah_packages('','" + element.id_packagesproduct + "')").html(
                                             '<i class="fa fa-edit mx-1"></i>'
                                         ),
-                                        $("<a></a>").attr("href","javascript:;")
-                                        .attr("onclick","hapus_packages('"+element.id_packagesproduct+"')").html(
+                                        $("<a></a>").attr("href", "javascript:;")
+                                        .attr("onclick", "hapus_packages('" + element.id_packagesproduct + "')").html(
                                             '<i class="mdi mdi-delete-outline mdi-20px mx-1"></i>'
                                         )
                                     )
                                 )
                             )
-                        );                        
+                        );
                     });
                 }
             }
         });
     }
-    function product_packages_tutup(){
-        $("#product_packages").attr("style","display:none")
+
+    function product_packages_tutup() {
+        $("#product_packages").attr("style", "display:none")
     }
-    async function tambah_packages(id_product_parent,id_packagesproduct=''){
-        var amount=0;
-        var name_product='';
-        var price=0;
+    async function tambah_packages(id_product_parent, id_packagesproduct = '') {
+        var amount = 0;
+        var name_product = '';
+        var price = 0;
         var tipe = 'packages_create';
         var button = 'Tambah';
         var id_product = '';
         var selectProduct = {
-                        label:"Produk",
-                        name:"id_product",
-                        type:"select",
-                        option:[],
-                    };
-        if(id_packagesproduct!=''){
-            amount = $("#amount_"+id_packagesproduct).val();
-            name_product = $("#name_product_"+id_packagesproduct).val();
-            price = $("#price_"+id_packagesproduct).val();
+            label: "Produk",
+            name: "id_product",
+            type: "select",
+            option: [],
+        };
+        if (id_packagesproduct != '') {
+            amount = $("#amount_" + id_packagesproduct).val();
+            name_product = $("#name_product_" + id_packagesproduct).val();
+            price = $("#price_" + id_packagesproduct).val();
             tipe = 'packages_update';
             button = 'Edit';
-            id_product = $("#id_product_"+id_packagesproduct).val();
+            id_product = $("#id_product_" + id_packagesproduct).val();
             var selectProduct = {
-                        name:"id_product",
-                        type:"hidden",
-                        value:id_product
+                name: "id_product",
+                type: "hidden",
+                value: id_product
             };
         }
-        var title = button+' Paket '+$("#product_packages_title").html();
-        var input_form_group = [
-            {
-                class:"col-md-12",
-                array:[
+        var title = button + ' Paket ' + $("#product_packages_title").html();
+        var input_form_group = [{
+                class: "col-md-12",
+                array: [
                     selectProduct,
                     {
-                        type:"number",
-                        name:"amount",
-                        label:"Jumlah "+name_product,
-                        value:amount
+                        type: "number",
+                        name: "amount",
+                        label: "Jumlah " + name_product,
+                        value: amount
                     },
                 ]
             },
             {
-                class:"col-md-12",
-                array:[
-                    {
-                        type:"hidden",
-                        name:"id_packagesproduct",
-                        value:id_packagesproduct??""
+                class: "col-md-12",
+                array: [{
+                        type: "hidden",
+                        name: "id_packagesproduct",
+                        value: id_packagesproduct ?? ""
                     },
                     {
-                        type:"hidden",
-                        name:"id_product_parent",
-                        value:id_product_parent
+                        type: "hidden",
+                        name: "id_product_parent",
+                        value: id_product_parent
                     },
                     {
-                        type:"hidden",
-                        name:"tipe",
-                        value:tipe
+                        type: "hidden",
+                        name: "tipe",
+                        value: tipe
                     },
                 ]
             },
         ]
-        crud_master_data_open(input_form_group,title,button);
-        if(id_packagesproduct==""){
+        crud_master_data_open(input_form_group, title, button);
+        if (id_packagesproduct == "") {
             $("#form_data_id_product").select2({
                 ajax: {
-                    url: "<?php echo $base_url;?>/admin/data/cari_produk_no_paket.php",
+                    url: "<?php echo $base_url; ?>/admin/data/cari_produk_no_paket.php",
                     type: "GET",
-                    data: function (params) {
+                    data: function(params) {
 
                         var queryParameters = {
                             search: params.term
@@ -681,137 +660,137 @@ $optionKategori = json_encode($kategori);
             });
         }
     }
-    async function hapus_packages(id){
+    async function hapus_packages(id) {
         await $.ajax({
-            url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=packages_delete&id_packagesproduct="+id,
-            success: function (d){
-                if(d.result=="success"){
-                    $('#packages_'+id).remove();
+            url: "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=packages_delete&id_packagesproduct=" + id,
+            success: function(d) {
+                if (d.result == "success") {
+                    $('#packages_' + id).remove();
                 }
             }
         });
     }
 
-    function crud_master_data_open(input_form_group = [],title="Tambah Produk",button="Tambah"){
+    function crud_master_data_open(input_form_group = [], title = "Tambah Produk", button = "Tambah") {
         $("#crud_master_data").modal("show");
         $("#crud_master_data_title").html(title);
-        $("#crud_master_data_button").attr("disabled",false);
-        if(button==""){
-            $("#crud_master_data_button").attr("style","display:none !important;");
-        }else{
-            $("#crud_master_data_button").attr("style","");
+        $("#crud_master_data_button").attr("disabled", false);
+        if (button == "") {
+            $("#crud_master_data_button").attr("style", "display:none !important;");
+        } else {
+            $("#crud_master_data_button").attr("style", "");
         }
         $("#crud_master_data_button").html(button);
         $("#crud_master_data_content").html("");
-        for(var x=0;x<input_form_group.length;x++){
+        for (var x = 0; x < input_form_group.length; x++) {
             $("#crud_master_data_content").append(
-                $("<div></div>").attr("class",input_form_group[x].class).attr("id","crud_master_data_content_"+x)
+                $("<div></div>").attr("class", input_form_group[x].class).attr("id", "crud_master_data_content_" + x)
             );
             var input_form_array = input_form_group[x].array;
-            var read_only = input_form_group[x].read_only==true;
-            for(var i=0;i<input_form_array.length;i++){
+            var read_only = input_form_group[x].read_only == true;
+            for (var i = 0; i < input_form_array.length; i++) {
                 var input_form = input_form_array[i];
-                if(input_form.label!=null){
-                    $("#crud_master_data_content_"+x).append(
-                        $.parseHTML('<small class="text-small text-muted text-uppercase align-middle">'+input_form.label+'</small>')
+                if (input_form.label != null) {
+                    $("#crud_master_data_content_" + x).append(
+                        $.parseHTML('<small class="text-small text-muted text-uppercase align-middle">' + input_form.label + '</small>')
                     );
                 }
-                if(read_only){
-                    if(input_form.type=="select"){
+                if (read_only) {
+                    if (input_form.type == "select") {
                         var options = "";
 
-                        for(var j=0;j<input_form.option.length;j++){
-                            var option=input_form.option[j];
-                            if(option.value==input_form.value){
-                                $("#crud_master_data_content_"+x).append(
+                        for (var j = 0; j < input_form.option.length; j++) {
+                            var option = input_form.option[j];
+                            if (option.value == input_form.value) {
+                                $("#crud_master_data_content_" + x).append(
                                     $("<p></p>").append(option.label)
                                 );
                             }
                         }
                     }
-                    if(input_form.type=="file"){
-                        $("#crud_master_data_content_"+x).append(
-                            $("<div></div>").attr("class","w-px-50").html(
-                                $("<img>").attr("class","w-100").attr("src",input_form.value)
+                    if (input_form.type == "file") {
+                        $("#crud_master_data_content_" + x).append(
+                            $("<div></div>").attr("class", "w-px-50").html(
+                                $("<img>").attr("class", "w-100").attr("src", input_form.value)
                             )
                         );
-                    }else{
-                        $("#crud_master_data_content_"+x).append(
+                    } else {
+                        $("#crud_master_data_content_" + x).append(
                             $("<p></p>").append(input_form.value)
                         )
                     }
-                }
-                else{
-                    if(input_form.type=="select"){
+                } else {
+                    if (input_form.type == "select") {
                         var options = "";
 
-                        for(var j=0;j<input_form.option.length;j++){
-                            var option=input_form.option[j];
-                            if(option.value==input_form.value){
-                                options+="<option selected=selected value='"+option.value+"'>"+option.label+"</option>";
-                            }else{
-                                options+="<option value='"+option.value+"'>"+option.label+"</option>";
+                        for (var j = 0; j < input_form.option.length; j++) {
+                            var option = input_form.option[j];
+                            if (option.value == input_form.value) {
+                                options += "<option selected=selected value='" + option.value + "'>" + option.label + "</option>";
+                            } else {
+                                options += "<option value='" + option.value + "'>" + option.label + "</option>";
                             }
                         }
-                        $("#crud_master_data_content_"+x).append(
+                        $("#crud_master_data_content_" + x).append(
                             $("<select></select>")
-                                .attr("class","form-control mb-2")
-                                .attr("id","form_data_"+input_form.name)
-                                .attr("onchange",input_form.onchange??'')
-                                .attr("name",input_form.name)
-                                .html(options)
+                            .attr("class", "form-control mb-2")
+                            .attr("id", "form_data_" + input_form.name)
+                            .attr("onchange", input_form.onchange ?? '')
+                            .attr("name", input_form.name)
+                            .html(options)
                         );
-                    }else if(input_form.type=="textarea"){
-                        $("#crud_master_data_content_"+x).append(
-                            $.parseHTML(input_form.generator??""),
+                    } else if (input_form.type == "textarea") {
+                        $("#crud_master_data_content_" + x).append(
+                            $.parseHTML(input_form.generator ?? ""),
                             $("<textarea></textarea>")
-                                .attr("class","form-control mb-2")
-                                .attr("name",input_form.name)
-                                .attr("id","form_data_"+input_form.name)
-                                .attr("placeholder",input_form.placeholder??"")
-                                .html(input_form.value??"")
+                            .attr("class", "form-control mb-2")
+                            .attr("name", input_form.name)
+                            .attr("id", "form_data_" + input_form.name)
+                            .attr("placeholder", input_form.placeholder ?? "")
+                            .html(input_form.value ?? "")
                         )
-                    }else{
-                        $("#crud_master_data_content_"+x).append(
+                    } else {
+                        $("#crud_master_data_content_" + x).append(
                             $("<input>")
-                                .attr("class",input_form.type=="hidden"?"":"form-control mb-2")
-                                .attr("type",input_form.type)
-                                .attr("id","form_data_"+input_form.name)
-                                .attr("name",input_form.name)
-                                .attr("placeholder",input_form.placeholder??"")
-                                .attr("value",input_form.value??"")
+                            .attr("class", input_form.type == "hidden" ? "" : "form-control mb-2")
+                            .attr("type", input_form.type)
+                            .attr("id", "form_data_" + input_form.name)
+                            .attr("name", input_form.name)
+                            .attr("placeholder", input_form.placeholder ?? "")
+                            .attr("value", input_form.value ?? "")
                         );
                     }
                 }
             }
         }
     }
-    function crud_master_data_onsubmit(e){
+
+    function crud_master_data_onsubmit(e) {
         e.preventDefault();
         crud_master_data_process()
         return false;
     }
-    async function crud_master_data_process(){
+    async function crud_master_data_process() {
         var form = $('#crud_master_data_content')[0]; // You need to use standard javascript object here
         var formData = new FormData(form);
-        if($('#form_data_img').length>0){
-            formData.append('img', $('#form_data_img')[0].files[0]); 
+        if ($('#form_data_img').length > 0) {
+            formData.append('img', $('#form_data_img')[0].files[0]);
         }
-        $("#crud_master_data_button").attr("disabled",true);
+        $("#crud_master_data_button").attr("disabled", true);
         $("#crud_master_data_button").html("proses...");
         await $.ajax({
-            url:  "<?php echo $base_url; ?>/admin/data/crud_master_data.php",
+            url: "<?php echo $base_url; ?>/admin/data/crud_master_data.php",
             data: formData,
             type: 'POST',
             contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
             processData: false, // NEEDED, DON'T OMIT THIS
-            success: function (data){
-                if(data.result=="success"){
+            success: function(data) {
+                if (data.result == "success") {
                     cariMasterData();
                     $("#crud_master_data").modal("hide");
-                }else{
-                    alert(data.title??"Error");
-                    $("#crud_master_data_button").attr("disabled",false);
+                } else {
+                    alert(data.title ?? "Error");
+                    $("#crud_master_data_button").attr("disabled", false);
                     $("#crud_master_data_button").html("Coba Lagi");
                 }
             }
@@ -832,13 +811,13 @@ $optionKategori = json_encode($kategori);
         buttons: [{
             text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-lg-inline-block d-none"> Produk</span>',
             className: 'btn btn-primary',
-            action: function (e, dt, button, config) {
+            action: function(e, dt, button, config) {
                 tambahProduk();
             }
         }],
         ajax: {
             "url": "<?php echo $base_url; ?>/admin/data/produk_list.php",
-            "data": function (d) {
+            "data": function(d) {
                 d.action = "produk_data";
                 d.cari = inputPencarian();
                 d.tipe = inputTipe();
@@ -864,7 +843,7 @@ $optionKategori = json_encode($kategori);
                 "data": "aksi"
             }
         ],
-        drawCallback: function () {
+        drawCallback: function() {
             try {
                 $('#produk_list_count').html(produk_list.page.info().recordsTotal);
             } catch (e) {
@@ -885,13 +864,13 @@ $optionKategori = json_encode($kategori);
         buttons: [{
             text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-lg-inline-block d-none"> Paket</span>',
             className: 'btn btn-primary',
-            action: function (e, dt, button, config) {
+            action: function(e, dt, button, config) {
                 tambahPaket();
             }
         }],
         ajax: {
             "url": "<?php echo $base_url; ?>/admin/data/produk_list.php",
-            "data": function (d) {
+            "data": function(d) {
                 d.action = "paket_data";
                 d.cari = inputPencarian();
                 d.tipe = inputTipe();
@@ -917,7 +896,7 @@ $optionKategori = json_encode($kategori);
                 "data": "aksi"
             }
         ],
-        drawCallback: function () {
+        drawCallback: function() {
             try {
                 $('#paket_list_count').html(paket_list.page.info().recordsTotal);
             } catch (e) {
@@ -938,13 +917,13 @@ $optionKategori = json_encode($kategori);
         buttons: [{
             text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-lg-inline-block d-none"> Pelanggan</span>',
             className: 'btn btn-primary',
-            action: function (e, dt, button, config) {
+            action: function(e, dt, button, config) {
                 tambahCustomer();
             }
         }],
         ajax: {
             "url": "<?php echo $base_url; ?>/admin/data/produk_list.php",
-            "data": function (d) {
+            "data": function(d) {
                 d.action = "pelanggan_data";
                 d.cari = inputPencarian();
                 d.tipe = inputTipe();
@@ -970,7 +949,7 @@ $optionKategori = json_encode($kategori);
                 "data": "aksi"
             }
         ],
-        drawCallback: function () {
+        drawCallback: function() {
             try {
                 $('#pelanggan_data_count').html(pelanggan_data.page.info().recordsTotal);
             } catch (e) {
