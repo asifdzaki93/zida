@@ -171,10 +171,66 @@ $optionKategori = json_encode($kategori);
     </div>
 </div>
 
+<div class="modal fade" id="customer" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="dropdown btn-pinned">
+                        <button type="button" class="btn dropdown-toggle hide-arrow p-0" data-bs-dismiss="modal" aria-expanded="false">
+                            <i class="mdi mdi-close mdi-24px text-muted"></i>
+                        </button>
+                    </div>
+                    <div class="mb-2 text-center d-flex justify-content-center">
+                        <div class="avatar avatar-xl">
+                            <span class="avatar-initial rounded-circle bg-label-info" id="customer_initial">AA</span>
+                        </div>
+                    </div>
+                    <h5 class="mb-1 card-title" id="customer_name_customer"></h5>
+                    <p class="text-muted mb-1" id="customer_telephone"></p>
+                    <p class="text-muted" id="customer_address"></p>
+                </div>
+                <div class="card-datatable table-responsive pt-0">
+                    <table id="pelanggan-invoice-table" class="datatables-basic table dt-table dt-responsive display table-striped table-sm" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>#Invoice</th>
+                                <th><i class="mdi mdi-trending-up"></i></th>
+                                <th>Total</th>
+                                <th class="text-truncate">Dibuat</th>
+                                <th>Tagihan</th>
+                                <th class="cell-fit">Aksi</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- List Data Menggunakan DataTable -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <a target="_blank" href="" id="customer_email_link" class="btn btn-primary d-flex align-items-center me-3 waves-effect waves-light">
+                            <i class="mdi mdi-account-check-outline me-1"></i>
+                            <span id="customer_email"></span>
+                        </a>
+                        <a target="_blank" href="" id="customer_telephone_link" class="btn btn-outline-secondary waves-effect me-3">
+                            <i class="mdi mdi-whatsapp me-1"></i>
+                            <span id="customer_telephone_2"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal -->
+
 <script>
     sidebarBuka("master-data");
     var dom = '<"row ms-2 me-3"' +
-        '<"col-12 d-flex align-items-center justify-content-between gap-3"l<"dt-action-buttons invoice_aksi d-flex text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
+        '<"col-12 d-flex align-items-center justify-content-between gap-3"l<"dt-action-buttons [dom_aksi] d-flex text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
         '>t' +
         '<"row mx-2"' +
         '<"col-sm-12 col-md-6"i>' +
@@ -508,8 +564,31 @@ $optionKategori = json_encode($kategori);
     function tambahCustomer() {
         crudCustomer("", false, "Tambah Pelanggan", "customer_create", "Tambah");
     }
+    var telephone_selected = "";
     async function lihat_customer(id) {
-        crudCustomer(id, true, "Lihat Pelanggan", "customer_read", "");
+        telephone_selected = "";
+        await $.ajax({
+            url: "<?php echo $base_url; ?>/admin/data/crud_master_data.php?tipe=customer_read&id_customer=" + id,
+            success: function(d) {
+                if (d.result == "success") {
+                    data = d.data;
+                    $("#customer_name_customer").html(data.name_customer);
+                    $("#customer_address").html(data.address);
+                    $("#customer_email").html(data.email);
+                    $("#customer_telephone").html(data.telephone);
+                    $("#customer_telephone_2").html(data.telephone);
+
+                    $("#customer_email_link").attr("href","mailto:"+data.email);
+                    $("#customer_telephone_link").attr("href","wa.me/"+data.telephone);
+
+                    $("#customer_initial").html((fullname=>fullname.map((n, i)=>(i==0||i==fullname.length-1)&&n[0]).filter(n=>n).join(""))
+(data.name_customer.split(" ")));
+                    $("#customer").modal("show");
+                    telephone_selected = data.telephone;
+                    dt_invoice.ajax.reload();
+                }
+            }
+        });
     }
 
     async function edit_customer(id) {
@@ -807,7 +886,7 @@ $optionKategori = json_encode($kategori);
         serverSide: true,
         ordering: true,
         stateSave: true,
-        dom: dom,
+        dom: dom.replace("[dom_aksi]","aksi_product"),
         buttons: [{
             text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-lg-inline-block d-none"> Produk</span>',
             className: 'btn btn-primary',
@@ -843,6 +922,15 @@ $optionKategori = json_encode($kategori);
                 "data": "aksi"
             }
         ],
+        initComplete: function(){
+            $('<div></div>').attr('class', "dropdown ms-2 d-grid").html(
+            '<button type="button" class="btn btn-primary dropdown-toggle hide-arrow" data-bs-toggle="dropdown">' +
+            '<i class="mdi mdi-dots-vertical"></i> <span class="d-lg-inline-block d-none"> Aksi</span><b class="ms-1" id=selected_product_count></b>' +
+            '</button>' +
+            '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">' +
+            '<a class="dropdown-item" href="javascript:;" onclick="cetakBarcodeProduct()">Cetak Barcode</a>' +
+            '</div>').appendTo('.aksi_product');
+        },
         drawCallback: function() {
             try {
                 $('#produk_list_count').html(produk_list.page.info().recordsTotal);
@@ -860,7 +948,7 @@ $optionKategori = json_encode($kategori);
         serverSide: true,
         ordering: true,
         stateSave: true,
-        dom: dom,
+        dom: dom.replace("[dom_aksi]","aksi_packages"),
         buttons: [{
             text: '<i class="mdi mdi-plus me-md-1"></i><span class="d-lg-inline-block d-none"> Paket</span>',
             className: 'btn btn-primary',
@@ -896,6 +984,15 @@ $optionKategori = json_encode($kategori);
                 "data": "aksi"
             }
         ],
+        initComplete:function(){
+            $('<div></div>').attr('class', "dropdown ms-2 d-grid").html(
+            '<button type="button" class="btn btn-primary dropdown-toggle hide-arrow" data-bs-toggle="dropdown">' +
+            '<i class="mdi mdi-dots-vertical"></i> <span class="d-lg-inline-block d-none"> Aksi</span><b class="ms-1" id=selected_packages_count></b>' +
+            '</button>' +
+            '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">' +
+            '<a class="dropdown-item" href="javascript:;" onclick="cetakBarcodePackages()">Cetak Barcode</a>' +
+            '</div>').appendTo('.aksi_packages');
+        },
         drawCallback: function() {
             try {
                 $('#paket_list_count').html(paket_list.page.info().recordsTotal);
@@ -956,5 +1053,288 @@ $optionKategori = json_encode($kategori);
                 $('#pelanggan_data_count').html(0);
             }
         }
+    });
+
+    
+    var dt_invoice = $('#pelanggan-invoice-table').DataTable({
+        order: [
+            [5, 'desc']
+        ],
+        processing: true,
+        responsive: true,
+        serverSide: true,
+        ordering: true,
+        stateSave: true,
+        columnDefs: [{
+                "className": "dt-left",
+                "targets": 3
+            },
+            {
+                "className": "dt-left",
+                "targets": 2
+            },
+            {
+                "className": "dt-center",
+                "targets": 4
+            },
+            {
+                "responsivePriority": 2,
+                targets: 0
+            },
+            {
+                "responsivePriority": 3,
+                targets: 1
+            },
+            {
+                "responsivePriority": 14,
+                targets: 2
+            },
+            {
+                "className": "text-nowrap",
+                "targets": 3
+            },
+            {
+                "className": "text-nowrap",
+                "targets": 4
+            },
+        ],
+        ajax: {
+            "url": "<?php echo $base_url; ?>/admin/data/history.php",
+            "data": function (d) {
+                d.action = "sales_data";
+                d.telephone = telephone_selected;
+                d.status = $("#status_invoice").val();
+                d.date = $("#filter_tanggal").val();
+            },
+            "type": "POST"
+        },
+        columns: [{
+                "data": "no_invoice"
+            },
+            {
+                "data": "trend"
+            },
+            {
+                "data": "total"
+            },
+            {
+                "data": "date"
+            },
+            {
+                "data": "tagihan"
+            },
+            {
+                "data": "aksi"
+            }
+        ],
+        dom: '<"row ms-2 me-3"' +
+            '<"col-12 col-md-3 d-flex align-items-center justify-content-center justify-content-md-start gap-3"l<"dt-action-buttons invoice_aksi d-flex text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
+            '<"col-12 col-md-9 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-3"f<"invoice_status d-flex mb-3 mb-md-0">>' +
+            '>t' +
+            '<"row mx-2"' +
+            '<"col-sm-12 col-md-6"i>' +
+            '<"col-sm-12 col-md-6"p>' +
+            '>',
+        language: {
+            sLengthMenu: 'Show _MENU_',
+            search: '',
+            searchPlaceholder: 'Cari Invoice'
+        },
+        buttons: [],
+        // For responsive popup
+        responsive: {
+            details: {
+                display: $.fn.dataTable.Responsive.display.modal({
+                    header: function (row) {
+                        var data = row.data();
+                        return 'Details of ' + data['full_name'];
+                    }
+                }),
+                type: 'column',
+                renderer: function (api, rowIdx, columns) {
+                    var data = $.map(columns, function (col, i) {
+                        return col.title !==
+                            '' // ? Do not show row in modal popup if title is blank (for check box)
+                            ?
+                            '<tr data-dt-row="' +
+                            col.rowIndex +
+                            '" data-dt-column="' +
+                            col.columnIndex +
+                            '">' +
+                            '<td>' +
+                            col.title +
+                            ':' +
+                            '</td> ' +
+                            '<td>' +
+                            col.data +
+                            '</td>' +
+                            '</tr>' :
+                            '';
+                    }).join('');
+
+                    return data ? $('<table class="table"/><tbody />').append(data) : false;
+                }
+            }
+        },
+        initComplete: function () {
+            var column = this;
+            var select = $(
+                    '<select id="status_invoice" class="form-select"><option value=""> Cari Status </option></select>'
+                )
+                .appendTo('.invoice_status').on('change', function () {
+                    dt_invoice.ajax.reload();
+                });
+            $('<input>').attr('id', "filter_tanggal").attr('class', 'form-control ms-2')
+                .attr("placeholder", "Tanggal")
+                .appendTo('.invoice_status').on('change', function () {
+                    dt_invoice.ajax.reload();
+                });
+            var filter_tanggal = document.querySelector("#filter_tanggal");
+            if (filter_tanggal !== null) {
+                filter_tanggal.flatpickr({});
+            }
+
+            var option = [{
+                    "label": "Semua Data",
+                    "value": ""
+                },
+                {
+                    "label": "Paid Off",
+                    "value": "paid off"
+                },
+                {
+                    "label": "Pre Order",
+                    "value": "pre order"
+                },
+                {
+                    "label": "finish",
+                    "value": "finish"
+                },
+                {
+                    "label": "Cancel",
+                    "value": "cancel"
+                }
+            ];
+            for (var i = 0; i < option.length; i++) {
+                select.append('<option value="' + option[i].value +
+                    '" class="text-capitalize">' + option[i].label +
+                    '</option>');
+            }
+        }
+    });
+    var selected_product = {};
+    var selected_packages = {};
+    function select_product(codeproduct){
+        if (selected_product.hasOwnProperty(codeproduct)) {
+            delete selected_product[codeproduct];
+        } else {
+            selected_product[codeproduct] = {
+                "codeproduct": codeproduct
+            }
+        }
+        var selected_product_count = Object.keys(selected_product).length;
+        if (selected_product_count == 0) {
+            $("#selected_product_count").html("");
+        } else {
+            $("#selected_product_count").html("(" + selected_product_count + ")");
+        }
+    }
+    async function cetakBarcodeProduct(){
+        alert("Sedang mencetak barcode produk");
+        var value=Object.keys(selected_product).join(",");
+        await $.ajax({
+            url: "<?php echo $base_url; ?>/admin/cetak_barcode.php?"+value,
+            success: function(data) {
+                if (data.result == "success") {
+                    alert("Pencetakan barcode produk berhasil");
+                    $("#crud_master_data").modal("hide");
+                } else {
+                    alert(data.title ?? "Error");
+                    $("#crud_master_data_button").attr("disabled", false);
+                    $("#crud_master_data_button").html("Coba Lagi");
+                }
+            }
+        });
+    }
+    function select_packages(codeproduct){
+        if (selected_packages.hasOwnProperty(codeproduct)) {
+            delete selected_packages[codeproduct];
+        } else {
+            selected_packages[codeproduct] = {
+                "codeproduct": codeproduct
+            }
+        }
+        var selected_packages_count = Object.keys(selected_packages).length;
+        if (selected_packages_count == 0) {
+            $("#selected_packages_count").html("");
+        } else {
+            $("#selected_packages_count").html("(" + selected_packages_count + ")");
+        }
+    }
+    async function cetakBarcodePackages(){
+        alert("Sedang mencetak barcode paket");
+        var value=Object.keys(selected_packages).join(",");
+        await $.ajax({
+            url: "<?php echo $base_url; ?>/admin/cetak_barcode.php?"+value,
+            success: function(data) {
+                if (data.result == "success") {
+                    alert("Pencetakan barcode paket berhasil");
+                    $("#crud_master_data").modal("hide");
+                } else {
+                    alert(data.title ?? "Error");
+                    $("#crud_master_data_button").attr("disabled", false);
+                    $("#crud_master_data_button").html("Coba Lagi");
+                }
+            }
+        });
+    }
+    // On each datatable draw, initialize tooltip
+    produk_list.on('draw.dt', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll(
+            '[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                boundary: document.body
+            });
+        });
+        $(".checkbox_product").each(function (index) {
+            var kodeproduk = $(this).val();
+            if (selected_product.hasOwnProperty(kodeproduk)) {
+                $(this).prop('checked', true);
+            }
+        })
+    });
+    paket_list.on('draw.dt', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll(
+            '[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                boundary: document.body
+            });
+        });
+        $(".checkbox_packages").each(function (index) {
+            var kodeproduk = $(this).val();
+            if (selected_packages.hasOwnProperty(kodeproduk)) {
+                $(this).prop('checked', true);
+            }
+        })
+    });
+    pelanggan_data.on('draw.dt', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll(
+            '[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                boundary: document.body
+            });
+        });
+    });
+    dt_invoice_table.on('draw.dt', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll(
+            '[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                boundary: document.body
+            });
+        });
     });
 </script>

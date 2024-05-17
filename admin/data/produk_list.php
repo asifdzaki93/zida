@@ -12,6 +12,20 @@ if (!empty($_POST['cari'])) {
   $searchPelangganQuery = " AND (telephone $like or name_customer $like or email $like)";
 }
 
+function truncateDescription($description, $maxLength = 50)
+{
+  // Strip tags to avoid breaking any HTML
+  $string = strip_tags($description);
+
+  // Check if the length of the string is greater than the maximum length
+  if (strlen($string) > $maxLength) {
+    $string = substr($string, 0, $maxLength);
+    $string .= '...';
+  }
+
+  return $string;
+}
+
 function generateTombol($ada, $onclick, $id, $additional = '')
 {
   $hapus_restore = $ada ? 'hapus' : 'restore';
@@ -65,11 +79,11 @@ if (!empty($_POST['tipe'])) {
   if ($_POST['tipe'] == 'semua') {
   } else {
     $searchProductQuery .= " AND p.showing = '1'";
-    $searchPelangganQuery .= " AND active = '0'";
+    $searchPelangganQuery .= " AND active = '1'";
   }
 } else {
   $searchProductQuery .= " AND p.showing = '0'";
-  $searchPelangganQuery .= " AND active = '1'";
+  $searchPelangganQuery .= " AND active = '0'";
 }
 
 if (!$mysqli->is_auth) {
@@ -137,28 +151,32 @@ if (!$mysqli->is_auth) {
         $sumber = 'https://zieda.id/pro/geten/images/no_image.jpg';
       }
 
+      $checkbox='<input type="checkbox" onchange=\'select_product("'.$row["codeproduct"].'")\' value="'.$row["codeproduct"].
+      '" class="dt-checkboxes me-1 checkbox_product form-check-input">'.$no;
+      $no++;
+
       $produk =
         '<div class="d-flex justify-content-start align-items-center">
                     <div class="avatar-wrapper">
                         <div class="avatar avatar-sm me-2"><img src="' .
         $sumber .
         '" alt="' .
-        (ucwords(strtolower($row['name_product'])) ?? '-') .
+        truncateDescription(ucwords(strtolower($row['name_product'] ?? '-')), 5) .
         '"
                                 class="rounded-circle"></div>
                     </div>
                     <div class="d-flex flex-column gap-1"><a href="pages-profile-user.html" class="text-truncate">
                             <h6 class="mb-0">' .
-        (ucwords(strtolower($row['name_product'])) ?? '-') .
+        truncateDescription(ucwords(strtolower(($row['name_product']))) ?? '-', 40) .
         '</h6>
                         </a><small class="text-truncate text-muted">' .
-        $row['description'] .
+        truncateDescription(ucwords(strtolower($row['description'] ?? '-')), 40) .
         '</small></div>
                     </div>';
 
       // Data produk yang akan dimasukkan ke dalam DataTable
       $rowData = [
-        'id_product' => $no++,
+        'id_product' => $checkbox,
         'id_category' => ucwords(strtolower($row['name_category'] ?? 'Uncategorized')),
         'name_product' => $produk,
         'selling_price' => rupiah($row['selling_price']),
@@ -240,7 +258,7 @@ if (!$mysqli->is_auth) {
         'telephone' => $row['telephone'],
         'email' => $row['email'],
         'address' => $row['address'],
-        'aksi' => generateTombol($row['active'] == '1', 'customer', $row['id_customer']),
+        'aksi' => generateTombol($row['active'] == '0', 'customer', $row['id_customer']),
       ];
 
       // Tambahkan data pelanggan ke dalam array data
@@ -296,26 +314,6 @@ if (!$mysqli->is_auth) {
     $hasil_rupiah = 'Rp ' . number_format($angka, 0, ',', '.');
     return $hasil_rupiah;
   }
-
-  function truncateDescription($description, $maxLength = 50)
-  {
-    // Strip tags to avoid breaking any HTML
-    $string = strip_tags($description);
-
-    // Check if the length of the string is greater than the maximum length
-    if (strlen($string) > $maxLength) {
-      // Truncate the string
-      $stringCut = substr($string, 0, $maxLength);
-      $endPoint = strrpos($stringCut, ' ');
-
-      // If the string doesn't contain any space then it will cut without word basis
-      $string = $endPoint ? substr($stringCut, 0, $endPoint) : substr($stringCut, 0);
-      $string .= '...';
-    }
-
-    return $string;
-  }
-
   // Query utama untuk mengambil data produk
 
   // Query utama untuk mengambil data produk dengan join ke tabel kategori
@@ -342,6 +340,9 @@ if (!$mysqli->is_auth) {
       } else {
         $sumber = 'https://zieda.id/pro/geten/images/no_image.jpg';
       }
+      $checkbox='<input type="checkbox" onchange=\'select_packages("'.$row["codeproduct"].'")\' value="'.$row["codeproduct"].
+      '" class="dt-checkboxes me-1 checkbox_packages form-check-input">'.$no;
+      $no++;
 
       $produk =
         '<div class="d-flex justify-content-start align-items-center">
@@ -364,7 +365,7 @@ if (!$mysqli->is_auth) {
 
       // Data produk yang akan dimasukkan ke dalam DataTable
       $rowData = [
-        'id_product' => $no++,
+        'id_product' => $checkbox,
         'id_category' => ucwords(strtolower($row['name_category'] ?? 'Uncategorized')),
         'name_product' => $produk,
         'selling_price' => rupiah($row['selling_price']),

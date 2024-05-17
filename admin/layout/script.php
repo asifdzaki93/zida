@@ -64,6 +64,13 @@
     }
     async function loadPage(page) {
         $(".tooltip").remove();
+        try{
+            $('.modal').each(function(index) {
+                $(this).modal('hide');
+            })
+        }catch(e){
+            
+        }
         await $.ajax({
             url: "jquery_page.php?page=" + page.replace("?", "&"),
             success: function(result) {

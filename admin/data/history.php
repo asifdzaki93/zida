@@ -38,15 +38,27 @@ if ($_POST['action'] == "sales_data") {
         'sd.totalpay', 
         'sd.id_sales_data'
     ];
+    $sqlBase = "SELECT c.name_customer, c.telephone, sd.status,sd.img, sd.no_invoice, sd.totalpay, sd.totalorder, sd.due_date, sd.date ";
+    $sqlCount = "SELECT count(id_sales_data) as jumlah ";
+    $sqlMid = "FROM sales_data sd LEFT JOIN customer c ON sd.id_customer = c.id_customer WHERE sd.user='$usernya' ";
+    $sqlSearch = "";
+    if(isset($_POST["telephone"])){
+        $telephone = $mysqli->real_escape_string($_POST["telephone"]);
+        $columns = [
+            'sd.no_invoice', 
+            'sd.status',
+            'sd.totalorder', 
+            'sd.date', 
+            'sd.totalpay', 
+            'sd.id_sales_data'
+        ];
+        $sqlMid .= "AND c.telephone ='$telephone' ";
+    }
     $order = $columns[$orderIndex];
     if($order=="aksi"){
         $order="id_sales_data";
     }
 
-    $sqlBase = "SELECT c.name_customer, c.telephone, sd.status,sd.img, sd.no_invoice, sd.totalpay, sd.totalorder, sd.due_date, sd.date ";
-    $sqlCount = "SELECT count(id_sales_data) as jumlah ";
-    $sqlMid = "FROM sales_data sd LEFT JOIN customer c ON sd.id_customer = c.id_customer WHERE sd.user='$usernya' ";
-    $sqlSearch = "";
     $sqlEnd = "order by $order $dir LIMIT $limit OFFSET $start";
 
     if (!empty($_POST['search']['value'])) {

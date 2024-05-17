@@ -305,14 +305,14 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
     }
   } elseif ($tipe == 'customer_delete') {
     $id = $mysqli->real_escape_string($_REQUEST['id_customer'] ?? '');
-    $mysqli->query("UPDATE customer SET active='0' where user='$u[master]' AND id_customer = '$id'");
+    $mysqli->query("UPDATE customer SET active='1' where user='$u[master]' AND id_customer = '$id'");
     $json = [
       'result' => 'success',
       'title' => 'Success',
     ];
   } elseif ($tipe == 'customer_restore') {
     $id = $mysqli->real_escape_string($_REQUEST['id_customer'] ?? '');
-    $mysqli->query("UPDATE customer SET active='1' where user='$u[master]' AND id_customer = '$id'");
+    $mysqli->query("UPDATE customer SET active='0' where user='$u[master]' AND id_customer = '$id'");
     $json = [
       'result' => 'success',
       'title' => 'Success',
