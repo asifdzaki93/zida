@@ -42,8 +42,12 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
     ];
   } elseif ($tipe == 'produk_create' || $tipe == 'produk_update') {
     $id_product = $mysqli->real_escape_string($_POST['id_product'] ?? '');
+    $date = gmdate('dHi');
+    $acak = rand(1, 99);
+    $sesi = "$m[id_store]$acak$date";
+
     if ($tipe == 'produk_update') {
-      $check = $mysqli->query("SELECT id_product FROM product WHERE id_product = '$id_product'");
+      $check = $mysqli->query("SELECT id_product,session FROM product WHERE id_product = '$id_product'");
       $checked = $check->fetch_array();
       if (!$checked) {
         return [
@@ -51,35 +55,32 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
           'title' => 'Produk tidak ada',
         ];
       }
+      $sesi = $checked["session"];
     }
 
     $packages = ($_POST['packages'] ?? '') == 'YES' ? 'YES' : 'NO';
-    $hargabeli = $mysqli->real_escape_string($_POST['purchase_price'] ?? '');
-    $hargajual = $mysqli->real_escape_string($_POST['selling_price'] ?? '');
+    $hargabeli = $mysqli->real_escape_string($_POST['purchase_price'] ?? '0');
+    $hargajual = $mysqli->real_escape_string($_POST['selling_price'] ?? '0');
     $stok = $mysqli->real_escape_string($_POST['stock'] ?? '0');
     $nama_barang = $mysqli->real_escape_string($_POST['name_product'] ?? '');
-    $unit = $mysqli->real_escape_string($_POST['unit']);
+    $unit = $mysqli->real_escape_string($_POST['unit']??"Kg");
     $id_kategori = $mysqli->real_escape_string($_POST['id_category'] ?? '');
     $kodebarang = $mysqli->real_escape_string($_POST['codeproduct'] ?? '');
-    $minimalstok = $mysqli->real_escape_string($_POST['minimalstock'] ?? '');
+    $minimalstok = $mysqli->real_escape_string($_POST['minimalstock'] ?? '0');
     $deskripsi = $mysqli->real_escape_string($_POST['description'] ?? '');
-    $online = $mysqli->real_escape_string($_POST['online'] ?? '');
-    $ada_stok = $mysqli->real_escape_string($_POST['have_stock'] ?? '');
-    $hargagrosir = $mysqli->real_escape_string($_POST['wholesale_price'] ?? '');
-    $minimal_pembelian = $mysqli->real_escape_string($_POST['minimum_purchase'] ?? '');
-    $tax = $mysqli->real_escape_string($_POST['tax'] ?? '');
-    $alertstock = $mysqli->real_escape_string($_POST['alertstock'] ?? '');
+    $online = $mysqli->real_escape_string($_POST['online'] ?? '0');
+    $ada_stok = $mysqli->real_escape_string($_POST['have_stock'] ?? '1');
+    $hargagrosir = $mysqli->real_escape_string($_POST['wholesale_price'] ?? '0');
+    $minimal_pembelian = $mysqli->real_escape_string($_POST['minimum_purchase'] ?? '0');
+    $tax = $mysqli->real_escape_string($_POST['tax'] ?? '0');
+    $alertstock = $mysqli->real_escape_string($_POST['alertstock'] ?? '0');
 
     $folder = date('m-d-y-H');
 
     $lokasi_file = $_FILES['img']['tmp_name'];
     $tipe_file = $_FILES['img']['type'];
     $nama_file = $_FILES['img']['name'];
-    $acak = rand(1, 99);
     $nama_file_unik = $acak . $nama_file;
-
-    $date = gmdate('dHi');
-    $sesi = "$m[id_store]$acak$date";
 
     $masterproduct = $mysqli->query("SELECT * FROM product WHERE user='$u[master]' ORDER BY id_product DESC LIMIT 1");
     $mp = $masterproduct->fetch_array();
@@ -168,7 +169,7 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
 
       $databarang = $mysqli->query("SELECT * FROM product WHERE session='$sesi' AND user='$m[phone_number]'");
       $b = $databarang->fetch_array();
-
+      $id_product = $b["id_product"];
       $datastok = $mysqli->query("SELECT * FROM stock WHERE session='$sesi' AND user='$m[phone_number]'");
       $s = $datastok->fetch_array();
 
@@ -214,6 +215,54 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
                            '$m[phone_number]')"
       );
     }
+    if($packages == "YES") {
+      $packages_product = explode(",",$_REQUEST["packages_product"]);
+      $query_packages_product = $mysqli->query(
+        "SELECT id_packagesproduct,id_product,name_product FROM packagesproduct 
+        WHERE $mysqli->user_master_query and sesi = '$sesi'"
+      );
+      $db_packages_product = [];
+      while ($row = $query_packages_product->fetch_assoc()) {
+        $db_packages_product[$row["id_product"]] = [
+          "id_packagesproduct"=>$row["id_packagesproduct"],
+          "name_product"=>$row["name_product"]
+        ];
+      }
+      $new_catatan = [];
+      foreach($packages_product as $p){
+        $pp_id_product = explode(":",$p)[0];
+        $pp_amount = explode(":",$p)[1]??1;
+        if (isset($db_packages_product[$pp_id_product])) {
+          $id_packagesproduct = $db_packages_product[$pp_id_product]["id_packagesproduct"];
+          $mysqli->query(
+            "UPDATE packagesproduct set 
+            amount = '$pp_amount'
+            where user = '$m[phone_number]' and id_packagesproduct = '$id_packagesproduct'"
+          );
+          array_push($new_catatan,$db_packages_product[$pp_id_product]["name_product"]." (".$pp_amount.")");
+          unset($db_packages_product[$pp_id_product]);
+        } else {
+          $product_query = $mysqli->query("SELECT name_product,selling_price from product 
+          where $mysqli->user_master_query and id_product = '$pp_id_product' and packages = 'NO'");
+          $product = $product_query->fetch_assoc();
+          if($product){
+            $name_product = $product['name_product'];
+            $price = $product['selling_price'];
+            $mysqli->query(
+              "INSERT INTO packagesproduct(id_product, name_product, amount, id_store, user, sesi, price, date) 
+                                    VALUES('$pp_id_product', '$name_product', '$pp_amount', '$m[id_store]', '$m[phone_number]', '$sesi', '$price', '$tanggal')"
+            );
+            array_push($new_catatan,$name_product." (".$pp_amount.")");
+          }
+        }
+      }
+      foreach(array_values($db_packages_product) as $p){
+        $id_packagesproduct = $p["id_packagesproduct"];
+        $mysqli->query("DELETE FROM packagesproduct where id_packagesproduct = '$id_packagesproduct'");
+      }
+      $description = implode(", ",$new_catatan);
+      $mysqli->query("UPDATE product set description = '$description' where id_product = '$id_product'");
+    }
     $json = [
       'result' => 'success',
       'title' => 'Success',
@@ -255,6 +304,32 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
   } elseif ($tipe == 'produk_restore') {
     $id = $mysqli->real_escape_string($_REQUEST['id_product'] ?? '');
     $mysqli->query("UPDATE product SET showing='0' where user='$u[master]' AND id_product = '$id'");
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+    ];
+  } elseif ($tipe == 'produk_online') {
+    $codeproducts = explode(",",$_REQUEST['codeproduct']??"");
+    foreach( $codeproducts as $codeproduct ) {
+      if(empty( $codeproduct )) {
+        continue;
+      }
+      $code = $mysqli->real_escape_string($codeproduct);
+      $mysqli->query("UPDATE product SET online='1' where user='$u[master]' AND codeproduct = '$code'");
+    }
+    $json = [
+      'result' => 'success',
+      'title' => 'Success',
+    ];
+  } elseif ($tipe == 'produk_offline') {
+    $codeproducts = explode(",",$_REQUEST['codeproduct']??"");
+    foreach( $codeproducts as $codeproduct ) {
+      if(empty( $codeproduct )) {
+        continue;
+      }
+      $code = $mysqli->real_escape_string($codeproduct);
+      $mysqli->query("UPDATE product SET online='0' where user='$u[master]' AND codeproduct = '$code'");
+    }
     $json = [
       'result' => 'success',
       'title' => 'Success',
@@ -337,73 +412,6 @@ function proses($mysqli, $chatgpt_url, $chatgpt_key)
       'result' => 'success',
       'title' => 'Success',
       'data' => $data,
-    ];
-  } elseif ($tipe == 'packages_create' || $tipe == 'packages_update') {
-    $id_product_parent = $mysqli->real_escape_string($_REQUEST['id_product_parent'] ?? '');
-    $id_product = $mysqli->real_escape_string($_POST['id_product'] ?? '');
-    $check = $mysqli->query("SELECT selling_price,name_product FROM product WHERE id_product = '$id_product'");
-    $product = $check->fetch_array();
-    if (!$product) {
-      return [
-        'result' => 'error',
-        'title' => 'Produk tidak ada',
-      ];
-    }
-    $id_packagesproduct = $mysqli->real_escape_string($_POST['id_packagesproduct'] ?? '');
-    $sesi = '';
-    if ($tipe == 'packages_update') {
-      $check = $mysqli->query(
-        "SELECT id_packagesproduct FROM packagesproduct WHERE id_packagesproduct = '$id_packagesproduct'"
-      );
-      $checked = $check->fetch_array();
-      if (!$checked) {
-        return [
-          'result' => 'error',
-          'title' => 'Produk tidak ada',
-        ];
-      }
-    } else {
-      $check = $mysqli->query("SELECT session FROM product WHERE id_product = '$id_product_parent'");
-      $product_parent = $check->fetch_array();
-      if (!$product_parent) {
-        return [
-          'result' => 'error',
-          'title' => 'Produk tidak ada',
-        ];
-      }
-      $sesi = $product_parent['session'];
-    }
-    $price = $product['selling_price'];
-    $name_product = $product['name_product'];
-    $amount = $mysqli->real_escape_string($_POST['amount']);
-
-    if ($tipe == 'packages_update') {
-      $mysqli->query(
-        "UPDATE packagesproduct set 
-        name_product = '$name_product', 
-        amount = '$amount', 
-        price = '$price'
-        where user = '$m[phone_number]' and id_packagesproduct = '$id_packagesproduct'"
-      );
-    } else {
-      $mysqli->query(
-        "INSERT INTO packagesproduct(id_product, name_product, amount, id_store, user, sesi, price, date) 
-                              VALUES('$id_product', '$name_product', '$amount', '$m[id_store]', '$m[phone_number]', '$sesi', '$price', '$tanggal')"
-      );
-    }
-    $json = [
-      'result' => 'success',
-      'title' => 'Success',
-    ];
-  } elseif ($tipe == 'packages_delete') {
-    $id_packagesproduct = $mysqli->real_escape_string($_REQUEST['id_packagesproduct'] ?? '');
-    $mysqli->query(
-      "DELETE from packagesproduct 
-      where user = '$m[phone_number]' and id_packagesproduct = '$id_packagesproduct'"
-    );
-    $json = [
-      'result' => 'success',
-      'title' => 'Success',
     ];
   }
   return $json;

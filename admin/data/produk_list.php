@@ -86,6 +86,15 @@ if (!empty($_POST['tipe'])) {
   $searchPelangganQuery .= " AND active = '0'";
 }
 
+if (!empty($_POST['online'])) {
+  if ($_POST['online'] == '1') {
+    $searchProductQuery .= " AND p.online = '1'";
+  } else {
+    $searchProductQuery .= " AND p.online = '0'";
+  }
+}
+
+
 if (!$mysqli->is_auth) {
   $json_data = [
     'draw' => 0,
@@ -152,7 +161,7 @@ if (!$mysqli->is_auth) {
       }
 
       $checkbox='<input type="checkbox" onchange=\'select_product("'.$row["codeproduct"].'")\' value="'.$row["codeproduct"].
-      '" class="dt-checkboxes me-1 checkbox_product form-check-input">'.$no;
+      '" class="dt-checkboxes me-1 checkbox_product form-check-input">';
       $no++;
 
       $produk =
@@ -181,6 +190,7 @@ if (!$mysqli->is_auth) {
         'name_product' => $produk,
         'selling_price' => rupiah($row['selling_price']),
         'stock' => $row['stock'],
+        'online' => $row['online']=='1'?"Online":"Offline",
         'aksi' => generateTombol($row['showing'] == '0', 'produk', $row['id_product']),
         // Jika Anda memiliki kolom aksi, Anda dapat menambahkannya di sini
       ];
@@ -341,7 +351,7 @@ if (!$mysqli->is_auth) {
         $sumber = 'https://zieda.id/pro/geten/images/no_image.jpg';
       }
       $checkbox='<input type="checkbox" onchange=\'select_packages("'.$row["codeproduct"].'")\' value="'.$row["codeproduct"].
-      '" class="dt-checkboxes me-1 checkbox_packages form-check-input">'.$no;
+      '" class="dt-checkboxes me-1 checkbox_packages form-check-input">';
       $no++;
 
       $produk =
@@ -370,20 +380,8 @@ if (!$mysqli->is_auth) {
         'name_product' => $produk,
         'selling_price' => rupiah($row['selling_price']),
         'stock' => $row['stock'],
-        'aksi' => generateTombol(
-          $row['showing'] == '0',
-          'produk',
-          $row['id_product'],
-          '<a href="javascript:;" 
-        onclick="lihat_packages(\'' .
-            $row['id_product'] .
-            '\',\'' .
-            $row['name_product'] .
-            '\')" 
-          data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Isi Paket">
-            <i class="mdi mdi-package-variant mdi-20px mx-1"></i>
-        </a>'
-        ),
+        'online' => $row['online']=='1'?"Online":"Offline",
+        'aksi' => generateTombol($row['showing'] == '0', 'paket', $row['id_product']),
         // Jika Anda memiliki kolom aksi, Anda dapat menambahkannya di sini
       ];
 
